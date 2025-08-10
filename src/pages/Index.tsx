@@ -147,35 +147,41 @@ const Index = () => {
         </Section>
 
         {/* Writing */}
-        <Section id="writing" title="Articles & Writing" description="Perspectives on deep work, digital minimalism, and engineering for impact.">
+<Section id="writing" title="Articles & Writing" description="Perspectives on deep work, digital minimalism, and engineering for impact.">
           <ul className="grid gap-4 md:grid-cols-2">
             {[
               { t: "Deep Work for African Engineers", href: "#" },
               { t: "Digital Minimalism in the Age of Overload", href: "#" },
               { t: "Engineering for Pan-African Impact", href: "#" },
               { t: "My Journey from Student to CTO", href: "#" },
+              { t: "Arrays Were the Highlight of the Day", href: "https://sedate-nemophila-92c.notion.site/Arrays-Were-the-Highlight-of-the-Day-23f3c2801afd8020a110c10d013efbdf?source=copy_link" },
+              { t: "Beyond Mediocrity: The Power of Focused Reflection in Mastery", href: "https://sedate-nemophila-92c.notion.site/Beyond-Mediocrity-The-Power-of-Focused-Reflection-in-Mastery-2433c2801afd807da2eeebb79aa430a4?pvs=73" },
+              { t: "Autocomplete with Tries in Go: From Problem to Solution", href: "https://sedate-nemophila-92c.notion.site/Autocomplete-with-Tries-in-Go-From-Problem-to-Solution-22f3c2801afd809a890fcf9de91e357a?pvs=141" },
             ].map((a) => (
               <li key={a.t}>
-                <a href={a.href} className="story-link text-lg">{a.t}</a>
+                <a href={a.href} target={a.href.startsWith('#') ? undefined : "_blank"} rel={a.href.startsWith('#') ? undefined : "noreferrer"} className="story-link text-lg">{a.t}</a>
               </li>
             ))}
           </ul>
         </Section>
 
         {/* Speaking & Leadership */}
-        <Section id="speaking" title="Speaking & Leadership">
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <h3 className="font-medium">Co-Lead, Google Developer Groups (UMaT)</h3>
-              <p className="text-muted-foreground">Workshops and hackathons</p>
-            </div>
-            <div>
-              <h3 className="font-medium">Chief Information Officer, Cbreeve Foundation</h3>
-              <p className="text-muted-foreground">Digital transformation leadership</p>
-            </div>
-            <div>
-              <h3 className="font-medium">Contributor, University IT Unit</h3>
-              <p className="text-muted-foreground">Infrastructure and student systems</p>
+<Section id="speaking" title="Speaking & Leadership">
+          <div className="relative overflow-hidden rounded-xl border bg-secondary/40 p-6 md:p-8">
+            <div className="absolute inset-0 bg-triangles opacity-[0.08]" aria-hidden />
+            <div className="relative grid gap-6 md:grid-cols-2">
+              <div>
+                <h3 className="font-medium">Co-Lead, Google Developer Groups (UMaT)</h3>
+                <p className="text-muted-foreground">Workshops and hackathons</p>
+              </div>
+              <div>
+                <h3 className="font-medium">Chief Information Officer, Cbreeve Foundation</h3>
+                <p className="text-muted-foreground">Digital transformation leadership</p>
+              </div>
+              <div>
+                <h3 className="font-medium">Contributor, University IT Unit</h3>
+                <p className="text-muted-foreground">Infrastructure and student systems</p>
+              </div>
             </div>
           </div>
         </Section>
