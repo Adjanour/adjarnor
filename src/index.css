@@ -119,8 +119,8 @@
   }
   .bg-triangles {
     background:
-      conic-gradient(from 45deg, hsl(var(--primary) / 0.06) 90deg, transparent 0) 0 0 / 32px 32px,
-      conic-gradient(from -45deg, hsl(var(--accent) / 0.05) 90deg, transparent 0) 16px 16px / 32px 32px;
+      conic-gradient(from 45deg, hsl(var(--primary) / 0.12) 90deg, transparent 0) 0 0 / 28px 28px,
+      conic-gradient(from -45deg, hsl(var(--accent) / 0.10) 90deg, transparent 0) 14px 14px / 28px 28px;
   }
   .hover-scale { @apply transition-transform duration-200 hover:scale-105; }
   .elevated { box-shadow: var(--shadow-elegant); }

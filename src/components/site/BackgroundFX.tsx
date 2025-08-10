@@ -15,7 +15,7 @@ const BackgroundFX = () => {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
       <div className="absolute inset-0 bg-grid" />
-      <div className="absolute inset-0 bg-triangles opacity-[0.12] mix-blend-overlay" />
+      <div className="absolute inset-0 bg-triangles opacity-20 dark:opacity-15" />
       <div
         className="absolute inset-0"
         style={{
