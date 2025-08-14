@@ -208,10 +208,10 @@ const Index = () => {
         {/* Contact */}
         <Section id="contact" title="Let’s Connect" description="Open to collaborations, mentorship, and building for Africa’s future.">
           <div className="flex flex-wrap items-center gap-3">
-            <a href="mailto:bernardadjanour@gmail.com"><Button variant="hero">Email Bernard</Button></a>
+            <a href="mailto:adjanour@icloud.com"><Button variant="hero">Email Bernard</Button></a>
             <a href="https://github.com/Adjanour" target="_blank" rel="noreferrer"><Button variant="secondary">GitHub</Button></a>
-            <a href="https://linkedin.com/in/bernardadjanour" target="_blank" rel="noreferrer"><Button variant="secondary">LinkedIn</Button></a>
-            <a href="https://twitter.com/bernardadjanour" target="_blank" rel="noreferrer"><Button variant="secondary">Twitter/X</Button></a>
+            <a href="https://linkedin.com/in/kirk-katamanso" target="_blank" rel="noreferrer"><Button variant="secondary">LinkedIn</Button></a>
+            <a href="https://twitter.com/kirk_katamanso" target="_blank" rel="noreferrer"><Button variant="secondary">Twitter/X</Button></a>
           </div>
         </Section>
       </main>
