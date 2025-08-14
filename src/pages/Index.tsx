@@ -173,8 +173,6 @@ const Index = () => {
             {[
               { t: "Deep Work for African Engineers", href: "#" },
               { t: "Digital Minimalism in the Age of Overload", href: "#" },
-              { t: "Engineering for Pan-African Impact", href: "#" },
-              { t: "My Journey from Student to CTO", href: "#" },
               { t: "Arrays Were the Highlight of the Day", href: "https://sedate-nemophila-92c.notion.site/Arrays-Were-the-Highlight-of-the-Day-23f3c2801afd8020a110c10d013efbdf?source=copy_link" },
               { t: "Beyond Mediocrity: The Power of Focused Reflection in Mastery", href: "https://sedate-nemophila-92c.notion.site/Beyond-Mediocrity-The-Power-of-Focused-Reflection-in-Mastery-2433c2801afd807da2eeebb79aa430a4?pvs=73" },
               { t: "Autocomplete with Tries in Go: From Problem to Solution", href: "https://sedate-nemophila-92c.notion.site/Autocomplete-with-Tries-in-Go-From-Problem-to-Solution-22f3c2801afd809a890fcf9de91e357a?pvs=141" },
