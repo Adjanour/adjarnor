@@ -15,7 +15,7 @@ const Navbar = () => {
     <header className="fixed top-0 left-0 right-0 z-50 border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <a href="#home" className="font-display text-xl font-semibold tracking-tight">
-          Bernard Adjanour
+          Bernard Kirk Adjarnor Katamanso
         </a>
         <div className="hidden items-center gap-6 md:flex">
           {navItems.map((item) => (
