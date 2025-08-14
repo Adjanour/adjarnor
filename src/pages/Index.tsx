@@ -61,34 +61,55 @@ const Index = () => {
         {/* Projects */}
         <Section id="projects" title="Featured Projects" description="A selection of platforms and tools centered on impact, craft, and clarity.">
           <div className="grid gap-6 md:grid-cols-2">
-            <ProjectCard
-              title="AgriHive (Orcta)"
-              description="AI-powered agricultural platform to empower farmers."
-              techs={["React", "Node.js", "Python", "AI/ML", "MongoDB"]}
-              link="#"
-              linkLabel="Case study"
-            />
-            <ProjectCard
-              title="MetaBoard (GDG UMaT)"
-              description="Collaboration and event management platform."
-              techs={["Next.js", "Firebase", "Tailwind CSS"]}
-              link="#"
-              linkLabel="Explore"
-            />
-            <ProjectCard
-              title="Industrial Companion App"
-              description="Workflow tracking mobile app for industrial engineers."
-              techs={["Flutter", "Supabase"]}
-              link="#"
-              linkLabel="Preview"
-            />
-            <ProjectCard
-              title="Personal Operating System"
-              description="A Notion-based productivity system optimized for ADHD-style deep work."
-              techs={["Notion", "Systems Design"]}
-              link="#"
-              linkLabel="Template"
-            />
+
+ 
+    <ProjectCard
+      title="MetaBoard (GDG UMaT)"
+      description="Collaboration and event management platform."
+      techs={["Next.js", "Firebase", "Tailwind CSS"]}
+      link="#"
+      linkLabel="Explore"
+    />
+            
+    <ProjectCard
+      title="Personal Operating System"
+      description="A Notion-based productivity system optimized for ADHD-style deep work."
+      techs={["Notion", "Systems Design"]}
+      link="#"
+      linkLabel="Template"
+    />
+
+    {/* Newly added projects */}
+    <ProjectCard
+      title="SMSX"
+      description="Messaging app with bulk SMS, scheduling, and reminders."
+      techs={["Laravel", "PHP", "MySQL", "JavaScript"]}
+      link="#"
+      linkLabel="View"
+    />
+    <ProjectCard
+      title="Task Tribe"
+      description="Task management system with REST API and real-time SPA."
+      techs={["Python", "Django", "React"]}
+      link="#"
+      linkLabel="View"
+    />
+    <ProjectCard
+      title="TeleX"
+      description="Secure telephone directory with CRUD operations and Azure-hosted database."
+      techs={["C#", ".NET Framework", "MSSQL"]}
+      link="#"
+      linkLabel="View"
+    />
+    <ProjectCard
+      title="React Components"
+      description="Reusable UI component toolkit for faster frontend development."
+      techs={["TypeScript", "React"]}
+      link="#"
+      linkLabel="View"
+    />
+
+
           </div>
         </Section>
 
