@@ -4,7 +4,7 @@ import AnimatedSection from "@/components/site/AnimatedSection";
 import AnimatedHero from "@/components/site/AnimatedHero";
 import ProjectCard from "@/components/site/ProjectCard";
 import Footer from "@/components/site/Footer";
-import { AfricanDivider } from "@/components/site/AfricanPatterns";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLenis } from "@/hooks/useLenis";
@@ -20,8 +20,6 @@ const Index = () => {
       <main>
         {/* Animated Hero */}
         <AnimatedHero />
-        
-        <AfricanDivider />
 
         {/* About */}
         <AnimatedSection 
@@ -55,8 +53,6 @@ const Index = () => {
             </aside>
           </div>
         </AnimatedSection>
-        
-        <AfricanDivider />
 
         {/* Projects */}
         <AnimatedSection 
@@ -115,8 +111,6 @@ const Index = () => {
 
           </div>
         </AnimatedSection>
-        
-        <AfricanDivider />
 
         {/* Skills */}
         <AnimatedSection 
@@ -175,8 +169,6 @@ const Index = () => {
             </div>
           </div>
         </AnimatedSection>
-        
-        <AfricanDivider />
 
         {/* Writing */}
         <AnimatedSection 
@@ -199,8 +191,6 @@ const Index = () => {
             ))}
           </ul>
         </AnimatedSection>
-        
-        <AfricanDivider />
 
         {/* Speaking & Leadership */}
         <AnimatedSection 
@@ -226,8 +216,6 @@ const Index = () => {
             </div>
           </div>
         </AnimatedSection>
-        
-        <AfricanDivider />
 
         {/* Contact */}
         <AnimatedSection 
