@@ -1,17 +1,14 @@
 import Navbar from "@/components/site/Navbar";
 import BackgroundFX from "@/components/site/BackgroundFX";
-import AnimatedSection from "@/components/site/AnimatedSection";
+import Section from "@/components/site/Section";
 import AnimatedHero from "@/components/site/AnimatedHero";
 import ProjectCard from "@/components/site/ProjectCard";
 import Footer from "@/components/site/Footer";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useLenis } from "@/hooks/useLenis";
 
 const Index = () => {
-  // Initialize Lenis smooth scrolling
-  useLenis();
 
   return (
     <div className="min-h-screen bg-background text-foreground" id="home">
@@ -22,11 +19,10 @@ const Index = () => {
         <AnimatedHero />
 
         {/* About */}
-        <AnimatedSection 
+        <Section 
           id="about" 
           title="About Bernard" 
           description="Computer Science & Engineering student from Ghana — developer, aspiring CTO, and Pan-Africanist."
-          animationType="fadeUp"
         >
           <div className="grid gap-8 md:grid-cols-[2fr_1fr]">
             <div className="space-y-4 leading-relaxed">
@@ -52,14 +48,13 @@ const Index = () => {
               </div>
             </aside>
           </div>
-        </AnimatedSection>
+        </Section>
 
         {/* Projects */}
-        <AnimatedSection 
+        <Section 
           id="projects" 
           title="Featured Projects" 
           description="A selection of platforms and tools centered on impact, craft, and clarity."
-          animationType="staggerCards"
         >
           <div className="grid gap-6 md:grid-cols-2">
 
@@ -110,13 +105,12 @@ const Index = () => {
     />
 
           </div>
-        </AnimatedSection>
+        </Section>
 
         {/* Skills */}
-        <AnimatedSection 
+        <Section 
           id="skills" 
           title="Skills & Tech Stack"
-          animationType="fadeUp"
         >
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             <div>
@@ -168,14 +162,13 @@ const Index = () => {
               </div>
             </div>
           </div>
-        </AnimatedSection>
+        </Section>
 
         {/* Writing */}
-        <AnimatedSection 
+        <Section 
           id="writing" 
           title="Articles & Writing" 
           description="Perspectives on deep work, digital minimalism, and engineering for impact."
-          animationType="fadeUp"
         >
           <ul className="grid gap-4 md:grid-cols-2">
             {[
@@ -190,13 +183,12 @@ const Index = () => {
               </li>
             ))}
           </ul>
-        </AnimatedSection>
+        </Section>
 
         {/* Speaking & Leadership */}
-        <AnimatedSection 
+        <Section 
           id="speaking" 
           title="Speaking & Leadership"
-          animationType="fadeUp"
         >
           <div className="relative overflow-hidden rounded-xl border bg-secondary/40 p-6 md:p-8">
             <div className="absolute inset-0 bg-triangles opacity-[0.08]" aria-hidden />
@@ -215,14 +207,13 @@ const Index = () => {
               </div>
             </div>
           </div>
-        </AnimatedSection>
+        </Section>
 
         {/* Contact */}
-        <AnimatedSection 
+        <Section 
           id="contact" 
           title="Let's Connect" 
           description="Open to collaborations, mentorship, and building for Africa's future."
-          animationType="fadeUp"
         >
           <div className="flex flex-wrap items-center gap-3">
             <a href="mailto:adjanour@icloud.com"><Button variant="hero">Email Bernard</Button></a>
@@ -230,7 +221,7 @@ const Index = () => {
             <a href="https://linkedin.com/in/kirk-katamanso" target="_blank" rel="noreferrer"><Button variant="secondary">LinkedIn</Button></a>
             <a href="https://twitter.com/kirk_katamanso" target="_blank" rel="noreferrer"><Button variant="secondary">Twitter/X</Button></a>
           </div>
-        </AnimatedSection>
+        </Section>
       </main>
       <Footer />
     </div>
