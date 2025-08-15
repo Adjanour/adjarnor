@@ -1,41 +1,39 @@
 import Navbar from "@/components/site/Navbar";
 import BackgroundFX from "@/components/site/BackgroundFX";
-import Section from "@/components/site/Section";
+import AnimatedSection from "@/components/site/AnimatedSection";
+import AnimatedHero from "@/components/site/AnimatedHero";
 import ProjectCard from "@/components/site/ProjectCard";
 import Footer from "@/components/site/Footer";
+import { AfricanDivider } from "@/components/site/AfricanPatterns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useLenis } from "@/hooks/useLenis";
 
 const Index = () => {
+  // Initialize Lenis smooth scrolling
+  useLenis();
+
   return (
     <div className="min-h-screen bg-background text-foreground" id="home">
       <Navbar />
       <BackgroundFX />
       <main>
-        {/* Hero */}
-        <section className="relative pt-28 md:pt-32">
-          <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-            <div className="max-w-3xl motion-safe:animate-enter">
-              <h1 className="font-display text-4xl font-semibold leading-tight tracking-tight md:text-6xl">
-                Building Africa’s Future, One Line of Code at a Time
-              </h1>
-              <p className="mt-4 text-lg text-muted-foreground md:text-xl">
-                Computer Scientist • Engineering Craftsman • Pan-African Visionary
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a href="#projects"><Button variant="hero" className="h-11 px-6">View My Work</Button></a>
-                <a href="#contact"><Button variant="outline" className="h-11 px-6">Let's Connect</Button></a>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Animated Hero */}
+        <AnimatedHero />
+        
+        <AfricanDivider />
 
         {/* About */}
-        <Section id="about" title="About Bernard" description="Computer Science & Engineering student from Ghana — developer, aspiring CTO, and Pan-Africanist.">
+        <AnimatedSection 
+          id="about" 
+          title="About Bernard" 
+          description="Computer Science & Engineering student from Ghana — developer, aspiring CTO, and Pan-Africanist."
+          animationType="fadeUp"
+        >
           <div className="grid gap-8 md:grid-cols-[2fr_1fr]">
             <div className="space-y-4 leading-relaxed">
               <p>
-                I’m Bernard Adjanour, a Computer Science and Engineering student from Ghana with a deep passion for technology, systems design, and leadership. I’m on a mission to place Africa at the forefront of the global tech space — by building high-impact tools, fostering collaboration, and inspiring the next generation of African technologists.
+                I'm Bernard Adjanour, a Computer Science and Engineering student from Ghana with a deep passion for technology, systems design, and leadership. I'm on a mission to place Africa at the forefront of the global tech space — by building high-impact tools, fostering collaboration, and inspiring the next generation of African technologists.
               </p>
               <p>
                 My work spans software development, backend architecture, embedded systems, AI integration, and community leadership. As CTO at Orcta and Co-Lead of Google Developer Groups (UMaT), I balance technical depth with strategic vision. I believe in the power of mastery, deep work, and purposeful engineering.
@@ -56,13 +54,19 @@ const Index = () => {
               </div>
             </aside>
           </div>
-        </Section>
+        </AnimatedSection>
+        
+        <AfricanDivider />
 
         {/* Projects */}
-        <Section id="projects" title="Featured Projects" description="A selection of platforms and tools centered on impact, craft, and clarity.">
+        <AnimatedSection 
+          id="projects" 
+          title="Featured Projects" 
+          description="A selection of platforms and tools centered on impact, craft, and clarity."
+          animationType="staggerCards"
+        >
           <div className="grid gap-6 md:grid-cols-2">
 
- 
     <ProjectCard
       title="MetaBoard (GDG UMaT)"
       description="Collaboration and event management platform."
@@ -109,12 +113,17 @@ const Index = () => {
       linkLabel="View"
     />
 
-
           </div>
-        </Section>
+        </AnimatedSection>
+        
+        <AfricanDivider />
 
         {/* Skills */}
-        <Section id="skills" title="Skills & Tech Stack">
+        <AnimatedSection 
+          id="skills" 
+          title="Skills & Tech Stack"
+          animationType="fadeUp"
+        >
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             <div>
               <h3 className="mb-3 font-medium">Frontend</h3>
@@ -165,10 +174,17 @@ const Index = () => {
               </div>
             </div>
           </div>
-        </Section>
+        </AnimatedSection>
+        
+        <AfricanDivider />
 
         {/* Writing */}
-<Section id="writing" title="Articles & Writing" description="Perspectives on deep work, digital minimalism, and engineering for impact.">
+        <AnimatedSection 
+          id="writing" 
+          title="Articles & Writing" 
+          description="Perspectives on deep work, digital minimalism, and engineering for impact."
+          animationType="fadeUp"
+        >
           <ul className="grid gap-4 md:grid-cols-2">
             {[
               { t: "Deep Work for African Engineers", href: "#" },
@@ -182,10 +198,16 @@ const Index = () => {
               </li>
             ))}
           </ul>
-        </Section>
+        </AnimatedSection>
+        
+        <AfricanDivider />
 
         {/* Speaking & Leadership */}
-<Section id="speaking" title="Speaking & Leadership">
+        <AnimatedSection 
+          id="speaking" 
+          title="Speaking & Leadership"
+          animationType="fadeUp"
+        >
           <div className="relative overflow-hidden rounded-xl border bg-secondary/40 p-6 md:p-8">
             <div className="absolute inset-0 bg-triangles opacity-[0.08]" aria-hidden />
             <div className="relative grid gap-6 md:grid-cols-2">
@@ -203,17 +225,24 @@ const Index = () => {
               </div>
             </div>
           </div>
-        </Section>
+        </AnimatedSection>
+        
+        <AfricanDivider />
 
         {/* Contact */}
-        <Section id="contact" title="Let’s Connect" description="Open to collaborations, mentorship, and building for Africa’s future.">
+        <AnimatedSection 
+          id="contact" 
+          title="Let's Connect" 
+          description="Open to collaborations, mentorship, and building for Africa's future."
+          animationType="fadeUp"
+        >
           <div className="flex flex-wrap items-center gap-3">
             <a href="mailto:adjanour@icloud.com"><Button variant="hero">Email Bernard</Button></a>
             <a href="https://github.com/Adjanour" target="_blank" rel="noreferrer"><Button variant="secondary">GitHub</Button></a>
             <a href="https://linkedin.com/in/kirk-katamanso" target="_blank" rel="noreferrer"><Button variant="secondary">LinkedIn</Button></a>
             <a href="https://twitter.com/kirk_katamanso" target="_blank" rel="noreferrer"><Button variant="secondary">Twitter/X</Button></a>
           </div>
-        </Section>
+        </AnimatedSection>
       </main>
       <Footer />
     </div>

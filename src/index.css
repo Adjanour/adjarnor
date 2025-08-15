@@ -49,6 +49,18 @@
     --brand-start: 158 64% 36%;
     --brand-end: 42 95% 52%;
 
+    /* African earth tone palette */
+    --earth-deep-gold: 37 75% 45%;      /* Deep gold */
+    --earth-burnt-orange: 25 85% 53%;   /* Burnt orange */
+    --earth-terracotta: 15 78% 48%;     /* Terracotta */
+    --earth-warm-brown: 30 30% 35%;     /* Warm brown */
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--brand-start)), hsl(var(--brand-end)));
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--background) / 0.9));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--earth-deep-gold) / 0.1), hsl(var(--earth-burnt-orange) / 0.15));
+    --gradient-african: linear-gradient(45deg, hsl(var(--earth-terracotta) / 0.1), hsl(var(--earth-warm-brown) / 0.1));
+
     /* Shadows */
     --shadow-elegant: 0 10px 30px -10px hsl(var(--brand-start) / 0.35);
   }
