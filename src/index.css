@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent default scrolling behavior for smooth scrolling */
+html {
+  scroll-behavior: unset;
+}
+
+html.lenis {
+  height: auto;
+}
+
+html.lenis body {
+  height: auto;
+}
+
 /* Design System - all colors are HSL tokens */
 @layer base {
   :root {
@@ -114,7 +127,7 @@
   * {
     @apply border-border;
   }
-  html { scroll-behavior: smooth; }
+  
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
