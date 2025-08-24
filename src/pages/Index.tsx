@@ -5,6 +5,7 @@ import AnimatedHero from "@/components/site/AnimatedHero";
 import EnhancedProjectCard from "@/components/site/EnhancedProjectCard";
 import WritingCard from "@/components/site/WritingCard";
 import SkillCategory from "@/components/site/SkillCategory";
+import AlternatingTimeline from "@/components/site/AlternatingTimeline";
 import TimelineEvent from "@/components/site/TimelineEvent";
 import Footer from "@/components/site/Footer";
 
@@ -228,7 +229,7 @@ const Index = () => {
           title="Experience & Leadership"
           description="My journey in technology leadership and community building"
         >
-          <div className="max-w-4xl">
+          <AlternatingTimeline>
             <TimelineEvent
               title="Chief Technology Officer"
               organization="Orcta"
@@ -236,6 +237,7 @@ const Index = () => {
               location="Ghana"
               description="Leading technical strategy and product development for a fintech startup focused on democratizing financial services across Africa. Responsible for architecture decisions, team leadership, and scaling engineering processes."
               isActive={true}
+              isLeft={false}
             />
             
             <TimelineEvent
@@ -245,6 +247,7 @@ const Index = () => {
               location="University of Mines and Technology"
               description="Co-leading a vibrant community of student developers, organizing workshops, hackathons, and tech talks. Successfully grew membership by 300% and established partnerships with local tech companies."
               isActive={true}
+              isLeft={true}
             />
             
             <TimelineEvent
@@ -253,6 +256,7 @@ const Index = () => {
               period="2023 - Present"
               location="Ghana"
               description="Spearheading digital transformation initiatives for a non-profit organization, implementing modern IT infrastructure, and developing custom solutions for program management and impact tracking."
+              isLeft={false}
             />
             
             <TimelineEvent
@@ -261,8 +265,9 @@ const Index = () => {
               period="2022 - 2024"
               location="University of Mines and Technology"
               description="Contributed to university infrastructure projects, developed student management systems, and provided technical support for academic departments."
+              isLeft={true}
             />
-          </div>
+          </AlternatingTimeline>
         </Section>
 
         {/* Contact */}

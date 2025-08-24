@@ -5,22 +5,22 @@ import { gsap } from "gsap";
 export const AfricanPattern = ({ className = "" }: { className?: string }) => {
   const patternRef = useRef<SVGSVGElement>(null);
 
-  useEffect(() => {
-    if (patternRef.current) {
-      // Slow rotation animation
-      gsap.to(patternRef.current, {
-        rotation: 360,
-        duration: 120,
-        repeat: -1,
-        ease: "none"
-      });
-    }
-  }, []);
+  // Remove the GSAP animation to make it static
+  // useEffect(() => {
+  //   if (patternRef.current) {
+  //     gsap.to(patternRef.current, {
+  //       rotation: 360,
+  //       duration: 120,
+  //       repeat: -1,
+  //       ease: "none"
+  //     });
+  //   }
+  // }, []);
 
   return (
     <svg
       ref={patternRef}
-      className={`absolute inset-0 w-full h-full opacity-10 ${className}`}
+      className={`absolute inset-0 w-full h-full opacity-5 ${className}`}
       viewBox="0 0 100 100"
       preserveAspectRatio="xMidYMid slice"
       aria-hidden="true"
