@@ -18,7 +18,7 @@ const FloatingContactBubbles = () => {
       id: 'github',
       icon: Github,
       label: 'GitHub',
-      href: 'https://github.com/bernardusername',
+      href: 'https://github.com/adjanour',
       color: '#e2e8f0',
       position: { x: 2, y: 1.5, z: -1 }
     },
@@ -26,7 +26,7 @@ const FloatingContactBubbles = () => {
       id: 'linkedin',
       icon: Linkedin,
       label: 'LinkedIn',
-      href: 'https://linkedin.com/in/bernardusername',
+      href: 'https://linkedin.com/in/kirk-katamanso',
       color: '#cbd5e1',
       position: { x: -1.5, y: -1, z: 1 }
     },
@@ -34,7 +34,7 @@ const FloatingContactBubbles = () => {
       id: 'twitter',
       icon: Twitter,
       label: 'Twitter/X',
-      href: 'https://twitter.com/bernardusername',
+      href: 'https://twitter.com/kirk_katamanso',
       color: '#94a3b8',
       position: { x: 1.8, y: -0.5, z: 0.5 }
     }
