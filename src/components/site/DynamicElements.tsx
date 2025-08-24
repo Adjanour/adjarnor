@@ -45,7 +45,7 @@ export const DynamicElements = () => {
     setCurrentQuote(inspirationalQuotes[today % inspirationalQuotes.length]);
 
     updateTime();
-    const timeInterval = setInterval(updateTime, 60 * 1000); // update every minute
+    const timeInterval = setInterval(updateTime, 30 * 1000); // update every 30 seconds
 
     return () => clearInterval(timeInterval);
   }, []);
