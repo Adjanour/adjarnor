@@ -12,6 +12,7 @@ import Footer from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Code, Database, Brain, Cpu, Globe, Users } from "lucide-react";
+import FloatingContactBubbles from "@/components/site/floating_bubbles_react";
 
 const Index = () => {
 
@@ -24,18 +25,27 @@ const Index = () => {
         <AnimatedHero />
 
         {/* About */}
-        <Section 
-          id="about" 
-          title="About Bernard" 
+        <Section
+          id="about"
+          title="About Bernard"
           description="Computer Science & Engineering student from Ghana — developer, aspiring CTO, and Pan-Africanist."
         >
           <div className="grid gap-8 md:grid-cols-[2fr_1fr]">
             <div className="space-y-4 leading-relaxed">
               <p>
-                I'm Bernard Adjanour, a Computer Science and Engineering student from Ghana with a deep passion for technology, systems design, and leadership. I'm on a mission to place Africa at the forefront of the global tech space — by building high-impact tools, fostering collaboration, and inspiring the next generation of African technologists.
+                I'm Bernard Adjanour, a Computer Science and Engineering student
+                from Ghana with a deep passion for technology, systems design,
+                and leadership. I'm on a mission to place Africa at the
+                forefront of the global tech space — by building high-impact
+                tools, fostering collaboration, and inspiring the next
+                generation of African technologists.
               </p>
               <p>
-                My work spans software development, backend architecture, embedded systems, AI integration, and community leadership. As CTO at Orcta and Co-Lead of Google Developer Groups (UMaT), I balance technical depth with strategic vision. I believe in the power of mastery, deep work, and purposeful engineering.
+                My work spans software development, backend architecture,
+                embedded systems, AI integration, and community leadership. As
+                CTO at Orcta and Co-Lead of Google Developer Groups (UMaT), I
+                balance technical depth with strategic vision. I believe in the
+                power of mastery, deep work, and purposeful engineering.
               </p>
             </div>
             <aside className="space-y-3">
@@ -48,7 +58,9 @@ const Index = () => {
                   "Mission: Democratize tech access",
                   "Core values: Craft, Deep Work, Kindness, Purpose, Pan-Africanism",
                 ].map((fact) => (
-                  <Badge key={fact} variant="secondary">{fact}</Badge>
+                  <Badge key={fact} variant="secondary">
+                    {fact}
+                  </Badge>
                 ))}
               </div>
             </aside>
@@ -56,9 +68,9 @@ const Index = () => {
         </Section>
 
         {/* Projects */}
-        <Section 
-          id="projects" 
-          title="Featured Projects" 
+        <Section
+          id="projects"
+          title="Featured Projects"
           description="A selection of platforms and tools centered on impact, craft, and clarity."
         >
           <div className="grid gap-6 md:grid-cols-2">
@@ -70,7 +82,7 @@ const Index = () => {
               linkLabel="Explore Platform"
               status="completed"
             />
-            
+
             <EnhancedProjectCard
               title="Personal Operating System"
               description="A comprehensive Notion-based productivity system optimized for ADHD-style deep work, featuring task management, goal tracking, and reflection workflows."
@@ -88,7 +100,7 @@ const Index = () => {
               linkLabel="View Project"
               status="completed"
             />
-            
+
             <EnhancedProjectCard
               title="Task Tribe"
               description="Modern task management system featuring REST API architecture, real-time single-page application, and collaborative team workflows."
@@ -97,7 +109,7 @@ const Index = () => {
               linkLabel="View Demo"
               status="completed"
             />
-            
+
             <EnhancedProjectCard
               title="TeleX"
               description="Secure telephone directory system with full CRUD operations, advanced search functionality, and Azure-hosted cloud database infrastructure."
@@ -106,7 +118,7 @@ const Index = () => {
               linkLabel="View Project"
               status="completed"
             />
-            
+
             <EnhancedProjectCard
               title="React Component Library"
               description="Comprehensive reusable UI component toolkit designed for rapid frontend development with TypeScript support and Storybook documentation."
@@ -119,8 +131,8 @@ const Index = () => {
         </Section>
 
         {/* Skills */}
-        <Section 
-          id="skills" 
+        <Section
+          id="skills"
           title="Skills & Tech Stack"
           description="A comprehensive overview of my technical expertise and tools"
         >
@@ -128,51 +140,96 @@ const Index = () => {
             <SkillCategory
               title="Frontend Development"
               icon={Globe}
-              skills={["React", "Next.js", "Astro", "Tailwind CSS", "TypeScript", "JavaScript"]}
+              skills={[
+                "React",
+                "Next.js",
+                "Astro",
+                "Tailwind CSS",
+                "TypeScript",
+                "JavaScript",
+              ]}
               description="Modern web development with focus on performance and user experience"
             />
-            
+
             <SkillCategory
               title="Backend & APIs"
               icon={Database}
-              skills={["Node.js", "Express", "ASP.NET Core", "Python", "Flask", "FastAPI", "PostgreSQL", "MySQL"]}
+              skills={[
+                "Node.js",
+                "Express",
+                "ASP.NET Core",
+                "Python",
+                "Flask",
+                "FastAPI",
+                "PostgreSQL",
+                "MySQL",
+              ]}
               description="Scalable server-side architecture and database design"
             />
-            
+
             <SkillCategory
               title="AI & Machine Learning"
               icon={Brain}
-              skills={["TensorFlow", "PyTorch", "LangChain", "OpenAI API", "Computer Vision", "NLP"]}
+              skills={[
+                "TensorFlow",
+                "PyTorch",
+                "LangChain",
+                "OpenAI API",
+                "Computer Vision",
+                "NLP",
+              ]}
               description="Intelligent systems and machine learning integration"
             />
-            
+
             <SkillCategory
               title="Embedded Systems"
               icon={Cpu}
-              skills={["Arduino", "Raspberry Pi", "IoT Protocols", "C++", "Embedded C"]}
+              skills={[
+                "Arduino",
+                "Raspberry Pi",
+                "IoT Protocols",
+                "C++",
+                "Embedded C",
+              ]}
               description="Hardware integration and Internet of Things development"
             />
-            
+
             <SkillCategory
               title="Programming Languages"
               icon={Code}
-              skills={["JavaScript", "TypeScript", "Python", "C#", "Java", "C++", "Go"]}
+              skills={[
+                "JavaScript",
+                "TypeScript",
+                "Python",
+                "C#",
+                "Java",
+                "C++",
+                "Go",
+              ]}
               description="Polyglot programming across different paradigms and domains"
             />
-            
+
             <SkillCategory
               title="Leadership & Tools"
               icon={Users}
-              skills={["Git", "Docker", "VS Code", "Notion", "Figma", "Project Management", "Team Leadership"]}
+              skills={[
+                "Git",
+                "Docker",
+                "VS Code",
+                "Notion",
+                "Figma",
+                "Project Management",
+                "Team Leadership",
+              ]}
               description="Technical leadership and modern development workflows"
             />
           </div>
         </Section>
 
         {/* Writing */}
-        <Section 
-          id="writing" 
-          title="Articles & Writing" 
+        <Section
+          id="writing"
+          title="Articles & Writing"
           description="Perspectives on deep work, digital minimalism, and engineering for impact."
         >
           <div className="grid gap-6 md:grid-cols-2">
@@ -184,7 +241,7 @@ const Index = () => {
               readTime="8 min read"
               tags={["Programming", "Data Structures", "Algorithms"]}
             />
-            
+
             <WritingCard
               title="Beyond Mediocrity: The Power of Focused Reflection in Mastery"
               date="2024-11-20"
@@ -193,7 +250,7 @@ const Index = () => {
               readTime="12 min read"
               tags={["Productivity", "Deep Work", "Mastery"]}
             />
-            
+
             <WritingCard
               title="Autocomplete with Tries in Go: From Problem to Solution"
               date="2024-10-08"
@@ -202,7 +259,7 @@ const Index = () => {
               readTime="15 min read"
               tags={["Go", "Data Structures", "System Design"]}
             />
-            
+
             <WritingCard
               title="Deep Work for African Engineers"
               date="2024-09-12"
@@ -211,7 +268,7 @@ const Index = () => {
               readTime="10 min read"
               tags={["Career", "Africa", "Engineering", "Productivity"]}
             />
-            
+
             <WritingCard
               title="Digital Minimalism in the Age of Overload"
               date="2024-08-25"
@@ -224,8 +281,8 @@ const Index = () => {
         </Section>
 
         {/* Experience Timeline */}
-        <Section 
-          id="experience" 
+        <Section
+          id="experience"
           title="Experience & Leadership"
           description="My journey in technology leadership and community building"
         >
@@ -239,7 +296,7 @@ const Index = () => {
               isActive={true}
               isLeft={false}
             />
-            
+
             <TimelineEvent
               title="Co-Lead"
               organization="Google Developer Groups (UMaT)"
@@ -249,7 +306,7 @@ const Index = () => {
               isActive={true}
               isLeft={true}
             />
-            
+
             <TimelineEvent
               title="Chief Information Officer"
               organization="Cbreeve Foundation"
@@ -258,7 +315,7 @@ const Index = () => {
               description="Spearheading digital transformation initiatives for a non-profit organization, implementing modern IT infrastructure, and developing custom solutions for program management and impact tracking."
               isLeft={false}
             />
-            
+
             <TimelineEvent
               title="Software Engineer Volunteer"
               organization="University IT Unit"
@@ -271,18 +328,8 @@ const Index = () => {
         </Section>
 
         {/* Contact */}
-        <Section 
-          id="contact" 
-          title="Let's Connect" 
-          description="Open to collaborations, mentorship, and building for Africa's future."
-        >
-          <div className="flex flex-wrap items-center gap-3">
-            <a href="mailto:adjanour@icloud.com"><Button variant="hero">Email Bernard</Button></a>
-            <a href="https://github.com/Adjanour" target="_blank" rel="noreferrer"><Button variant="secondary">GitHub</Button></a>
-            <a href="https://linkedin.com/in/kirk-katamanso" target="_blank" rel="noreferrer"><Button variant="secondary">LinkedIn</Button></a>
-            <a href="https://twitter.com/kirk_katamanso" target="_blank" rel="noreferrer"><Button variant="secondary">Twitter/X</Button></a>
-          </div>
-        </Section>
+        
+        <FloatingContactBubbles />
       </main>
       <Footer />
     </div>
