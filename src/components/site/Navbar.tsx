@@ -28,7 +28,7 @@ const Navbar = () => {
       <nav className={`mx-auto max-w-6xl transition-all duration-500 ease-out ${
         isScrolled 
           ? 'backdrop-blur-xl bg-background/80 border border-border/50 rounded-2xl shadow-2xl shadow-black/10 px-6 py-3' 
-          : 'backdrop-blur-md bg-background/60 border border-border/30 rounded-full px-8 py-4'
+          : 'backdrop-blur-md bg-background/60 border border-border/30 rounded-[28px] px-8 py-4'
       }`}>
         <div className="flex items-center justify-between">
           <a href="#home" className="font-display text-lg font-semibold tracking-tight hover:text-primary transition-colors">

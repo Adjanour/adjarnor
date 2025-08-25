@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Code, Database, Brain, Cpu, Globe, Users } from "lucide-react";
 import FloatingContactBubbles from "@/components/site/floating_bubbles_react";
+import OptimizedImage from "@/components/site/Image";
+import ExpandableProjectsList from "@/components/site/ProjectList";
 
 const Index = () => {
 
@@ -25,45 +27,59 @@ const Index = () => {
         <AnimatedHero />
 
         {/* About */}
-        <Section
-          id="about"
-          title="About Bernard"
-          description="Computer Science & Engineering student from Ghana — developer, aspiring CTO, and Pan-Africanist."
-        >
-          <div className="grid gap-8 md:grid-cols-[2fr_1fr]">
-            <div className="space-y-4 leading-relaxed">
-              <p>
-                I'm Bernard Adjanour, a Computer Science and Engineering student
-                from Ghana with a deep passion for technology, systems design,
-                and leadership. I'm on a mission to place Africa at the
-                forefront of the global tech space — by building high-impact
-                tools, fostering collaboration, and inspiring the next
-                generation of African technologists.
+        <Section id="about" title="" description="">
+          <div className="flex flex-col md:flex-row align-middle items-center justify-center gap-8 md:gap-12">
+            {/* Left side: Text + Highlights */}
+            <div className="flex-1 space-y-6">
+              <p className="mt-4 mx-auto max-w-2xl text-lg text-muted-foreground">
+                Engineer and Pan-Africanist.
               </p>
-              <p>
-                My work spans software development, backend architecture,
-                embedded systems, AI integration, and community leadership. As
-                CTO at Orcta and Co-Lead of Google Developer Groups (UMaT), I
-                balance technical depth with strategic vision. I believe in the
-                power of mastery, deep work, and purposeful engineering.
-              </p>
-            </div>
-            <aside className="space-y-3">
-              <h3 className="font-medium">Highlights</h3>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  "CTO at Orcta",
-                  "Co-Lead GDG UMaT",
-                  "Software Engineer Volunteer",
-                  "Mission: Democratize tech access",
-                  "Core values: Craft, Deep Work, Kindness, Purpose, Pan-Africanism",
-                ].map((fact) => (
-                  <Badge key={fact} variant="secondary">
-                    {fact}
-                  </Badge>
-                ))}
+              <div className="space-y-4 leading-relaxed">
+                <p>
+                  I'm Bernard Adjanour, a Computer Science and Engineering
+                  student from Ghana with a deep passion for technology, systems
+                  design, and leadership. I'm on a mission to place Africa at
+                  the forefront of the global tech space — by building
+                  high-impact tools, fostering collaboration, and inspiring the
+                  next generation of African technologists.
+                </p>
+                <p>
+                  My work spans software development, backend architecture,
+                  embedded systems, AI integration, and community leadership. As
+                  CTO at Orcta and Co-Lead of Google Developer Groups (UMaT), I
+                  balance technical depth with strategic vision. I believe in
+                  the power of mastery, deep work, and purposeful engineering.
+                </p>
               </div>
-            </aside>
+              <aside className="space-y-3">
+                <h3 className="font-medium">Highlights</h3>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    "CTO at Orcta",
+                    "Co-Lead GDG UMaT",
+                    "Software Engineer Volunteer",
+                    "Mission: Democratize tech access",
+                    "Core values: Craft, Deep Work, Kindness, Purpose, Pan-Africanism",
+                  ].map((fact) => (
+                    <Badge key={fact} variant="secondary">
+                      {fact}
+                    </Badge>
+                  ))}
+                </div>
+              </aside>
+            </div>
+
+            {/* Right side: Image */}
+            <div className="flex-shrink-0 w-full md:w-80">
+              <OptimizedImage
+                src="/profile.webp"
+                alt="Bernard Adjanour"
+                placeholder="/placeholder.png"
+                srcSet="/profile.webp 3x, /profile.webp 3x, /profile.webp 3x"
+                sizes="(max-width: 320px) 100vw, 25vw"
+                className="w-full h-auto rounded-lg"
+              />
+            </div>
           </div>
         </Section>
 
@@ -73,61 +89,7 @@ const Index = () => {
           title="Featured Projects"
           description="A selection of platforms and tools centered on impact, craft, and clarity."
         >
-          <div className="grid gap-6 md:grid-cols-2">
-            <EnhancedProjectCard
-              title="MetaBoard (GDG UMaT)"
-              description="Collaboration and event management platform for university developer communities, featuring event scheduling, member management, and resource sharing."
-              techs={["Next.js", "Firebase", "Tailwind CSS", "TypeScript"]}
-              link="#"
-              linkLabel="Explore Platform"
-              status="completed"
-            />
-
-            <EnhancedProjectCard
-              title="Personal Operating System"
-              description="A comprehensive Notion-based productivity system optimized for ADHD-style deep work, featuring task management, goal tracking, and reflection workflows."
-              techs={["Notion", "Systems Design", "Productivity"]}
-              link="#"
-              linkLabel="Get Template"
-              status="completed"
-            />
-
-            <EnhancedProjectCard
-              title="SMSX"
-              description="Comprehensive messaging application with bulk SMS capabilities, intelligent scheduling, automated reminders, and analytics dashboard."
-              techs={["Laravel", "PHP", "MySQL", "JavaScript", "Bootstrap"]}
-              link="#"
-              linkLabel="View Project"
-              status="completed"
-            />
-
-            <EnhancedProjectCard
-              title="Task Tribe"
-              description="Modern task management system featuring REST API architecture, real-time single-page application, and collaborative team workflows."
-              techs={["Python", "Django", "React", "PostgreSQL"]}
-              link="#"
-              linkLabel="View Demo"
-              status="completed"
-            />
-
-            <EnhancedProjectCard
-              title="TeleX"
-              description="Secure telephone directory system with full CRUD operations, advanced search functionality, and Azure-hosted cloud database infrastructure."
-              techs={["C#", ".NET Framework", "MSSQL", "Azure"]}
-              link="#"
-              linkLabel="View Project"
-              status="completed"
-            />
-
-            <EnhancedProjectCard
-              title="React Component Library"
-              description="Comprehensive reusable UI component toolkit designed for rapid frontend development with TypeScript support and Storybook documentation."
-              techs={["TypeScript", "React", "Storybook", "CSS Modules"]}
-              link="#"
-              linkLabel="View Library"
-              status="in-progress"
-            />
-          </div>
+          <ExpandableProjectsList />
         </Section>
 
         {/* Skills */}
@@ -284,7 +246,7 @@ const Index = () => {
         <Section
           id="experience"
           title="Experience & Leadership"
-          description="My journey in technology leadership and community building"
+          description="Leadership and hands-on technical experience in startups, student communities, and non-profits."
         >
           <AlternatingTimeline>
             <TimelineEvent
@@ -292,7 +254,7 @@ const Index = () => {
               organization="Orcta"
               period="2024 - Present"
               location="Ghana"
-              description="Leading technical strategy and product development for a fintech startup focused on democratizing financial services across Africa. Responsible for architecture decisions, team leadership, and scaling engineering processes."
+              description="Lead technical strategy and architecture for Orcta, focusing on scalable and sustainable solutions to African challenges in dev tooling, blockchain, embedded software and hardware, robotics, and agri-tech. Oversee a cross-functional team, deliver MVPs, implement CI/CD pipelines, and integrate AI tools to optimize processes."
               isActive={true}
               isLeft={false}
             />
@@ -300,35 +262,27 @@ const Index = () => {
             <TimelineEvent
               title="Co-Lead"
               organization="Google Developer Groups (UMaT)"
-              period="2023 - Present"
+              period="2024 - 2025"
               location="University of Mines and Technology"
-              description="Co-leading a vibrant community of student developers, organizing workshops, hackathons, and tech talks. Successfully grew membership by 300% and established partnerships with local tech companies."
+              description="Co-lead a student developer community: organize study jams, hackathons, and tech talks. Grew membership by 300%, and mentor students in software engineering, AI, and project execution."
               isActive={true}
               isLeft={true}
             />
 
             <TimelineEvent
-              title="Chief Information Officer"
-              organization="Cbreeve Foundation"
-              period="2023 - Present"
+              title="Co-Founder & Technical Lead"
+              organization="Salem Aid Foundation"
+              period="2022 - Present"
               location="Ghana"
-              description="Spearheading digital transformation initiatives for a non-profit organization, implementing modern IT infrastructure, and developing custom solutions for program management and impact tracking."
+              description="Co-founded and lead tech and operational initiatives for a social impact organization. Implement governance structures, develop volunteer and project management systems, and deploy tech solutions to support community programs and resource distribution."
               isLeft={false}
-            />
-
-            <TimelineEvent
-              title="Software Engineer Volunteer"
-              organization="University IT Unit"
-              period="2022 - 2024"
-              location="University of Mines and Technology"
-              description="Contributed to university infrastructure projects, developed student management systems, and provided technical support for academic departments."
-              isLeft={true}
+              isActive={true}
             />
           </AlternatingTimeline>
         </Section>
 
         {/* Contact */}
-        
+
         <FloatingContactBubbles />
       </main>
       <Footer />

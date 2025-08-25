@@ -138,28 +138,35 @@ const AnimatedHero = () => {
   }, []);
 
   return (
-    <section ref={heroRef} className="relative pt-28 md:pt-32 overflow-hidden">
+    <section
+      ref={heroRef}
+      className="relative pt-28 md:pt-32 mb-0 lg:mb-32 overflow-hidden"
+    >
       {/* Animated background */}
-      <div 
+
+      <div
         ref={backgroundRef}
-        className="absolute inset-0 bg-gradient-to-br from-background via-background to-[hsl(var(--earth-deep-gold)/0.05)]"
-        style={{ background: 'var(--gradient-hero)' }}
+        className="absolute inset-0 bg-gradient-to-br from-[hsl(30,60%,97%)] via-[hsl(20,65%,87%)] to-[hsl(10,70%,78%)/0.08]"
+        style={{
+          background:
+            "linear-gradient(135deg, hsl(30,60%,97%), hsl(20,65%,87%), hsl(10,70%,78% / 0.08))",
+        }}
       />
-      
+
       {/* African pattern overlay */}
-      <div className="absolute inset-0 text-foreground">
+      {/* <div className="absolute inset-0 text-foreground">
         <AfricanPattern />
-      </div>
+      </div> */}
 
       <div className="relative mx-auto max-w-6xl px-4 py-16 md:py-24">
         <div className="max-w-3xl">
-          <h1 
+          <h1
             ref={headlineRef}
             className="font-display text-4xl font-semibold leading-tight tracking-tight md:text-6xl"
           >
             Building Africa's Future, One Line of Code at a Time
           </h1>
-          <p 
+          <p
             ref={subtitleRef}
             className="mt-4 text-lg text-muted-foreground md:text-xl"
           >
@@ -167,8 +174,8 @@ const AnimatedHero = () => {
           </p>
           <div ref={buttonsRef} className="mt-8 flex flex-wrap gap-3">
             <a href="#projects">
-              <Button 
-                variant="hero" 
+              <Button
+                variant="secondary"
                 className="h-11 px-6 transition-transform will-change-transform"
                 data-hero-button="true"
               >
@@ -176,8 +183,8 @@ const AnimatedHero = () => {
               </Button>
             </a>
             <a href="#contact">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="h-11 px-6 transition-colors will-change-transform"
                 data-connect-button="true"
               >

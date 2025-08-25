@@ -45,7 +45,7 @@ export const DynamicElements = () => {
     setCurrentQuote(inspirationalQuotes[today % inspirationalQuotes.length]);
 
     updateTime();
-    const timeInterval = setInterval(updateTime, 30 * 1000); // update every 30 seconds
+    const timeInterval = setInterval(updateTime, 1 * 1000); // update every second now i know why
 
     return () => clearInterval(timeInterval);
   }, []);
@@ -53,6 +53,8 @@ export const DynamicElements = () => {
   return (
     <div className="hidden lg:flex items-center gap-4 text-xs text-muted-foreground">
       <div className="flex items-center gap-1.5 backdrop-blur-sm bg-background/40 px-2 py-1 rounded-md border border-border/30">
+        {/* place a blue or green dot on top of clock icon and give it that glow effect and some rings with varying intensity around it */}
+        <span className="h-[0.15rem] w-[0.15rem] rounded-full bg-blue-700  ring-2 ring-blue-400 mr-[0.1rem] dark:bg-green-600 dark:ring-green-400" />
         <Clock className="h-3 w-3" />
         <span className="font-mono">{currentTime}</span>
         <span className="text-[10px] opacity-70">Accra</span>
