@@ -15,6 +15,7 @@ import { Code, Database, Brain, Cpu, Globe, Users } from "lucide-react";
 import FloatingContactBubbles from "@/components/site/floating_bubbles_react";
 import OptimizedImage from "@/components/site/Image";
 import ExpandableProjectsList from "@/components/site/ProjectList";
+import SkillsShowcase from "@/components/site/Skills";
 
 const Index = () => {
 
@@ -98,94 +99,7 @@ const Index = () => {
           title="Skills & Tech Stack"
           description="A comprehensive overview of my technical expertise and tools"
         >
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <SkillCategory
-              title="Frontend Development"
-              icon={Globe}
-              skills={[
-                "React",
-                "Next.js",
-                "Astro",
-                "Tailwind CSS",
-                "TypeScript",
-                "JavaScript",
-              ]}
-              description="Modern web development with focus on performance and user experience"
-            />
-
-            <SkillCategory
-              title="Backend & APIs"
-              icon={Database}
-              skills={[
-                "Node.js",
-                "Express",
-                "ASP.NET Core",
-                "Python",
-                "Flask",
-                "FastAPI",
-                "PostgreSQL",
-                "MySQL",
-              ]}
-              description="Scalable server-side architecture and database design"
-            />
-
-            <SkillCategory
-              title="AI & Machine Learning"
-              icon={Brain}
-              skills={[
-                "TensorFlow",
-                "PyTorch",
-                "LangChain",
-                "OpenAI API",
-                "Computer Vision",
-                "NLP",
-              ]}
-              description="Intelligent systems and machine learning integration"
-            />
-
-            <SkillCategory
-              title="Embedded Systems"
-              icon={Cpu}
-              skills={[
-                "Arduino",
-                "Raspberry Pi",
-                "IoT Protocols",
-                "C++",
-                "Embedded C",
-              ]}
-              description="Hardware integration and Internet of Things development"
-            />
-
-            <SkillCategory
-              title="Programming Languages"
-              icon={Code}
-              skills={[
-                "JavaScript",
-                "TypeScript",
-                "Python",
-                "C#",
-                "Java",
-                "C++",
-                "Go",
-              ]}
-              description="Polyglot programming across different paradigms and domains"
-            />
-
-            <SkillCategory
-              title="Leadership & Tools"
-              icon={Users}
-              skills={[
-                "Git",
-                "Docker",
-                "VS Code",
-                "Notion",
-                "Figma",
-                "Project Management",
-                "Team Leadership",
-              ]}
-              description="Technical leadership and modern development workflows"
-            />
-          </div>
+          <SkillsShowcase />
         </Section>
 
         {/* Writing */}
@@ -254,7 +168,7 @@ const Index = () => {
               organization="Orcta"
               period="2024 - Present"
               location="Ghana"
-              description="Lead technical strategy and architecture for Orcta, focusing on scalable and sustainable solutions to African challenges in dev tooling, blockchain, embedded software and hardware, robotics, and agri-tech. Oversee a cross-functional team, deliver MVPs, implement CI/CD pipelines, and integrate AI tools to optimize processes."
+              description="Lead technical strategy and architecture for Orcta"
               isActive={true}
               isLeft={false}
             />
@@ -264,7 +178,7 @@ const Index = () => {
               organization="Google Developer Groups (UMaT)"
               period="2024 - 2025"
               location="University of Mines and Technology"
-              description="Co-lead a student developer community: organize study jams, hackathons, and tech talks. Grew membership by 300%, and mentor students in software engineering, AI, and project execution."
+              description="Co-lead a student developer community"
               isActive={true}
               isLeft={true}
             />
@@ -274,7 +188,7 @@ const Index = () => {
               organization="Salem Aid Foundation"
               period="2022 - Present"
               location="Ghana"
-              description="Co-founded and lead tech and operational initiatives for a social impact organization. Implement governance structures, develop volunteer and project management systems, and deploy tech solutions to support community programs and resource distribution."
+              description="Co-founded and lead tech and operational initiatives for a social impact organization."
               isLeft={false}
               isActive={true}
             />
