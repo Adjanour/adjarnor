@@ -11,11 +11,12 @@ import Footer from "@/components/site/Footer";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Code, Database, Brain, Cpu, Globe, Users } from "lucide-react";
+import { Code, Database, Brain, Cpu, Globe, Users, Signature } from "lucide-react";
 import FloatingContactBubbles from "@/components/site/floating_bubbles_react";
 import OptimizedImage from "@/components/site/Image";
 import ExpandableProjectsList from "@/components/site/ProjectList";
 import SkillsShowcase from "@/components/site/Skills";
+import SignatureWall from "@/components/site/SignatureWall";
 
 const Index = () => {
 
@@ -75,7 +76,7 @@ const Index = () => {
               <OptimizedImage
                 src="/profile.webp"
                 alt="Bernard Adjanour"
-                placeholder="/placeholder.png"
+                placeholder="/placeholder.svg"
                 srcSet="/profile.webp 3x, /profile.webp 3x, /profile.webp 3x"
                 sizes="(max-width: 320px) 100vw, 25vw"
                 className="w-full h-auto rounded-lg"
@@ -114,7 +115,7 @@ const Index = () => {
               date="2024-12-15"
               excerpt="A deep dive into array data structures and their practical applications in solving complex programming challenges."
               href="https://sedate-nemophila-92c.notion.site/Arrays-Were-the-Highlight-of-the-Day-23f3c2801afd8020a110c10d013efbdf?source=copy_link"
-              readTime="8 min read"
+              readTime="25 min read"
               tags={["Programming", "Data Structures", "Algorithms"]}
             />
 
@@ -123,7 +124,7 @@ const Index = () => {
               date="2024-11-20"
               excerpt="Exploring how deliberate reflection and deep work principles can accelerate the journey from competence to mastery in any field."
               href="https://sedate-nemophila-92c.notion.site/Beyond-Mediocrity-The-Power-of-Focused-Reflection-in-Mastery-2433c2801afd807da2eeebb79aa430a4?pvs=73"
-              readTime="12 min read"
+              readTime="5 min read"
               tags={["Productivity", "Deep Work", "Mastery"]}
             />
 
@@ -132,7 +133,7 @@ const Index = () => {
               date="2024-10-08"
               excerpt="Building an efficient autocomplete system using trie data structures in Go, with practical implementation details and performance considerations."
               href="https://sedate-nemophila-92c.notion.site/Autocomplete-with-Tries-in-Go-From-Problem-to-Solution-22f3c2801afd809a890fcf9de91e357a?pvs=141"
-              readTime="15 min read"
+              readTime="25 min read"
               tags={["Go", "Data Structures", "System Design"]}
             />
 
@@ -145,14 +146,14 @@ const Index = () => {
               tags={["Career", "Africa", "Engineering", "Productivity"]}
             />
 
-            <WritingCard
+            {/* <WritingCard
               title="Digital Minimalism in the Age of Overload"
               date="2024-08-25"
               excerpt="Practical strategies for maintaining focus and intentionality in our hyperconnected world, drawing from digital minimalism principles."
               href="#"
               readTime="7 min read"
               tags={["Digital Minimalism", "Focus", "Life Philosophy"]}
-            />
+            /> */}
           </div>
         </Section>
 
@@ -198,6 +199,7 @@ const Index = () => {
         {/* Contact */}
 
         <FloatingContactBubbles />
+        {/* <SignatureWall /> */}
       </main>
       <Footer />
     </div>
