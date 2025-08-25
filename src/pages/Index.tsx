@@ -17,6 +17,7 @@ import OptimizedImage from "@/components/site/Image";
 import ExpandableProjectsList from "@/components/site/ProjectList";
 import SkillsShowcase from "@/components/site/Skills";
 import SignatureWall from "@/components/site/SignatureWall";
+import { Sub } from "@radix-ui/react-context-menu";
 
 const Index = () => {
 
@@ -200,6 +201,23 @@ const Index = () => {
 
         <FloatingContactBubbles />
         {/* <SignatureWall /> */}
+        <Section
+          id="substack"
+          title="From my Substack"
+          description="I share thoughts on technology, engineering, and Pan-African innovation."
+        >
+          <div className="p-6 rounded-2xl bg-black/2 dark:text-white backdrop-blur-lg border border-white/10 max-w-3xl mx-auto my-12 text-center flex flex-row items-center justify-center">
+            <a href="https://open.substack.com/pub/bernardkirkadjanorkatamanso/p/beyond-mediocrity?r=2v0pwu&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true">
+              <OptimizedImage
+                src="/substack.jpg"
+                alt="Cover image for 'Beyond Mediocrity' Substack post"
+                className="w-32 h-32 rounded-lg mb-6 shadow-lg/5"
+                srcSet="/substack.jpg 3x, /substack.jpg 2x, /substack.jpg 1x"
+                placeholder=""
+              />
+            </a>
+          </div>
+        </Section>
       </main>
       <Footer />
     </div>
