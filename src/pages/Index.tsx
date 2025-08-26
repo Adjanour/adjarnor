@@ -69,7 +69,7 @@ const Index = () => {
                     "Mission: Democratize tech access",
                     "Core values: Craft, Deep Work, Kindness, Purpose, Pan-Africanism",
                   ].map((fact) => (
-                    <Badge key={fact} variant="secondary" className="p-2 bg-white border-black/10">
+                    <Badge key={fact} variant="secondary" className="py-2 px-3 bg-white border-black/10 dark:bg-black/15   dark:text-white dark:border-white/20">
                       {fact}
                     </Badge>
                   ))}
