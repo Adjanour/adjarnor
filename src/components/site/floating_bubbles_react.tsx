@@ -53,7 +53,7 @@ const FloatingContactBubbles = () => {
         >
 
       {/* UI Overlay */}
-      <div className="relative z-10 flex flex-col p-8">
+      <div className="relative z-10 flex flex-col">
 
         {/* Interactive Bubble UI */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl">
@@ -73,11 +73,7 @@ const FloatingContactBubbles = () => {
               >
                 <div 
                   className="w-24 h-24 md:w-32 md:h-32 rounded-full backdrop-blur-lg border border-gray-200/50 dark:border-white/20 flex flex-col items-center justify-center transition-all duration-300 hover:scale-110 hover:backdrop-blur-xl bg-white/20 dark:bg-black/20 hover:bg-white/30 dark:hover:bg-black/30"
-                  style={{
-                    boxShadow: hoveredBubble === contact.id 
-                      ? `0 0 30px rgba(148, 163, 184, 0.5), inset 0 0 20px rgba(148, 163, 184, 0.3)` 
-                      : `0 8px 32px rgba(0,0,0,0.1) dark:rgba(255,255,255,0.1)`
-                  }}
+                  
                 >
                   <Icon 
                     size={24} 
@@ -103,12 +99,12 @@ const FloatingContactBubbles = () => {
         </div>
 
         {/* Floating cursor indicator */}
-        {hoveredBubble && (
-          <div className="fixed top-4 left-4 z-20 flex items-center gap-2 text-gray-600 dark:text-white/80 animate-fade-in transition-colors duration-300">
+        {/* {hoveredBubble && (
+          <div className=" flex items-center gap-2 text-gray-600 dark:text-white/80 animate-fade-in transition-colors duration-300">
             <MousePointer size={16} />
             <span className="text-sm">Click to connect</span>
           </div>
-        )}
+        )} */}
       </div>
     </Section>
   );

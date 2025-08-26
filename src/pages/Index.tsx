@@ -11,7 +11,15 @@ import Footer from "@/components/site/Footer";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Code, Database, Brain, Cpu, Globe, Users, Signature } from "lucide-react";
+import {
+  Code,
+  Database,
+  Brain,
+  Cpu,
+  Globe,
+  Users,
+  Signature,
+} from "lucide-react";
 import FloatingContactBubbles from "@/components/site/floating_bubbles_react";
 import OptimizedImage from "@/components/site/Image";
 import ExpandableProjectsList from "@/components/site/ProjectList";
@@ -20,7 +28,6 @@ import SignatureWall from "@/components/site/SignatureWall";
 import { Sub } from "@radix-ui/react-context-menu";
 
 const Index = () => {
-
   return (
     <div className="min-h-screen bg-background text-foreground" id="home">
       <Navbar />
@@ -35,36 +42,34 @@ const Index = () => {
             {/* Left side: Text + Highlights */}
             <div className="flex-1 space-y-6">
               <p className="mt-4 mx-auto max-w-2xl text-lg text-muted-foreground">
-                Engineer and Pan-Africanist.
+                Engineer & Pan-Africanist 🇬🇭
               </p>
               <div className="space-y-4 leading-relaxed">
                 <p>
-                  I'm Bernard Adjanour, a Computer Science and Engineering
-                  student from Ghana with a deep passion for technology, systems
-                  design, and leadership. I'm on a mission to place Africa at
-                  the forefront of the global tech space — by building
-                  high-impact tools, fostering collaboration, and inspiring the
+                  I build purposeful systems and tools that solve real problems.
+                  I focus on mastery, deep work, and creating high-impact
+                  solutions that put Africa at the forefront of global tech.
+                </p>
+                {/* <p className="text-[0.9rem] font-thin font-display italic tracking-wide">
+                  Systems design • Backend architecture • Embedded systems • AI
+                  integration
+                </p> */}
+                <p>
+                  Every project is a chance to innovate, learn, and inspire the
                   next generation of African technologists.
                 </p>
-                <p>
-                  My work spans software development, backend architecture,
-                  embedded systems, AI integration, and community leadership. As
-                  CTO at Orcta and Co-Lead of Google Developer Groups (UMaT), I
-                  balance technical depth with strategic vision. I believe in
-                  the power of mastery, deep work, and purposeful engineering.
-                </p>
               </div>
+
               <aside className="space-y-3">
                 <h3 className="font-medium">Highlights</h3>
                 <div className="flex flex-wrap gap-2">
                   {[
-                    "CTO at Orcta",
-                    "Co-Lead GDG UMaT",
-                    "Software Engineer Volunteer",
+                    "Teach Lead, Orcta",
+                    "Software Engineer",
                     "Mission: Democratize tech access",
                     "Core values: Craft, Deep Work, Kindness, Purpose, Pan-Africanism",
                   ].map((fact) => (
-                    <Badge key={fact} variant="secondary">
+                    <Badge key={fact} variant="secondary" className="p-2 bg-white border-black/10">
                       {fact}
                     </Badge>
                   ))}

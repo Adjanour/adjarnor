@@ -85,10 +85,14 @@ const AnimatedHero = () => {
           duration: 0.3,
           ease: "power2.out"
         });
+        const brandStart = getComputedStyle(document.documentElement)
+          .getPropertyValue("--brand-start")
+          .trim();
+
         gsap.to(heroButton, {
-          boxShadow: "0 0 30px hsl(var(--brand-start) / 0.4)",
+          boxShadow: `0 0 30px hsl(${brandStart} / 0.4)`,
           duration: 0.3,
-          ease: "power2.out"
+          ease: "power2.out",
         });
       };
 
