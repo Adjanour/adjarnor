@@ -69,7 +69,11 @@ const Index = () => {
                     "Mission: Democratize tech access",
                     "Core values: Craft, Deep Work, Kindness, Purpose, Pan-Africanism",
                   ].map((fact) => (
-                    <Badge key={fact} variant="secondary" className="p-2 bg-white border-black/10">
+                    <Badge
+                      key={fact}
+                      variant="secondary"
+                      className="py-2 px-3 bg-white border-black/10 dark:bg-black/15   dark:text-white dark:border-white/20"
+                    >
                       {fact}
                     </Badge>
                   ))}
@@ -143,13 +147,22 @@ const Index = () => {
               tags={["Go", "Data Structures", "System Design"]}
             />
 
-            <WritingCard
+            {/* <WritingCard
               title="Deep Work for African Engineers"
               date="2024-09-12"
               excerpt="How African engineers can leverage deep work principles to build world-class technical skills and compete globally while staying rooted in local impact."
               href="#"
               readTime="10 min read"
               tags={["Career", "Africa", "Engineering", "Productivity"]}
+            /> */}
+            
+            <WritingCard
+              title="The Silent Teacher: Struggle, Patience, and Small Beginnings"
+              date="2025-08-27"
+              excerpt="Growth isn’t glamorous. It happens in struggle, through patience, small tasks done well, and the humility to ask for help. Learn how to embrace the silent teacher guiding every step of your progress."
+              href="https://open.substack.com/pub/bernardkirkadjanorkatamanso/p/the-silent-teacher?r=2v0pwu&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true"
+              readTime="5 min read"
+              tags={["Growth", "Learning", "Discipline", "Mindset"]}
             />
 
             {/* <WritingCard
@@ -211,15 +224,40 @@ const Index = () => {
           title="From my Substack"
           description="I share thoughts on technology, engineering, and Pan-African innovation."
         >
-          <div className="p-6 rounded-2xl bg-black/2 dark:text-white backdrop-blur-lg border border-white/10 max-w-3xl mx-auto my-12 text-center flex flex-row items-center justify-center">
+          <div className="p-6 rounded-2xl bg-black/2 dark:text-white backdrop-blur-lg border border-white/10 max-w-3xl mx-auto my-12 text-center flex flex-row flex-wrap items-center justify-center gap-8">
+            {/* Regular post */}
             <a href="https://open.substack.com/pub/bernardkirkadjanorkatamanso/p/beyond-mediocrity?r=2v0pwu&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true">
               <OptimizedImage
                 src="/substack.jpg"
                 alt="Cover image for 'Beyond Mediocrity' Substack post"
-                className="w-32 h-32 rounded-lg mb-6 shadow-lg/5"
+                className="w-32 h-32 rounded-lg shadow-lg/5 transition-transform duration-200 hover:scale-105"
                 srcSet="/substack.jpg 3x, /substack.jpg 2x, /substack.jpg 1x"
-                placeholder=""
+                placeholder="Blurred image of a person working on a laptop"
               />
+            </a>
+
+            {/* Featured post: 'The Silent Teacher' */}
+            <a href="https://open.substack.com/pub/bernardkirkadjanorkatamanso/p/the-silent-teacher?r=2v0pwu&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true">
+              <OptimizedImage
+                src="/substack-growth.jpg"
+                alt="Cover image for 'The Silent Teacher' Substack post"
+                className="w-36 h-36 rounded-lg shadow-xl/10 border-2 border-white/20 transition-transform duration-200 hover:scale-105"
+                srcSet="/substack-growth.jpg 3x, /substack-growth.jpg 2x, /substack-growth.jpg 1x"
+                placeholder="Blurred image of a person working on a laptop"
+              />
+              <div className="absolute inset-0 rounded-lg bg-gradient-to-tr from-[rgba(255,215,0,0.05)] to-[rgba(128,128,128,0.05)] pointer-events-none"></div>
+            </a>
+          </div>
+
+          <div className="text-center mb-8 max-w-2xl mx-auto text-lg text-muted-foreground">
+            <a
+              href="https://bernardkirkadjanorkatamanso.substack.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-6 py-3 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors border border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 font-medium"
+              aria-label="Read and subscribe to Bernard's Substack"
+            >
+              Read & Subscribe
             </a>
           </div>
         </Section>
