@@ -111,7 +111,7 @@ const Index = () => {
               to="/writing"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              View all →
+              See all →
             </Link>
           </div>
           <div>
