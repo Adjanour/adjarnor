@@ -144,11 +144,13 @@ const ExpandableProjectItem = ({
     >
       <button
         onClick={onToggle}
-        className="w-full p-3 sm:p-4 flex items-center gap-3 sm:gap-4 text-left"
+        className="w-full p-3 sm:p-4 flex items-center justify-between gap-3 sm:gap-4 text-left"
       >
         {/* Project Title */}
         <div className="w-28 sm:w-36 shrink-0">
-          <span className={`text-sm font-medium truncate ${project.featured ? "text-foreground" : "text-foreground/90"}`}>
+          <span
+            className={`text-sm font-medium truncate ${project.featured ? "text-foreground" : "text-foreground/90"}`}
+          >
             {project.title}
           </span>
         </div>
@@ -170,15 +172,19 @@ const ExpandableProjectItem = ({
 
         {/* Arrow */}
         <ArrowRight
-          className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${isExpanded ? "rotate-90" : "group-hover:translate-x-0.5"
-            }`}
+          className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${
+            isExpanded ? "rotate-90" : "group-hover:translate-x-0.5"
+          }`}
         />
       </button>
 
       {/* Expanded Content */}
       <div
-        className={`grid transition-all duration-300 ease-out ${isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-          }`}
+        className={`grid transition-all duration-300 ease-out ${
+          isExpanded
+            ? "grid-rows-[1fr] opacity-100"
+            : "grid-rows-[0fr] opacity-0"
+        }`}
       >
         <div className="overflow-hidden">
           <div className="px-4 pb-4 pt-0 border-t border-border/50 mt-0">
@@ -255,7 +261,7 @@ const ExpandableProjectsList = () => {
 
   const featuredCount = projectsData.filter((p) => p.featured).length;
   const inProgressCount = projectsData.filter(
-    (p) => p.status === "in-progress"
+    (p) => p.status === "in-progress",
   ).length;
 
   return (
