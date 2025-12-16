@@ -14,7 +14,7 @@ const OptimizedImage = ({
 
   return (
     <div
-      className={`relative overflow-hidden ${className} transition-transform duration-500 hover:scale-105 hover:shadow-xl`}
+      className={`relative overflow-hidden ${className} `}
       style={{ transform: `translateY(${offset}px)` }}
     >
       {/* Low-res placeholder / blur */}
@@ -22,9 +22,8 @@ const OptimizedImage = ({
         <img
           src={placeholder}
           alt={alt}
-          className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-500 ${
-            loaded ? "opacity-0 scale-100" : "opacity-100 scale-105"
-          }`}
+          className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-700 ${loaded ? "opacity-0 scale-100" : "opacity-100 scale-105"
+            }`}
           aria-hidden="true"
         />
       )}
@@ -35,9 +34,8 @@ const OptimizedImage = ({
         srcSet={srcSet}
         sizes={sizes}
         alt={alt}
-        className={`w-full h-auto object-cover rounded-lg transition-opacity duration-700 ${
-          loaded ? "opacity-100" : "opacity-0"
-        }`}
+        className={`w-full h-auto object-cover transition-transform duration-500 ease-out ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+          }`}
         loading="lazy"
         onLoad={() => setLoaded(true)}
       />

@@ -21,7 +21,7 @@ const buttonVariants = cva(
         hero:
           "backdrop-blur-md bg-white/10 border border-white/20 text-foreground hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl",
         glass:
-          "backdrop-blur-sm bg-background/60 border border-border/50 text-foreground hover:bg-background/80 transition-all duration-200 shadow-sm hover:shadow-md",
+          "backdrop-blur-sm bg-background/60 border border-border/50 text-foreground hover:bg-background/80 transition-all duration-200 ",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -39,7 +39,7 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean
 }
 

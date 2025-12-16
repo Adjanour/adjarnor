@@ -23,18 +23,17 @@ const Navbar = () => {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
-      <nav className={`mx-auto max-w-6xl transition-all duration-500 ease-out ${
-        isScrolled 
-          ? 'backdrop-blur-xl bg-background/80 border border-border/50 rounded-2xl shadow-2xl shadow-black/10 px-6 py-3' 
-          : 'backdrop-blur-md bg-background/60 border border-border/30 rounded-[28px] px-8 py-4'
-      }`}>
-        <div className="flex items-center justify-between">
-          <a href="#home" className="font-display text-lg font-semibold tracking-tight hover:text-primary transition-colors">
-            Bernard Kirk
+    <header className="fixed top-0 left-0 w-full right-0 z-50 px-4 pt-4">
+      <nav className={`mx-auto max-w-6xl transition-all duration-500 ease-out ${isScrolled
+        ? 'backdrop-blur-xl bg-background/80 border border-border/50 rounded-2xl shadow-2xl shadow-black/10 px-6 py-2'
+        : 'backdrop-blur-md bg-background/60 border border-border/30 rounded-[28px] px-8 py-3'
+        }`}>
+        <div className="flex items-center justify-between gap-4 w-full">
+          <a href="#home" className="font-display text-lg font-semibold tracking-tight hover:text-primary transition-colors shrink-0 whitespace-nowrap">
+            Bernard Katamanso
           </a>
-          
-          <div className="hidden items-center gap-6 md:flex">
+
+          {/* <div className="hidden items-center gap-6 md:flex">
             {navItems.map((item) => (
               <a 
                 key={item.href} 
@@ -44,14 +43,13 @@ const Navbar = () => {
                 {item.label}
               </a>
             ))}
-          </div>
-
-          <div className="flex items-center gap-3">
-            <DynamicElements />
+          </div> */}
+          <DynamicElements />
+          <div className="flex items-center gap-3 shrink-0">
             <ThemeToggle />
-            <a href="#contact">
+            {/* <a href="#contact">
               <Button variant="glass" className="h-9 px-5">Let's Connect</Button>
-            </a>
+            </a> */}
           </div>
         </div>
       </nav>

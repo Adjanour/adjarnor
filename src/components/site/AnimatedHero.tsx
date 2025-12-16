@@ -14,58 +14,64 @@ const AnimatedHero = () => {
     const ctx = gsap.context(() => {
       // Background gradient animation
       if (backgroundRef.current) {
-        gsap.fromTo(backgroundRef.current,
+        gsap.fromTo(
+          backgroundRef.current,
           { opacity: 0 },
-          { opacity: 1, duration: 2, ease: "power2.out" }
+          { opacity: 1, duration: 2, ease: "power2.out" },
         );
       }
 
       // Headline staggered letter animation
       if (headlineRef.current) {
-        const chars = headlineRef.current.textContent!.split('');
-        headlineRef.current.innerHTML = chars.map(char => 
-          char === ' ' ? ' ' : `<span class="inline-block">${char}</span>`
-        ).join('');
-        
-        gsap.fromTo(headlineRef.current.children,
+        const chars = headlineRef.current.textContent!.split("");
+        headlineRef.current.innerHTML = chars
+          .map((char) =>
+            char === " " ? " " : `<span class="inline-block">${char}</span>`,
+          )
+          .join("");
+
+        gsap.fromTo(
+          headlineRef.current.children,
           { opacity: 0, y: 20 },
-          { 
-            opacity: 1, 
-            y: 0, 
+          {
+            opacity: 1,
+            y: 0,
             duration: 0.8,
             stagger: 0.03,
             ease: "power2.out",
-            delay: 0.5
-          }
+            delay: 0.5,
+          },
         );
       }
 
       // Subtitle fade in with delay
       if (subtitleRef.current) {
-        gsap.fromTo(subtitleRef.current,
+        gsap.fromTo(
+          subtitleRef.current,
           { opacity: 0, y: 20 },
-          { 
-            opacity: 1, 
-            y: 0, 
+          {
+            opacity: 1,
+            y: 0,
             duration: 0.8,
             ease: "power2.out",
-            delay: 1.2
-          }
+            delay: 1.2,
+          },
         );
       }
 
       // Buttons fade in
       if (buttonsRef.current) {
-        gsap.fromTo(buttonsRef.current.children,
+        gsap.fromTo(
+          buttonsRef.current.children,
           { opacity: 0, y: 20 },
-          { 
-            opacity: 1, 
-            y: 0, 
+          {
+            opacity: 1,
+            y: 0,
             duration: 0.6,
             stagger: 0.1,
             ease: "power2.out",
-            delay: 1.8
-          }
+            delay: 1.8,
+          },
         );
       }
     }, heroRef);
@@ -76,14 +82,16 @@ const AnimatedHero = () => {
   // Button hover animations
   useEffect(() => {
     const heroButton = document.querySelector('[data-hero-button="true"]');
-    const connectButton = document.querySelector('[data-connect-button="true"]');
+    const connectButton = document.querySelector(
+      '[data-connect-button="true"]',
+    );
 
     if (heroButton) {
       const handleMouseEnter = () => {
         gsap.to(heroButton, {
           scale: 1.05,
           duration: 0.3,
-          ease: "power2.out"
+          ease: "power2.out",
         });
         const brandStart = getComputedStyle(document.documentElement)
           .getPropertyValue("--brand-start")
@@ -101,16 +109,16 @@ const AnimatedHero = () => {
           scale: 1,
           boxShadow: "0 0 0px hsl(var(--brand-start) / 0)",
           duration: 0.3,
-          ease: "power2.out"
+          ease: "power2.out",
         });
       };
 
-      heroButton.addEventListener('mouseenter', handleMouseEnter);
-      heroButton.addEventListener('mouseleave', handleMouseLeave);
+      heroButton.addEventListener("mouseenter", handleMouseEnter);
+      heroButton.addEventListener("mouseleave", handleMouseLeave);
 
       return () => {
-        heroButton.removeEventListener('mouseenter', handleMouseEnter);
-        heroButton.removeEventListener('mouseleave', handleMouseLeave);
+        heroButton.removeEventListener("mouseenter", handleMouseEnter);
+        heroButton.removeEventListener("mouseleave", handleMouseLeave);
       };
     }
 
@@ -119,7 +127,7 @@ const AnimatedHero = () => {
         gsap.to(connectButton, {
           borderColor: "hsl(var(--brand-start))",
           duration: 0.3,
-          ease: "power2.out"
+          ease: "power2.out",
         });
       };
 
@@ -127,16 +135,16 @@ const AnimatedHero = () => {
         gsap.to(connectButton, {
           borderColor: "hsl(var(--border))",
           duration: 0.3,
-          ease: "power2.out"
+          ease: "power2.out",
         });
       };
 
-      connectButton.addEventListener('mouseenter', handleMouseEnter);
-      connectButton.addEventListener('mouseleave', handleMouseLeave);
+      connectButton.addEventListener("mouseenter", handleMouseEnter);
+      connectButton.addEventListener("mouseleave", handleMouseLeave);
 
       return () => {
-        connectButton.removeEventListener('mouseenter', handleMouseEnter);
-        connectButton.removeEventListener('mouseleave', handleMouseLeave);
+        connectButton.removeEventListener("mouseenter", handleMouseEnter);
+        connectButton.removeEventListener("mouseleave", handleMouseLeave);
       };
     }
   }, []);
