@@ -184,7 +184,7 @@ html.lenis body {
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 20% 38%;
 
-    --accent: 42 95% 52%;
+    --accent: 220 6% 88%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -242,7 +242,7 @@ html.lenis body {
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 18% 72%;
 
-    --accent: 42 92% 56%;
+    --accent: 158 60% 45%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 62.8% 30.6%;
@@ -277,6 +277,7 @@ html.lenis body {
 
     body {
         @apply bg-background text-foreground font-sans antialiased;
+        font-size: 18px;
     }
 }
 

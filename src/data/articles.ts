@@ -4,6 +4,7 @@ export interface Article {
     excerpt: string;
     href: string;
     readTime: string;
+    image?: string;
 }
 
 // Articles ordered by date (newest first)

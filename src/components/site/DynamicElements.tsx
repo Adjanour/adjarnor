@@ -26,11 +26,26 @@ const inspirationalQuotes = [
 export const DynamicElements = () => {
   const [currentTime, setCurrentTime] = useState("");
   const [currentQuote, setCurrentQuote] = useState("");
+  const [currentStatus, setCurrentStatus] = useState("");
 
   useEffect(() => {
     // Update time every minute for Ghana timezone (GMT)
     const updateTime = () => {
       const now = new Date();
+      const accraTime = new Date(
+        now.toLocaleString("en-US", { timeZone: "Africa/Accra" })
+      );
+      const hour = accraTime.getHours();
+      const status =
+        hour < 6
+          ? "Deep night"
+          : hour < 12
+            ? "Morning focus"
+            : hour < 17
+              ? "Afternoon flow"
+              : hour < 21
+                ? "Evening reset"
+                : "Late session";
       const ghanaTime = new Intl.DateTimeFormat('en-GB', {
         timeZone: 'Africa/Accra',
         hour: '2-digit',
@@ -38,6 +53,7 @@ export const DynamicElements = () => {
         hour12: true
       }).format(now);
       setCurrentTime(ghanaTime);
+      setCurrentStatus(status);
     };
 
     // Set initial quote (changes daily based on date)
@@ -51,17 +67,22 @@ export const DynamicElements = () => {
   }, []);
 
   return (
-    <div className="hidden lg:flex items-center justify-center gap-4 text-xs text-muted-foreground flex-1 min-w-0">
-      <div className="flex items-center gap-1.5 backdrop-blur-sm bg-background/40 px-2 py-1 rounded-md border border-border/30">
+    <div className="hidden lg:flex items-center justify-center gap-4 text-sm text-muted-foreground flex-1 min-w-0">
+      <div className="flex items-center gap-2 backdrop-blur-sm bg-background/40 px-3 py-2 rounded-md border border-border/30">
         {/* place a blue or green dot on top of clock icon and give it that glow effect and some rings with varying intensity around it */}
         <span className="h-[0.15rem] w-[0.15rem] rounded-full bg-blue-700  ring-2 ring-blue-400 mr-[0.1rem] dark:bg-green-600 dark:ring-green-400" />
         <Clock className="h-3 w-3" />
         <span className="font-mono">{currentTime}</span>
-        <span className="text-[10px] opacity-70">Accra</span>
+        <span className="text-xs opacity-70">Accra, GH</span>
+        <span className="ml-2 inline-flex items-center rounded-full border border-border/50 px-2 py-0.5 text-[11px] text-foreground/80">
+          Now: {currentStatus}
+        </span>
       </div>
-      <div className="flex items-center gap-1.5 backdrop-blur-sm bg-background/40 px-2 py-1 rounded-md border border-border/30 min-w-0 max-w-xs">
+      <div className="group flex items-center gap-2 backdrop-blur-sm bg-background/40 px-3 py-2 rounded-md border border-border/30 min-w-0 max-w-sm transition-all duration-300 hover:max-w-lg">
         <Quote className="h-3 w-3 shrink-0" />
-        <span className="truncate text-[12px]">{currentQuote}</span>
+        <span className="truncate text-sm group-hover:whitespace-normal group-hover:overflow-visible group-hover:text-foreground">
+          {currentQuote}
+        </span>
       </div>
     </div>
   );
