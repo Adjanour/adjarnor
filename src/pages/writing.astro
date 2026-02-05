@@ -17,9 +17,13 @@ const years = Object.keys(articlesByYear)
   .sort((a, b) => b - a);
 ---
 
-<BaseLayout title="Writing | Bernard Katamanso">
+<BaseLayout
+  title="Writing | Bernard Katamanso"
+  description="Essays on engineering, deep work, and building purposeful systems."
+  image="/og-image.png"
+>
   <div class="min-h-screen bg-background text-foreground font-sans">
-    <main class="max-w-3xl mx-auto px-6 py-16">
+    <main id="main-content" class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
       <header class="mb-16">
         <a
           href="/"

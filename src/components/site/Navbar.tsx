@@ -22,10 +22,10 @@ const Navbar = () => {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full right-0 z-50 px-4 pt-4">
+    <header className="fixed top-0 left-0 w-full right-0 z-50 px-3 sm:px-4 pt-4">
       <nav className={`mx-auto max-w-6xl transition-all duration-500 ease-out ${isScrolled
-        ? 'backdrop-blur-xl bg-background/80 border border-border/50 rounded-2xl shadow-2xl shadow-black/10 px-6 py-2'
-        : 'backdrop-blur-md bg-background/60 border border-border/30 rounded-[28px] px-8 py-3'
+        ? 'backdrop-blur-xl bg-background/80 border border-border/50 rounded-2xl shadow-2xl shadow-black/10 px-4 sm:px-6 py-2'
+        : 'backdrop-blur-md bg-background/60 border border-border/30 rounded-[24px] sm:rounded-[28px] px-5 sm:px-8 py-3'
         }`}>
         <div className="flex items-center justify-between gap-4 w-full">
           <a href="#home" className="font-display text-lg font-semibold tracking-tight hover:text-primary transition-colors shrink-0 whitespace-nowrap">

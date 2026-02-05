@@ -1,28 +1,58 @@
 ---
 import "@/index.css";
 interface Props {
-    title?: string;
-    description?: string;
+  title?: string;
+  description?: string;
+  image?: string;
 }
 
-const { title = "Bernard Katamanso", description } = Astro.props;
+const {
+  title = "Bernard Katamanso",
+  description = "Engineer and Pan-Africanist building purposeful systems and tools.",
+  image = "/og-image.png",
+} = Astro.props;
+
+const canonicalUrl = Astro.url;
+const ogImage = image.startsWith("http")
+  ? image
+  : new URL(image, canonicalUrl).toString();
 ---
 
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {title && <title>{title}</title>}
-        {description && <meta name="description" content={description} />}
-        <link rel="icon" href="/favicon.ico" />
-    </head>
-    <body>
-        <slot />
-    </body>
-</html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Bernard Kirk Adjarnor Katamanso" />
+    <link rel="canonical" href={canonicalUrl} />
 
-<script>
-    import { inject } from "@vercel/analytics";
-    inject();
-</script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonicalUrl} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+  </head>
+  <body>
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:shadow"
+    >
+      Skip to content
+    </a>
+    <slot />
+  </body>
+</html>

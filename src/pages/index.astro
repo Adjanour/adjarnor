@@ -30,11 +30,15 @@ const highlights = [
 ];
 ---
 
-<BaseLayout title="Bernard Katamanso">
+<BaseLayout
+  title="Bernard Katamanso"
+  description="Engineer and Pan-Africanist building purposeful systems and tools. Writing on tech, deep work, and African innovation."
+  image="/og-image.png"
+>
     <div class="min-h-screen bg-background text-foreground font-sans" id="home">
         <Navbar client:load />
         <BackgroundFX client:load />
-        <main class="max-w-6xl mx-auto px-6 py-6 font-sans">
+    <main id="main-content" class="max-w-6xl mx-auto px-4 sm:px-6 py-6 font-sans">
             <Section id="about" title="" description="">
                 <div class="flex flex-col md:flex-row gap-8 md:gap-12">
                     <div class="flex-1 flex flex-col space-y-6 mt-4">
@@ -105,12 +109,12 @@ const highlights = [
                             rel="noreferrer"
                             class="group block border border-border/60 rounded-md overflow-hidden transition-colors hover:border-border"
                         >
-                            <div class="grid gap-4 md:grid-cols-[160px_1fr]">
-                                <div class="relative h-36 md:h-full bg-muted/40">
+                            <div class="grid gap-4 md:grid-cols-[180px_1fr]">
+                                <div class="relative h-32 sm:h-36 md:h-full bg-muted/40">
                                     {featuredArticle.image ? (
                                         <img
                                             src={featuredArticle.image}
-                                            alt=""
+                                            alt={featuredArticle.title}
                                             loading="lazy"
                                             class="h-full w-full object-cover"
                                         />
