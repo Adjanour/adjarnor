@@ -6,15 +6,15 @@ interface Props {
 const { code } = Astro.props
 ---
 
-<div class="my-6 rounded-lg overflow-hidden not-prose" style="background:#0d1117">
+<div class="code-playground my-6 rounded-lg overflow-hidden not-prose">
   <div class="relative">
     <textarea
       class="code-playground-input font-mono"
-      style="width:100%;min-height:110px;background:transparent;border:none;color:#e6edf3;font-size:14px;line-height:1.6;resize:vertical;tab-size:2;outline:none;padding:16px 20px"
+      style="width:100%;min-height:110px;background:transparent;border:none;font-size:15px;line-height:1.7;resize:vertical;tab-size:2;outline:none;padding:16px 20px"
       spellcheck="false"
     >{code}</textarea>
     <button
-      class="code-playground-run absolute top-2 right-2 inline-flex items-center justify-center w-6 h-6 rounded text-xs bg-[#2d333b] hover:bg-[#3d444d] text-[#e6edf3] transition-colors opacity-60 hover:opacity-100"
+      class="code-playground-run absolute top-2 right-2 inline-flex items-center justify-center w-6 h-6 rounded text-xs transition-colors opacity-60 hover:opacity-100"
       aria-label="Run code"
     >
       <svg viewBox="0 0 16 16" class="w-3.5 h-3.5" fill="currentColor" aria-hidden="true">
@@ -24,7 +24,7 @@ const { code } = Astro.props
   </div>
   <div
     class="code-playground-output hidden font-mono text-sm leading-relaxed whitespace-pre-wrap"
-    style="color:#e6edf3;padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);min-height:0"
+    style="padding:16px 20px;border-top:1px solid;min-height:0"
   ></div>
 </div>
 
