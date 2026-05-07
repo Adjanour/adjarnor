@@ -422,6 +422,38 @@ html.lenis body {
   font-family: var(--font-mono);
   font-size: 0.875rem;
   line-height: 1.6;
+  position: relative;
+}
+
+.prose pre .copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.2em 0.5em;
+  font-size: 0.7rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  background: #2d333b;
+  color: #8b949e;
+  border: none;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+  line-height: 1.4;
+}
+
+.prose pre:hover .copy-button {
+  opacity: 1;
+}
+
+.prose pre .copy-button:hover {
+  color: #e6edf3;
+}
+
+.prose pre .copy-button.copied {
+  color: #3fb950;
+  opacity: 1;
 }
 
 .prose pre code {
