@@ -469,32 +469,67 @@ html.lenis body {
 }
 
 .code-playground {
-  background: hsl(210 20% 94%);
+  background: hsl(220 14% 93%);
+  border: 1px solid hsl(220 10% 86%);
 }
 
 .dark .code-playground {
   background: hsl(220 13% 16%);
+  border-color: hsl(220 10% 22%);
 }
 
 .code-playground .code-playground-input {
-  color: hsl(0 0% 18%);
+  color: hsl(220 10% 18%);
 }
 
 .dark .code-playground .code-playground-input {
   color: hsl(210 20% 90%);
 }
 
-.code-playground .code-playground-output {
-  color: hsl(0 0% 18%);
+.code-playground .code-playground-input:focus-visible {
+  box-shadow: inset 0 0 0 1.5px hsl(var(--primary));
 }
 
-.dark .code-playground .code-playground-output {
+.code-playground .code-playground-lines {
+  color: hsl(220 10% 18%);
+}
+
+.dark .code-playground .code-playground-lines {
   color: hsl(210 20% 90%);
 }
 
+.code-playground .code-playground-output {
+  color: hsl(220 10% 25%);
+  background: hsl(220 10% 96%);
+  display: none;
+}
+
+.dark .code-playground .code-playground-output {
+  color: hsl(210 20% 85%);
+  background: hsl(220 10% 13%);
+  border-top-color: hsl(220 10% 22%) !important;
+}
+
+.code-playground .code-playground-output[aria-busy="true"]::after {
+  content: "▌";
+  animation: code-pulse 0.8s steps(4) infinite;
+}
+
+@keyframes code-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
 .code-playground .code-playground-run {
-  background: hsl(0 0% 85%);
-  color: hsl(0 0% 30%);
+  background: hsl(220 10% 82%);
+  color: hsl(220 10% 25%);
+  opacity: 0;
+  transition: opacity 0.15s, background-color 0.15s;
+}
+
+.code-playground:hover .code-playground-run,
+.code-playground .code-playground-run:focus-visible {
+  opacity: 1;
 }
 
 .dark .code-playground .code-playground-run {
@@ -502,20 +537,14 @@ html.lenis body {
   color: hsl(220 10% 80%);
 }
 
-.code-playground .code-playground-output {
-  border-top-color: hsl(0 0% 88%) !important;
-}
-
-.dark .code-playground .code-playground-output {
-  border-top-color: hsl(220 10% 24%) !important;
-}
-
 .code-playground .code-playground-run:hover {
-  background: hsl(0 0% 78%);
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
 }
 
 .dark .code-playground .code-playground-run:hover {
-  background: hsl(220 10% 28%);
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
 }
 
 .prose pre .copy-button.copied {
