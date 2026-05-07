@@ -11,6 +11,14 @@ export default defineConfig({
     host: true,
     port: 8080,
   },
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+    },
+  },
   integrations: [
     mdx({
       remarkPlugins: [remarkMath],

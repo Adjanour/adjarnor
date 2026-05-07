@@ -414,7 +414,6 @@ html.lenis body {
 }
 
 .prose pre {
-  background: hsl(210 20% 94%);
   border-radius: 0.5rem;
   padding: 1.25em;
   overflow-x: auto;
@@ -425,8 +424,13 @@ html.lenis body {
   position: relative;
 }
 
-.dark .prose pre {
-  background: hsl(220 13% 16%);
+.dark .astro-code,
+.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
 }
 
 .prose pre .copy-button {
@@ -527,11 +531,6 @@ html.lenis body {
   background: none;
   padding: 0;
   font-size: inherit;
-  color: hsl(0 0% 18%);
-}
-
-.dark .prose pre code {
-  color: hsl(210 20% 90%);
 }
 
 .prose :not(pre) > code {
