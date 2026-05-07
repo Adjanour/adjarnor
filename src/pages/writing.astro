@@ -1,20 +1,20 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import WritingCard from "@/components/site/WritingCard.astro";
-import Footer from "@/components/site/Footer.astro";
-import { getSubstackArticles } from "@/data/substack";
+import Footer from "@/components/site/Footer.astro"
+import WritingCard from "@/components/site/WritingCard.astro"
+import { getArticles } from "@/data/articles"
+import BaseLayout from "@/layouts/BaseLayout.astro"
 
-const articles = await getSubstackArticles();
+const articles = await getArticles()
 const articlesByYear = articles.reduce((acc, article) => {
-  const year = new Date(article.date).getFullYear();
-  if (!acc[year]) acc[year] = [];
-  acc[year].push(article);
-  return acc;
-}, {});
+  const year = new Date(article.date).getFullYear()
+  if (!acc[year]) acc[year] = []
+  acc[year].push(article)
+  return acc
+}, {})
 
 const years = Object.keys(articlesByYear)
   .map(Number)
-  .sort((a, b) => b - a);
+  .sort((a, b) => b - a)
 ---
 
 <BaseLayout

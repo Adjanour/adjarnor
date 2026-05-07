@@ -1,25 +1,18 @@
 ---
 interface Props {
-  src: string;
-  alt: string;
-  class?: string;
-  placeholder?: string;
-  sizes?: string;
-  srcSet?: string;
+  src: string
+  alt: string
+  class?: string
+  placeholder?: string
+  sizes?: string
+  srcSet?: string
 }
 
-const {
-  src,
-  alt,
-  class: className = "",
-  placeholder,
-  sizes = "100vw",
-  srcSet,
-} = Astro.props;
+const { src, alt, class: className = "", placeholder, sizes = "100vw", srcSet } = Astro.props
 
 const backgroundStyle = placeholder
   ? `background-image: url(${placeholder}); background-size: cover; background-position: center;`
-  : undefined;
+  : undefined
 ---
 
 <div class={`relative overflow-hidden ${className}`} style={backgroundStyle}>

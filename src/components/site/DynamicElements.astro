@@ -12,22 +12,22 @@ const inspirationalQuotes = [
   "Learning to code is learning to think.",
   "Focus on the fundamentals, the rest will follow.",
   "Mistakes are proof that you are trying.",
-];
+]
 
-const now = new Date();
+const now = new Date()
 const currentTime = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Africa/Accra",
   hour: "2-digit",
   minute: "2-digit",
   hour12: true,
-}).format(now);
+}).format(now)
 const currentHour = Number(
   new Intl.DateTimeFormat("en-US", {
     timeZone: "Africa/Accra",
     hour: "numeric",
     hour12: false,
   }).format(now),
-);
+)
 const currentStatus =
   currentHour < 6
     ? "Deep night"
@@ -37,8 +37,8 @@ const currentStatus =
         ? "Afternoon flow"
         : currentHour < 21
           ? "Evening reset"
-          : "Late session";
-const currentQuote = inspirationalQuotes[now.getUTCDate() % inspirationalQuotes.length];
+          : "Late session"
+const currentQuote = inspirationalQuotes[now.getUTCDate() % inspirationalQuotes.length]
 ---
 
 <div class="hidden lg:flex items-center justify-center gap-4 text-sm text-muted-foreground flex-1 min-w-0">
@@ -50,8 +50,8 @@ const currentQuote = inspirationalQuotes[now.getUTCDate() % inspirationalQuotes.
     </svg>
     <span class="font-mono">{currentTime}</span>
     <span class="text-xs opacity-70">Accra, GH</span>
-    <span class="ml-2 inline-flex items-center rounded-full border border-border/50 px-2 py-0.5 text-[11px] text-foreground/80">
-      Now: {currentStatus}
+    <span class="ml-2 inline-flex items-center rounded-full  border-border/50 px-2 py-0.5 text-[11px] text-foreground/80">
+      Now - {currentStatus}
     </span>
   </div>
   <div class="flex items-center gap-2 backdrop-blur-sm bg-background/40 px-3 py-2 rounded-md border border-border/30 min-w-0 max-w-sm">

@@ -1,14 +1,14 @@
 ---
 interface ProjectData {
-  id: string;
-  title: string;
-  shortDescription: string;
-  fullDescription: string;
-  techs: string[];
-  github?: string;
-  live?: string;
-  status: "completed" | "in-progress" | "concept";
-  featured?: boolean;
+  id: string
+  title: string
+  shortDescription: string
+  fullDescription: string
+  techs: string[]
+  github?: string
+  live?: string
+  status: "completed" | "in-progress" | "concept"
+  featured?: boolean
 }
 
 const projectsData: ProjectData[] = [
@@ -105,12 +105,10 @@ const projectsData: ProjectData[] = [
     github: "https://github.com/Adjanour/TextEditor",
     status: "completed",
   },
-];
+]
 
-const featuredCount = projectsData.filter((project) => project.featured).length;
-const inProgressCount = projectsData.filter(
-  (project) => project.status === "in-progress",
-).length;
+const featuredCount = projectsData.filter((project) => project.featured).length
+const inProgressCount = projectsData.filter((project) => project.status === "in-progress").length
 ---
 
 <div class="max-w-4xl mx-auto">

@@ -1,29 +1,23 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import Section from "@/components/site/Section.astro";
-import WritingCard from "@/components/site/WritingCard.astro";
-import Footer from "@/components/site/Footer.astro";
-import Experience from "@/components/site/Experience.astro";
-import BackgroundFX from "@/components/site/BackgroundFX.astro";
-import Navbar from "@/components/site/Navbar.astro";
-import ArticleThumbnail from "@/components/site/ArticleThumbnail.astro";
-import ProjectList from "@/components/site/ProjectList.astro";
-import { getSubstackArticles } from "@/data/substack";
-import { getArticleVisual } from "@/lib/article-visuals";
-import Image from "astro/components/Image.astro";
+import BackgroundFX from "@/components/site/BackgroundFX.astro"
+import Experience from "@/components/site/Experience.astro"
+import Footer from "@/components/site/Footer.astro"
+import Navbar from "@/components/site/Navbar.astro"
+import ProjectList from "@/components/site/ProjectList.astro"
+import Section from "@/components/site/Section.astro"
+import WritingCard from "@/components/site/WritingCard.astro"
+import { getArticles } from "@/data/articles"
+import BaseLayout from "@/layouts/BaseLayout.astro"
 
-const latestArticles = await getSubstackArticles(4);
-const featuredArticle = latestArticles[0];
-const remainingArticles = latestArticles.slice(1, 4);
-const featuredArticleVisual = featuredArticle
-  ? getArticleVisual(featuredArticle.title, featuredArticle.href)
-  : null;
+const allArticles = await getArticles()
+const featuredArticle = allArticles[0]
+const remainingArticles = allArticles.slice(1, 4)
 const formatDate = (value: string) =>
   new Date(value).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
-  });
+  })
 const highlights = [
   "Teach Lead, Orcta",
   "Software Engineer",
@@ -32,7 +26,7 @@ const highlights = [
   "Deep work",
   "Pan-Africanism",
   "Kindness",
-];
+]
 ---
 
 <BaseLayout
@@ -87,7 +81,7 @@ const highlights = [
                 srcset="/profile-hero-320.webp 320w, /profile-hero-640.webp 640w"
                 sizes="(max-width: 768px) 100vw, 320px"
               />
-              <Image
+              <img
                 src="/profile-hero-320.jpg"
                 srcset="/profile-hero-320.jpg 320w, /profile-hero-640.jpg 640w"
                 sizes="(max-width: 768px) 100vw, 320px"
@@ -120,7 +114,7 @@ const highlights = [
         </div>
         <div class="space-y-6">
           {
-            featuredArticle && featuredArticleVisual && (
+            featuredArticle && (
               <a
                 href={featuredArticle.href}
                 target="_blank"
@@ -129,11 +123,15 @@ const highlights = [
               >
                 <div class="grid gap-4 md:grid-cols-[180px_1fr]">
                   <div class="relative h-32 sm:h-36 md:h-full bg-muted/40 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
-                    <ArticleThumbnail
-                      basePath={featuredArticleVisual.basePath}
-                      alt={featuredArticleVisual.alt}
-                      sizes="(max-width: 768px) 100vw, 180px"
-                    />
+                    {featuredArticle.image && (
+                      <img
+                        src={featuredArticle.image}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        class="h-full w-full object-cover"
+                      />
+                    )}
                   </div>
                   <div class="px-4 py-4 md:px-5 md:py-5">
                     <p class="text-xs uppercase tracking-[0.2em] text-muted-foreground">
@@ -174,13 +172,6 @@ const highlights = [
       </Section>
 
       <Experience />
-
-      <Section id="substack">
-        <div
-          class="p-6 hidden rounded-2xl bg-black/2 dark:text-white backdrop-blur-lg border border-white/10 max-w-3xl mx-auto my-12 text-center flex-row flex-wrap items-center justify-center gap-8"
-        >
-        </div>
-      </Section>
     </main>
     <Footer />
   </div>

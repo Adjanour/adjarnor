@@ -1,6 +1,6 @@
-import { defineConfig } from "astro/config";
-import tailwindcss from "@tailwindcss/vite";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath } from "node:url"
+import tailwindcss from "@tailwindcss/vite"
+import { defineConfig, fontProviders } from "astro/config"
 
 export default defineConfig({
   site: "https://www.adjarnor.dev",
@@ -8,6 +8,27 @@ export default defineConfig({
     host: true,
     port: 8080,
   },
+  fonts: [
+    {
+      name: "Lora",
+      cssVariable: "--font-body",
+      provider: fontProviders.google(),
+      weights: [400, 700],
+      styles: ["normal", "italic"],
+    },
+    {
+      name: "Open Sans",
+      cssVariable: "--font-sans",
+      provider: fontProviders.google(),
+      weights: [300, 400, 600, 700, 800],
+    },
+    {
+      name: "Inconsolata",
+      cssVariable: "--font-mono",
+      provider: fontProviders.google(),
+      weights: [400, 700],
+    },
+  ],
   vite: {
     plugins: [tailwindcss()],
     resolve: {
@@ -16,4 +37,4 @@ export default defineConfig({
       },
     },
   },
-});
+})

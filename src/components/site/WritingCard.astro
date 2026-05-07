@@ -1,25 +1,21 @@
 ---
-import ArticleThumbnail from "./ArticleThumbnail.astro";
-import { getArticleVisual } from "@/lib/article-visuals";
-
 interface Props {
-  title: string;
-  date: string;
-  excerpt?: string;
-  href: string;
-  readTime?: string;
-  tags?: string[];
-  image?: string;
+  title: string
+  date: string
+  excerpt?: string
+  href: string
+  readTime?: string
+  tags?: string[]
+  image?: string
 }
 
-const { title, date, excerpt, href, readTime, image } = Astro.props;
-const isExternal = !href.startsWith("#");
+const { title, date, excerpt, href, readTime, image } = Astro.props
+const isExternal = !href.startsWith("#")
 const formattedDate = new Date(date).toLocaleDateString("en-US", {
   month: "short",
   day: "numeric",
   year: "numeric",
-});
-const articleVisual = getArticleVisual(title, href || image);
+})
 ---
 
 <a
@@ -30,12 +26,16 @@ const articleVisual = getArticleVisual(title, href || image);
 >
   <article class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
     <div class="flex items-center gap-3 shrink-0">
-      <div class="relative h-12 w-12 sm:h-14 sm:w-14 rounded-none overflow-hidden border border-border/60 bg-muted/40 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
-        <ArticleThumbnail
-          basePath={articleVisual.basePath}
-          alt={articleVisual.alt}
-          sizes="(max-width: 640px) 48px, 56px"
-        />
+      <div class="relative h-12 w-12 sm:h-14 sm:w-14 rounded-none overflow-hidden border border-border/60 bg-muted/40">
+        {image && (
+          <img
+            src={image}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            class="h-full w-full object-cover"
+          />
+        )}
       </div>
       <time
         datetime={date}

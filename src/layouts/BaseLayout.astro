@@ -1,31 +1,28 @@
 ---
-import "@/index.css";
+import "@/index.css"
+import { Font } from "astro:assets"
 
 interface Props {
-  title?: string;
-  description?: string;
-  image?: string;
+  title?: string
+  description?: string
+  image?: string
 }
 
 const {
   title = "Bernard Katamanso",
   description = "Engineer and Pan-Africanist building purposeful systems and tools.",
   image = "/og-image.png",
-} = Astro.props;
+} = Astro.props
 
-const siteUrl = Astro.site ?? new URL("https://www.adjarnor.dev");
+const siteUrl = Astro.site ?? new URL("https://www.adjarnor.dev")
 const canonicalPath =
   Astro.url.pathname === "/"
     ? "/"
     : Astro.url.pathname.includes(".") || Astro.url.pathname.endsWith("/")
       ? Astro.url.pathname
-      : `${Astro.url.pathname}/`;
-const canonicalUrl = new URL(canonicalPath, siteUrl);
-const ogImage = image.startsWith("http")
-  ? image
-  : new URL(image, siteUrl).toString();
-const fontStylesheet =
-  "https://fonts.googleapis.com/css2?family=Enriqueta:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap";
+      : `${Astro.url.pathname}/`
+const canonicalUrl = new URL(canonicalPath, siteUrl)
+const ogImage = image.startsWith("http") ? image : new URL(image, siteUrl).toString()
 const themeScript = `(() => {
   try {
     const storageKey = "theme";
@@ -35,7 +32,7 @@ const themeScript = `(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
     document.documentElement.style.colorScheme = theme;
   } catch {}
-})();`;
+})();`
 ---
 
 <!doctype html>
@@ -47,10 +44,6 @@ const themeScript = `(() => {
     <meta name="description" content={description} />
     <meta name="author" content="Bernard Kirk Adjarnor Katamanso" />
     <link rel="canonical" href={canonicalUrl.toString()} />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href={fontStylesheet} />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
@@ -69,6 +62,9 @@ const themeScript = `(() => {
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <Font cssVariable="--font-body" />
+    <Font cssVariable="--font-sans" />
+    <Font cssVariable="--font-mono" />
     <script is:inline set:html={themeScript}></script>
   </head>
   <body>

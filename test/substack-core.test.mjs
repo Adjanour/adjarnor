@@ -1,6 +1,6 @@
-import test from "node:test";
-import assert from "node:assert/strict";
-import { parseSubstackFeed } from "../src/data/substack-core.mjs";
+import assert from "node:assert/strict"
+import test from "node:test"
+import { parseSubstackFeed } from "../src/data/substack-core.mjs"
 
 test("parseSubstackFeed normalizes and sorts RSS items", () => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -23,18 +23,18 @@ test("parseSubstackFeed normalizes and sorts RSS items", () => {
         ]]></content:encoded>
       </item>
     </channel>
-  </rss>`;
+  </rss>`
 
-  const articles = parseSubstackFeed(xml);
+  const articles = parseSubstackFeed(xml)
 
-  assert.equal(articles.length, 2);
-  assert.equal(articles[0].title, "Newer Post");
-  assert.equal(articles[0].date, "2024-01-02");
-  assert.equal(articles[0].href, "https://example.com/newer");
-  assert.equal(articles[0].readTime, "1 min");
-  assert.equal(articles[1].excerpt, "Short description");
-  assert.equal(articles[1].image, "https://example.com/older.png");
-});
+  assert.equal(articles.length, 2)
+  assert.equal(articles[0].title, "Newer Post")
+  assert.equal(articles[0].date, "2024-01-02")
+  assert.equal(articles[0].href, "https://example.com/newer")
+  assert.equal(articles[0].readTime, "1 min")
+  assert.equal(articles[1].excerpt, "Short description")
+  assert.equal(articles[1].image, "https://example.com/older.png")
+})
 
 test("parseSubstackFeed drops items without links", () => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -46,9 +46,9 @@ test("parseSubstackFeed drops items without links", () => {
         <content:encoded><![CDATA[<p>Body copy</p>]]></content:encoded>
       </item>
     </channel>
-  </rss>`;
+  </rss>`
 
-  const articles = parseSubstackFeed(xml);
+  const articles = parseSubstackFeed(xml)
 
-  assert.deepEqual(articles, []);
-});
+  assert.deepEqual(articles, [])
+})

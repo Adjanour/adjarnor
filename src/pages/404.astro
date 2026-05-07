@@ -1,15 +1,42 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro"
 ---
 
 <BaseLayout title="Page Not Found | Bernard Katamanso">
-  <main className="min-h-screen flex items-center justify-center bg-gray-100 px-6">
-    <div className="text-center">
-      <h1 className="text-4xl font-bold mb-4">404</h1>
-      <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-      <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-        Return to Home
-      </a>
+  <main class="min-h-screen flex items-center justify-center px-4 sm:px-6 py-12 sm:py-24">
+    <div class="text-center max-w-xl">
+      <!-- Error code -->
+      <div class="mb-8 sm:mb-12">
+        <p class="text-6xl sm:text-8xl font-light text-muted-foreground/60 tracking-tight">
+          404
+        </p>
+      </div>
+      
+      <!-- Heading -->
+      <h1 class="font-serif text-2xl sm:text-4xl font-normal mb-4 tracking-tight text-foreground">
+        Page not found
+      </h1>
+      
+      <!-- Description -->
+      <p class="text-base sm:text-lg text-muted-foreground mb-8 leading-relaxed">
+        The page you're looking for doesn't exist. It may have moved or been removed.
+      </p>
+      
+      <!-- Navigation -->
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a 
+          href="/" 
+          class="px-6 py-2.5 bg-background border border-border/60 text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors font-sans text-sm font-medium"
+        >
+          Return Home
+        </a>
+        <a 
+          href="/writing" 
+          class="px-6 py-2.5 bg-background border border-border/60 text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors font-sans text-sm font-medium"
+        >
+          Read Writing
+        </a>
+      </div>
     </div>
   </main>
 </BaseLayout>

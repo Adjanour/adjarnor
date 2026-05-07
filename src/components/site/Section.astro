@@ -1,13 +1,13 @@
 ---
 interface Props {
-  id: string;
-  title?: string;
-  description?: string;
+  id: string
+  title?: string
+  description?: string
 }
 
-const { id, title, description } = Astro.props;
-const labelledBy = title ? `${id}-title` : undefined;
-const hasHeaderContent = Boolean(title || description);
+const { id, title, description } = Astro.props
+const labelledBy = title ? `${id}-title` : undefined
+const hasHeaderContent = Boolean(title || description)
 ---
 
 <section id={id} aria-labelledby={labelledBy} class="scroll-mt-24">
@@ -17,7 +17,7 @@ const hasHeaderContent = Boolean(title || description);
         {title && (
           <h2
             id={labelledBy}
-            class="font-display text-3xl font-semibold tracking-tight md:text-4xl"
+            class="font-body text-3xl font-semibold tracking-tight md:text-4xl"
           >
             {title}
           </h2>
