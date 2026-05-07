@@ -1,5 +1,6 @@
 import { fileURLToPath } from "node:url"
 import mdx from "@astrojs/mdx"
+import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
 import { defineConfig, fontProviders } from "astro/config"
 import rehypeKatex from "rehype-katex"
@@ -20,6 +21,7 @@ export default defineConfig({
     },
   },
   integrations: [
+    sitemap(),
     mdx({
       remarkPlugins: [remarkMath],
       rehypePlugins: [rehypeKatex],

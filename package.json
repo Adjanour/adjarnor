@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",
+    "@astrojs/sitemap": "^3.7.2",
     "fast-xml-parser": "^4.4.1",
     "katex": "^0.16.45",
     "rehype-katex": "^7.0.1",
