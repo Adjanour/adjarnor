@@ -1,0 +1,108 @@
+---
+title: Hello, World — Building a Technical Blog
+description: A first post to test code blocks, math rendering, and interactive demos on the new blog section.
+date: 2026-05-07
+---
+
+This is the first post on the new technical blog. Let's test everything works.
+
+## Code Blocks
+
+Here's a simple JavaScript function:
+
+```js
+function fibonacci(n) {
+  if (n <= 1) return n
+  return fibonacci(n - 1) + fibonacci(n - 2)
+}
+
+console.log(fibonacci(10)) // 55
+```
+
+And some TypeScript with types:
+
+```ts
+interface User {
+  name: string
+  age: number
+}
+
+const greet = (user: User): string => {
+  return `Hello, ${user.name}!`
+}
+```
+
+## Math with KaTeX
+
+Inline math: $E = mc^2$
+
+Display math:
+
+$$
+\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
+$$
+
+A more complex equation:
+
+$$
+f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}
+$$
+
+## Interactive Code Playground
+
+Try editing and running this JavaScript:
+
+import CodePlayground from "@/components/blog/CodePlayground.astro"
+
+<CodePlayground
+  code={`function factorial(n) {
+  if (n <= 1) return 1
+  return n * factorial(n - 1)
+}
+
+console.log("factorial(5) =", factorial(5))
+console.log("factorial(10) =", factorial(10))`}
+/>
+
+## Callout Boxes
+
+import Callout from "@/components/blog/Callout.astro"
+
+<Callout type="tip">
+  You can use `<Callout>` with `type="tip"`, `"info"`, `"warning"`, or `"danger"`.
+</Callout>
+
+<Callout type="warning">
+  Remember to always validate user input before processing it.
+</Callout>
+
+<Callout type="info">
+  The blog supports MDX, so you can import and use any Astro component in your articles.
+</Callout>
+
+## Blockquotes
+
+> The best way to predict the future is to invent it.
+>
+> — Alan Kay
+
+## Lists
+
+1. First item
+2. Second item
+3. Third item
+
+- Unordered list item
+- Another item
+- A third item
+
+## Tables
+
+| Feature | Status | Notes |
+|---|---|---|
+| Code blocks | ✅ | Shiki syntax highlighting |
+| Math | ✅ | KaTeX rendering |
+| Interactive demos | ✅ | CodePlayground component |
+| Callouts | ✅ | Info, tip, warning, danger |
+
+That's it for the first post. More technical deep-dives coming soon.

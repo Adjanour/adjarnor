@@ -1,0 +1,84 @@
+---
+interface Props {
+  code: string
+  title?: string
+}
+
+const { code, title = "Try it yourself" } = Astro.props
+---
+
+<div class="my-6 rounded-lg border border-border overflow-hidden">
+  <div class="flex items-center justify-between px-4 py-2 bg-muted/50 border-b border-border">
+    <span class="text-xs font-medium text-muted-foreground">{title}</span>
+  </div>
+  <div class="not-prose">
+    <pre
+      class="!m-0 !rounded-none !border-0 overflow-hidden"
+      style="background: #0d1117;"
+    ><code class="language-js" style="background: #0d1117;"><div class="p-4 overflow-x-auto"><textarea
+  class="code-playground-input"
+  style="width:100%;min-height:120px;background:transparent;border:none;color:#e6edf3;font-family:Inconsolata,ui-monospace,monospace;font-size:14px;line-height:1.6;resize:vertical;tab-size:2;outline:none"
+  spellcheck="false"
+>{code}</textarea></div></code></pre>
+  </div>
+  <div class="flex items-center gap-2 px-4 py-2 bg-muted/30 border-b border-border">
+    <button
+      class="code-playground-run inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+    >
+      <svg viewBox="0 0 24 24" class="w-3.5 h-3.5" fill="currentColor" aria-hidden="true">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+      Run
+    </button>
+    <button
+      class="code-playground-reset inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded bg-muted text-muted-foreground hover:text-foreground transition-colors"
+    >
+      Reset
+    </button>
+  </div>
+  <div class="code-playground-output hidden px-4 py-3 bg-[#0d1117] font-mono text-sm leading-relaxed whitespace-pre-wrap" style="color:#e6edf3;min-height:40px"></div>
+</div>
+
+<script>
+  const playgrounds = document.querySelectorAll(".code-playground-run")
+
+  for (const runBtn of playgrounds) {
+    const container = runBtn.closest(".my-6")
+    const textarea = container.querySelector(".code-playground-input")
+    const output = container.querySelector(".code-playground-output")
+    const resetBtn = container.querySelector(".code-playground-reset")
+    const originalCode = textarea.value
+
+    runBtn.addEventListener("click", () => {
+      output.classList.remove("hidden")
+      const logs: string[] = []
+      const mockConsole = {
+        log: (...args: unknown[]) => {
+          logs.push(args.map((a) => (typeof a === "object" ? JSON.stringify(a, null, 2) : String(a))).join(" "))
+        },
+        error: (...args: unknown[]) => {
+          logs.push("Error: " + args.map(String).join(" "))
+        },
+        warn: (...args: unknown[]) => {
+          logs.push("Warning: " + args.map(String).join(" "))
+        },
+      }
+
+      try {
+        const fn = new Function("console", textarea.value)
+        fn(mockConsole)
+        output.textContent = logs.join("\n") || "(no output)"
+        output.style.color = "#e6edf3"
+      } catch (e) {
+        output.textContent = "Error: " + (e as Error).message
+        output.style.color = "#f87171"
+      }
+    })
+
+    resetBtn.addEventListener("click", () => {
+      textarea.value = originalCode
+      output.classList.add("hidden")
+      output.textContent = ""
+    })
+  }
+</script>

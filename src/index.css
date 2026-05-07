@@ -312,6 +312,161 @@ html.lenis body {
 }
 
 /* ================================================
+   Prose Styles (Blog)
+   ================================================ */
+.prose {
+  --prose-body: hsl(var(--foreground));
+  --prose-muted: hsl(var(--muted-foreground));
+  --prose-border: hsl(var(--border));
+  --prose-primary: hsl(var(--primary));
+  --prose-code-bg: hsl(var(--muted));
+}
+
+.prose {
+  color: var(--prose-body);
+  line-height: 1.8;
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--prose-body);
+  margin-top: 2em;
+  margin-bottom: 0.75em;
+}
+
+.prose h2 {
+  font-size: 1.5rem;
+}
+.prose h3 {
+  font-size: 1.25rem;
+}
+.prose h4 {
+  font-size: 1.1rem;
+}
+
+.prose p {
+  margin-bottom: 1.25em;
+}
+
+.prose a {
+  color: var(--prose-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.15s;
+}
+
+.prose a:hover {
+  opacity: 0.8;
+}
+
+.prose strong {
+  font-weight: 600;
+}
+
+.prose ul,
+.prose ol {
+  margin-bottom: 1.25em;
+  padding-left: 1.5em;
+}
+
+.prose li {
+  margin-bottom: 0.25em;
+}
+
+.prose ul li {
+  list-style-type: disc;
+}
+
+.prose ol li {
+  list-style-type: decimal;
+}
+
+.prose li::marker {
+  color: var(--prose-muted);
+}
+
+.prose blockquote {
+  border-left: 3px solid var(--prose-primary);
+  padding-left: 1em;
+  margin: 1.5em 0;
+  color: var(--prose-muted);
+  font-style: italic;
+}
+
+.prose hr {
+  border: none;
+  border-top: 1px solid var(--prose-border);
+  margin: 2em 0;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.5em auto;
+}
+
+.prose pre {
+  background: #0d1117;
+  border-radius: 0.5rem;
+  padding: 1.25em;
+  overflow-x: auto;
+  margin: 1.5em 0;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: #e6edf3;
+}
+
+.prose :not(pre) > code {
+  background: var(--prose-code-bg);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: var(--prose-body);
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 0.9rem;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid var(--prose-border);
+  padding: 0.6em 0.8em;
+  text-align: left;
+}
+
+.prose th {
+  background: var(--prose-code-bg);
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+.prose .katex-display {
+  margin: 1.5em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* ================================================
    Component Styles
    ================================================ */
 @layer components {

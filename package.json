@@ -12,7 +12,11 @@
     "test": "node --test"
   },
   "dependencies": {
-    "fast-xml-parser": "^4.4.1"
+    "@astrojs/mdx": "^5.0.4",
+    "fast-xml-parser": "^4.4.1",
+    "katex": "^0.16.45",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.14",

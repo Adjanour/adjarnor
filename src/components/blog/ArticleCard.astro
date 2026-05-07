@@ -1,0 +1,47 @@
+---
+interface Props {
+  title: string
+  description: string
+  date: Date
+  slug: string
+}
+
+const { title, description, date, slug } = Astro.props
+const formattedDate = date.toLocaleDateString("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+})
+---
+
+<a
+  href={`/blog/${slug}/`}
+  class="group block py-5 hover:bg-muted/30 -mx-3 px-3 rounded-sm transition-colors"
+>
+  <article class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+    <time datetime={date.toISOString()} class="text-xs text-muted-foreground tabular-nums shrink-0 w-24">
+      {formattedDate}
+    </time>
+    <div class="flex-1 min-w-0">
+      <h3 class="text-base font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
+        {title}
+      </h3>
+      <p class="text-sm text-muted-foreground mt-1 line-clamp-2">
+        {description}
+      </p>
+    </div>
+    <svg
+      class="w-4 h-4 text-muted-foreground shrink-0 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </svg>
+  </article>
+</a>

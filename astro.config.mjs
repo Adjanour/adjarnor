@@ -1,6 +1,9 @@
 import { fileURLToPath } from "node:url"
+import mdx from "@astrojs/mdx"
 import tailwindcss from "@tailwindcss/vite"
 import { defineConfig, fontProviders } from "astro/config"
+import rehypeKatex from "rehype-katex"
+import remarkMath from "remark-math"
 
 export default defineConfig({
   site: "https://www.adjarnor.dev",
@@ -8,6 +11,12 @@ export default defineConfig({
     host: true,
     port: 8080,
   },
+  integrations: [
+    mdx({
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex],
+    }),
+  ],
   fonts: [
     {
       name: "Lora",

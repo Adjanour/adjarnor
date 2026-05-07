@@ -1,0 +1,59 @@
+---
+import BaseLayout from "./BaseLayout.astro"
+import "katex/dist/katex.min.css"
+
+interface Props {
+  title: string
+  description: string
+  date: Date
+}
+
+const { title, description, date } = Astro.props
+const formattedDate = date.toLocaleDateString("en-US", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+})
+---
+
+<BaseLayout title={`${title} — Blog`} description={description}>
+  <div class="min-h-screen bg-background text-foreground font-sans">
+    <main id="main-content" class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+      <a
+        href="/blog/"
+        class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
+      >
+        <svg
+          class="w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m12 19-7-7 7-7" />
+          <path d="M19 12H5" />
+        </svg>
+        Back to blog
+      </a>
+
+      <article>
+        <header class="mb-10">
+          <h1 class="text-3xl sm:text-4xl font-medium tracking-tight leading-tight mb-3">
+            {title}
+          </h1>
+          <div class="flex items-center gap-3 text-sm text-muted-foreground">
+            <time datetime={date.toISOString()}>{formattedDate}</time>
+          </div>
+          <p class="mt-4 text-lg text-muted-foreground">{description}</p>
+        </header>
+
+        <div class="prose prose-gray max-w-none">
+          <slot />
+        </div>
+      </article>
+    </main>
+  </div>
+</BaseLayout>
