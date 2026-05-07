@@ -1,0 +1,304 @@
+---
+title: Understanding Generics — From Theory to Practice
+description: Generics solve a fundamental tension in programming — how do we write code that is both reusable across types and safe at compile time? A deep dive into parametric polymorphism across Java, TypeScript, and C#.
+date: 2025-12-27
+---
+
+import CodePlayground from "@/components/blog/CodePlayground.astro"
+
+Generics represent one of the most significant advances in type system design since static typing itself. They solve a fundamental tension in programming: how do we write code that is both reusable across types and safe at compile time? The answer lies in parametric polymorphism, a concept borrowed from functional programming that has become foundational in modern software engineering.
+
+## The Mental Model: Abstraction Over Types
+
+Consider the problem generics solve. You want to write a function that returns whatever you give it, an identity function. Without generics, you face a dilemma.
+
+You could write it for each type separately:
+
+```java
+public Integer identityInt(Integer x) { return x; }
+public String identityString(String x) { return x; }
+// ... ad infinitum
+```
+
+This is tedious and defeats the purpose of abstraction. Code duplication multiplies maintenance burden.
+
+Or you could use the top type, the most general type in your language's hierarchy:
+
+```java
+public Object identity(Object x) { return x; }
+```
+
+This compiles, but you've lost type information. The caller must cast the result, and the compiler can no longer verify correctness. You've traded compile-time safety for reusability, a Faustian bargain that leads to runtime errors.
+
+Generics offer a third path: abstraction over types themselves. Instead of abstracting over values (as functions do) or over behavior (as interfaces do), generics abstract over the types that values inhabit. The identity function becomes:
+
+```java
+public <T> T identity(T x) { return x; }
+```
+
+Now `T` is a type parameter, a placeholder that will be filled in when the function is called. The function works for *any* type, yet the compiler tracks which specific type is being used. You get both reusability and safety.
+
+## Historical Context: From ML to Mainstream
+
+The intellectual lineage of generics runs through functional programming. Languages like ML and Haskell made parametric polymorphism central to their design from the beginning. In these languages, a function like `identity` has the type `forall a. a -> a`, read as "for all types `a`, this function takes an `a` and returns an `a`."
+
+This notation makes explicit what generics encode: quantification over types. The function doesn't just work on *some* type. It works on *all* types, uniformly.
+
+Ada brought generics to imperative programming in the 1980s, demonstrating that parametric polymorphism could coexist with mutable state and procedural control flow. C++ followed with templates, though templates are technically more powerful (Turing-complete at compile time) and more complex than classical generics.
+
+Java introduced generics in version 5 (2004), after years of debate about implementation strategies. C# followed shortly after with a different implementation approach. TypeScript, arriving much later, inherited its generic system from research languages but adapted it for a dynamically-typed ecosystem.
+
+Each language made different tradeoffs. Understanding these tradeoffs illuminates the design space of type systems.
+
+## Implementation Strategies: Erasure vs Reification
+
+The central implementation question is: what happens to generic type information at runtime?
+
+### Type Erasure (Java, TypeScript)
+
+Java uses **type erasure**. During compilation, the compiler verifies that all generic types are used correctly. Then it erases the type parameters, replacing them with their bounds (or `Object` if unbounded). At runtime, `List<String>` and `List<Integer>` are both just `List`.
+
+This design decision was driven by backward compatibility. Java needed to interoperate with existing bytecode that had no notion of generics. Erasure allowed generic code to run on older JVMs and interact seamlessly with pre-generic libraries.
+
+The cost is runtime limitation. You cannot ask, at runtime, "is this a `List<String>`?" You can only ask "is this a `List`?" Generic type information exists only during compilation, when it's needed for type checking, and then vanishes.
+
+TypeScript takes the same approach, but for different reasons. Since TypeScript compiles to JavaScript, and JavaScript has no static types at all, there's nowhere for generic type information to live at runtime. TypeScript's types are entirely a compile-time construct, a layer of verification that produces standard JavaScript.
+
+### Reification (C#)
+
+C# chose **reification**. Generic type information is preserved at runtime. The CLR (Common Language Runtime) knows the difference between `List<string>` and `List<int>`. You can reflect on generic types, and the JIT compiler can specialize generic code for different type arguments, potentially improving performance.
+
+This requires more sophisticated runtime support but provides more power. C# can do things Java cannot, like create arrays of generic types or perform runtime type checks on generics.
+
+Neither approach is universally superior. Erasure simplifies the runtime and maintains compatibility. Reification enables runtime introspection and optimization. The choice depends on language goals and constraints.
+
+## Practical Applications: Java
+
+### Generic Classes
+
+A generic class parameterizes a type over one or more type variables:
+
+```java
+public class Box<T> {
+    private T value;
+
+    public void set(T value) {
+        this.value = value;
+    }
+
+    public T get() {
+        return value;
+    }
+}
+```
+
+The mental model: `Box` is not a type. `Box<String>` is a type. `T` is a parameter that gets filled in when you instantiate the class.
+
+```java
+Box<Integer> intBox = new Box<>();
+intBox.set(42);
+Integer value = intBox.get();  // No cast needed
+```
+
+### Bounded Type Parameters
+
+Sometimes you need constraints. Not all types are suitable for all operations. If your generic function needs to call `.compareTo()`, you need to ensure `T` supports comparison:
+
+```java
+public <T extends Comparable<T>> T maximum(T a, T b) {
+    return a.compareTo(b) > 0 ? a : b;
+}
+```
+
+The bound `T extends Comparable<T>` restricts `T` to types that implement `Comparable`. Now the compiler knows `.compareTo()` exists. This is *constraint-based polymorphism*, restricting the universal quantification to types that satisfy certain properties.
+
+### Wildcards and Variance
+
+Java's wildcard types (`? extends T` and `? super T`) encode *variance*, one of type theory's more subtle concepts.
+
+Consider: is `List<String>` a subtype of `List<Object>`? Intuitively, it seems like it should be. After all, `String` is a subtype of `Object`.
+
+But it's not safe. If `List<String>` were a subtype of `List<Object>`, you could do this:
+
+```java
+List<String> strings = new ArrayList<>();
+List<Object> objects = strings; // Not allowed
+objects.add(42); // Would be allowed if the above worked
+String s = strings.get(0); // Runtime error: 42 is not a String
+```
+
+This is why generics are **invariant** by default. `List<String>` is *not* a subtype of `List<Object>`, even though `String` is a subtype of `Object`.
+
+Wildcards provide controlled variance. `List<? extends Object>` is a supertype of `List<String>`, but you can't add to it (only read from it). `List<? super String>` allows writing but limits reading. This is covariance and contravariance, respectively, concepts from category theory that Java encodes pragmatically.
+
+## Practical Applications: TypeScript
+
+TypeScript's generics work similarly but adapt to JavaScript's dynamic nature.
+
+### Generic Functions
+
+```ts
+function identity<T>(arg: T): T {
+    return arg;
+}
+
+let result = identity<string>("hello");  // Explicit
+let inferred = identity(42);  // Type inference: T is number
+```
+
+TypeScript's type inference is more aggressive than Java's. Often you don't need to specify type parameters explicitly.
+
+<CodePlayground
+  code={`function identity<T>(arg: T): T {
+  return arg;
+}
+
+// TypeScript type annotations stripped for runtime
+// but the logic works in plain JS too
+const result = identity("hello");
+console.log("identity('hello'):", result);
+
+const inferred = identity(42);
+console.log("identity(42):", inferred);`}
+/>
+
+### Generic Constraints
+
+Like Java's bounds, TypeScript supports constraints:
+
+```ts
+interface Lengthwise {
+    length: number;
+}
+
+function logLength<T extends Lengthwise>(arg: T): void {
+    console.log(arg.length);
+}
+
+logLength("hello");     // string has length
+logLength([1, 2, 3]);   // array has length
+logLength({ length: 10, value: 3 });  // any object with length
+```
+
+The constraint `T extends Lengthwise` means "T must be a subtype of `Lengthwise`," which in TypeScript's structural type system means "T must have at least the properties `Lengthwise` requires."
+
+<CodePlayground
+  code={`function logLength(arg) {
+  console.log(arg.length);
+}
+
+logLength("hello");
+logLength([1, 2, 3]);
+logLength({ length: 10, value: 3 });`}
+/>
+
+### Generic Classes and Interfaces
+
+```ts
+interface Repository<T> {
+    getById(id: number): T;
+    save(item: T): void;
+}
+
+interface User {
+    name: string
+    age: number
+}
+
+class UserRepository implements Repository<User> {
+    getById(id: number): User {
+        return {
+            name: "Bernard Katamanso",
+            age: 23
+        }
+    }
+
+    save(user: User): void {
+        // Implementation
+    }
+}
+```
+
+This pattern appears frequently in layered architectures. The generic `Repository` interface abstracts over the entity type, allowing the same data access patterns to work across different domain objects.
+
+### Utility Types
+
+TypeScript's standard library includes generic utility types that manipulate other types:
+
+```ts
+type Partial<T> = {
+    [P in keyof T]?: T[P];
+};
+
+interface User {
+    name: string;
+    email: string;
+}
+
+type PartialUser = Partial<User>;
+// Result: { name?: string; email?: string; }
+```
+
+These are type-level functions, operations that take types as input and produce types as output. They represent a form of metaprogramming at the type level.
+
+## The Deeper Pattern: Abstraction Layers
+
+Generics fit into a hierarchy of abstraction:
+
+- **Values** are the ground level: `42`, `"hello"`, `true`.
+- **Functions** abstract over values: `x => x + 1` works for any number `x`.
+- **Higher-order functions** abstract over functions: `map(f, list)` works for any function `f`.
+- **Generics** abstract over types: `identity<T>(x: T)` works for any type `T`.
+- **Higher-kinded types** abstract over type constructors. This is where languages like Haskell go further than Java or TypeScript, allowing abstraction over things like `List` or `Optional` themselves.
+
+Each level enables a new form of reusability. Generics occupy a sweet spot: powerful enough to eliminate most type-related duplication, yet simple enough to be implemented efficiently in mainstream languages.
+
+Generics embody a principle: good abstractions pay for themselves. The initial investment in understanding type parameters, constraints, and variance yields code that is simultaneously more flexible and more safe. Instead of choosing between reusability and correctness, generics provide both.
+
+The theoretical foundation, **parametric polymorphism**, ensures that generic code cannot discriminate based on type. A function that works for *all* `T` must work the same way regardless of what `T` is. This uniformity is what makes generic code safe.
+
+## Parametric Polymorphism
+
+Parametric polymorphism is a programming language technique that allows a single piece of code to be given a "generic" type, using variables in place of actual types, and then instantiated with particular types as needed.
+
+### Key Principles
+
+Parametric polymorphism allows functions to be written without depending on the types of their arguments. For example, the identity function simply returns its argument unmodified, and can be given a single, most general type by introducing a universally quantified type variable. This allows the function to be instantiated with any concrete type, yielding a family of potential types.
+
+Here is an example of a generic function in Python that demonstrates parametric polymorphism:
+
+```python
+from typing import TypeVar, List
+
+T = TypeVar('T')
+
+def identity(x: T) -> T:
+    return x
+
+def concatenate_lists(a: List[T], b: List[T]) -> List[T]:
+    return a + b
+
+print(identity(42))
+print(identity("Hello"))
+print(concatenate_lists([1, 2], [3, 4]))
+print(concatenate_lists(["a", "b"], ["c", "d"]))
+```
+
+<CodePlayground
+  code={`function identity(x) {
+  return x;
+}
+
+function concatenateLists(a, b) {
+  return a.concat(b);
+}
+
+console.log(identity(42));
+console.log(identity("Hello"));
+console.log(concatenateLists([1, 2], [3, 4]));
+console.log(concatenateLists(["a", "b"], ["c", "d"]));`}
+/>
+
+Different languages implement generics differently, reflecting different priorities. Java's erasure maintains compatibility. C#'s reification enables runtime capabilities. TypeScript's compile-time approach fits JavaScript's dynamic nature. But the core idea remains constant: let types themselves be parameters, and let the compiler ensure they're used correctly.
+
+Mastering generics means internalizing this abstraction. Once you think in terms of type parameters naturally, whole categories of problems become simpler to express and safer to implement. That's the mark of a good language feature: it changes how you think, not just what you write.
