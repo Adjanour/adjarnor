@@ -5,23 +5,22 @@ interface Props {
 
 const { type = "info" } = Astro.props
 
-const styles: Record<string, string> = {
-  info: "border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-200",
-  tip: "border-green-200 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-200",
-  warning:
-    "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200",
-  danger:
-    "border-red-200 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200",
+const borderColors: Record<string, string> = {
+  info: "border-l-[hsl(var(--primary))]",
+  tip: "border-l-[hsl(158,60%,42%)]",
+  warning: "border-l-[hsl(37,75%,45%)]",
+  danger: "border-l-[hsl(0,70%,55%)]",
 }
 
 const labels: Record<string, string> = {
-  info: "Info",
+  info: "Note",
   tip: "Tip",
-  warning: "Warning",
-  danger: "Danger",
+  warning: "Caution",
+  danger: "Watch out",
 }
 ---
 
-<aside class={`rounded-lg border px-4 py-3 text-sm ${styles[type]}`}>
-  <strong class="font-semibold">{labels[type]}:</strong> <slot />
+<aside class={`border-l-2 pl-4 py-2 my-6 text-sm text-muted-foreground bg-muted/30 rounded-r-sm ${borderColors[type]}`}>
+  <span class="text-xs font-medium uppercase tracking-wider text-foreground/60">{labels[type]}</span>
+  <div class="mt-1"><slot /></div>
 </aside>
