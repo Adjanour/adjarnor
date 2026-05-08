@@ -1,0 +1,105 @@
+---
+import { border, createDiagram, fg, fgMuted, muted, primary } from "@/utils/diagram"
+
+const d = createDiagram(520, 200)
+
+const values = [1, 3, 0, 0, 12]
+const regions = ["placed", "placed", "skipped", "skipped", "pending"]
+const leftIdx = 2
+const rightIdx = 4
+const boxW = 70
+const boxH = 44
+const gap = 10
+const startX = 45
+const y = 30
+
+// Region labels above
+const regionMeta = [
+  { start: 0, end: 1, label: "Placed" },
+  { start: 2, end: 3, label: "Skipped" },
+  { start: 4, end: 4, label: "Pending" },
+]
+for (const r of regionMeta) {
+  const cx = startX + (r.start + r.end) * (boxW + gap) / 2 + boxW / 2
+  d.text(cx, y - 8, r.label, { fontSize: 10, fill: fgMuted, anchor: "middle" })
+}
+
+// Boxes
+for (let i = 0; i < values.length; i++) {
+  const bx = startX + i * (boxW + gap)
+  const region = regions[i]
+  const isPlaced = region === "placed"
+  const isSkipped = region === "skipped"
+
+  d.box(bx, y, boxW, boxH, {
+    fill: muted,
+    stroke: isPlaced ? primary : border,
+    roughness: 0.4,
+    seed: i,
+    dashed: isSkipped,
+    strokeWidth: isPlaced ? 2.5 : 1.5,
+  })
+
+  d.text(bx + boxW / 2, y + boxH / 2 + 1, String(values[i]), {
+    fill: fg,
+    fontSize: 16,
+    fontWeight: "600",
+    anchor: "middle",
+  })
+
+  // Index below
+  d.text(bx + boxW / 2, y + boxH + 14, String(i), {
+    fontSize: 9,
+    fill: fgMuted,
+    anchor: "middle",
+  })
+}
+
+// Left pointer arrow
+const lx = startX + leftIdx * (boxW + gap) + boxW / 2
+d.arrow(lx, y + boxH + 50, lx, y + boxH + 42, {
+  stroke: primary,
+  strokeWidth: 1.5,
+  headSize: 7,
+  seed: 100,
+})
+d.text(lx, y + boxH + 64, "left", {
+  fontSize: 11,
+  fontWeight: "600",
+  fill: primary,
+  anchor: "middle",
+})
+d.text(lx, y + boxH + 76, "(builder)", {
+  fontSize: 9,
+  fill: fgMuted,
+  anchor: "middle",
+})
+
+// Right pointer arrow
+const rx = startX + rightIdx * (boxW + gap) + boxW / 2
+d.arrow(rx, y + boxH + 50, rx, y + boxH + 42, {
+  stroke: primary,
+  strokeWidth: 1.5,
+  headSize: 7,
+  seed: 101,
+})
+d.text(rx, y + boxH + 64, "right", {
+  fontSize: 11,
+  fontWeight: "600",
+  fill: primary,
+  anchor: "middle",
+})
+d.text(rx, y + boxH + 76, "(scanner)", {
+  fontSize: 9,
+  fill: fgMuted,
+  anchor: "middle",
+})
+
+const svgContent = d.serialize()
+---
+
+<Fragment set:html={svgContent} />
+
+<style>
+  svg { max-width: 100%; height: auto; display: block; margin: 1.5em auto; }
+</style>

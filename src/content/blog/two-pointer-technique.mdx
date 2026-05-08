@@ -1,0 +1,179 @@
+---
+title: Two-Pointer Technique
+subtitle: A Unified Pattern
+description: Moving zeros, removing elements, finding container areas. These problems look different but share the same pattern — scanning with one pointer while tracking with another. A systematic guide to recognizing and applying the two-pointer technique.
+date: 2025-12-24
+---
+
+Moving zeros, removing elements, finding container areas. These problems look different on the surface. But they all use the same underlying pattern: scanning with one pointer while tracking with another.
+
+This guide shows you how to recognize the pattern, understand the logic, and solve these problems systematically.
+
+## What Is the Two-Pointer Technique?
+
+The two-pointer technique uses two index variables to traverse an array, enabling $O(n)$ solutions to problems that would otherwise require $O(n^2)$ nested loops.
+
+Two common patterns emerge:
+
+**Scanner + Builder**: One pointer scans, the other marks where to place elements.
+
+**Converging pointers**: Pointers start at opposite ends and move toward each other.
+
+Both work by eliminating states that can't produce better solutions, making greedy local decisions that lead to optimal results.
+
+## Pattern 1: Scanner + Builder
+
+Use this when compacting, filtering, or reordering array elements in-place.
+
+The scanner (`right`) examines each element. The builder (`left`) marks the next valid position. Valid elements get placed at `left`, which then advances. Invalid elements are skipped, leaving them at the end.
+
+### Move Zeros to End
+
+Move all zeros to the end while preserving non-zero order.
+
+```python
+def move_zeros(nums):
+    left = 0  # Builder: next position for non-zero
+
+    for right in range(len(nums)):  # Scanner: examine each element
+        if nums[right] != 0:
+            nums[left], nums[right] = nums[right], nums[left]
+            left += 1  # Advance builder after placement
+
+    return nums
+```
+
+Every non-zero gets moved to the earliest available position. Zeros naturally accumulate at the end. Each element is examined once: $O(n)$.
+
+import ScanPattern from "@/components/blog/diagrams/ScanPattern.astro"
+
+<ScanPattern />
+
+**Trace with** `[0, 1, 0, 3, 12]`:
+
+```
+Initial:  [0, 1, 0, 3, 12]  left=0
+
+right=0:  nums[0]=0 (skip)
+          [0, 1, 0, 3, 12]  left=0
+
+right=1:  nums[1]=1 (swap)
+          [1, 0, 0, 3, 12]  left=1
+
+right=2:  nums[2]=0 (skip)
+          [1, 0, 0, 3, 12]  left=1
+
+right=3:  nums[3]=3 (swap)
+          [1, 3, 0, 0, 12]  left=2
+
+right=4:  nums[4]=12 (swap)
+          [1, 3, 12, 0, 0]  left=3
+
+Final: [1, 3, 12, 0, 0]
+```
+
+The key insight: `left` always points to the first zero in the compacted prefix, or to the position just after the last non-zero.
+
+### Remove Element
+
+Remove all instances of `val` in-place, return new length.
+
+```python
+def remove_element(nums, val):
+    left = 0  # Builder: next position for non-val element
+
+    for right in range(len(nums)):  # Scanner
+        if nums[right] != val:
+            nums[left] = nums[right]
+            left += 1
+
+    return left  # New length
+```
+
+Non-val elements get copied to the earliest positions. Val elements are skipped and overwritten. `left` tracks how many valid elements we've kept.
+
+## Pattern 2: Converging Pointers
+
+Use this when optimizing across width or distance tradeoffs, finding pairs, or maximizing area.
+
+The left pointer starts at the beginning, right at the end. Calculate the result using both pointers. Move the pointer that's limiting the result. This is the greedy choice. Pointers converge until they meet.
+
+### Container With Most Water
+
+Given heights array, find two lines that form the largest container.
+
+```python
+def max_area(heights):
+    left, right = 0, len(heights) - 1
+    max_area = 0
+
+    while left < right:
+        width = right - left
+        height = min(heights[left], heights[right])
+        area = width * height
+        max_area = max(max_area, area)
+
+        # Move the limiting pointer (greedy choice)
+        if heights[left] < heights[right]:
+            left += 1   # Left is shorter, move it
+        else:
+            right -= 1  # Right is shorter, move it
+
+    return max_area
+```
+
+import ContainerArea from "@/components/blog/diagrams/ContainerArea.astro"
+
+<ContainerArea />
+
+Width always decreases as pointers converge. To get a larger area, we need increased height. The shorter line limits height, so moving the taller line can't help. Moving the shorter line is the only way to potentially find a taller partner.
+
+## How to Recognize Two-Pointer Problems
+
+### Scanner + Builder
+
+Look for these signals: you need to filter, compact, or reorder array elements in-place with $O(1)$ space while preserving relative order. You can decide element validity independently.
+
+Example questions: "Move all X to the end", "Remove all occurrences of X", "Partition array by condition".
+
+### Converging Pointers
+
+Look for these signals: the array is sorted or has exploitable structure. You're looking for pairs, sums, or optimizing area or distance. You can eliminate suboptimal states by comparing endpoints.
+
+Example questions: "Two sum in sorted array", "Container with most water", "Trapping rain water".
+
+## Problem-Solving Framework
+
+**Identify what you're optimizing.** Compacting or filtering? Scanner + builder. Maximizing area or sum? Converging pointers.
+
+**Choose starting positions.** Scanner + builder: both start at index 0. Converging: one at 0, one at `len(array) - 1`.
+
+**Define pointer roles.** Which pointer scans? Which tracks? What does each position represent?
+
+**Determine movement logic.** When do you advance each pointer? What's the greedy choice? What condition makes you record a result?
+
+**Identify termination.** Scanner + builder: scanner reaches end. Converging: pointers meet or cross.
+
+## Practice Problems
+
+**Scanner + Builder:**
+- Move Zeros (LeetCode 283) — easiest
+- Remove Element (LeetCode 27)
+- Remove Duplicates from Sorted Array (LeetCode 26)
+- Sort Colors (LeetCode 75) — uses 3 pointers
+
+**Converging Pointers:**
+- Two Sum II (LeetCode 167) — easiest for this pattern
+- Container With Most Water (LeetCode 11)
+- Trapping Rain Water (LeetCode 42)
+- Three Sum (LeetCode 15) — combines patterns
+
+---
+
+The two-pointer technique works by making greedy local decisions that eliminate suboptimal states, visiting each element at most once ($O(n)$ instead of $O(n^2)$), and using pointer positions to encode algorithm state.
+
+The mental model: scanner + builder is like one worker scanning materials while another builds valid output. Converging pointers is like two workers narrowing the search space by eliminating impossible solutions.
+
+To master this pattern, recognize the two fundamental patterns, identify which pointer limits progress, make the greedy move by advancing the limiting pointer, and track your result as you go.
+
+Once you see these patterns, seemingly different problems reveal themselves as variations on the same theme.

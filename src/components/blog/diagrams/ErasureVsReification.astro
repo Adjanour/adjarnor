@@ -1,0 +1,102 @@
+---
+import { createDiagram, fg } from "@/utils/diagram"
+const black = "#000"
+
+const d = createDiagram(600, 280)
+
+d.centerText(18, "Erasure vs Reification", { fontSize: 15, fontWeight: "700" })
+
+// Table geometry
+const tx = 10, ty = 38, tw = 580
+const colW = [130, 225, 225]
+const colX = [tx, tx + colW[0], tx + colW[0] + colW[1]]
+const headerH = 34, rowH = 40
+
+const rows = [
+  { cells: ["Aspect", "Erasure (Java, TypeScript)", "Reification (C#)"] },
+  { cells: ["Runtime type info", "Erased (List only)", "Preserved (List<string>)"] },
+  { cells: ["Type parameter", "Replaced by Object / bound", "Tracked by CLR"] },
+  { cells: ["Reflection", "✗ Cannot reflect", "✓ Can reflect"] },
+  { cells: ["Design goal", "Backward compatibility", "Runtime power"] },
+]
+
+// Outer table border
+d.svg.appendChild(
+  d.rough.rectangle(tx, ty, tw, headerH + (rows.length - 1) * rowH, {
+    fill: "transparent",
+    stroke: black,
+    roughness: 0.6,
+    strokeWidth: 1.5,
+    seed: 1,
+  }),
+)
+
+// Header separator
+d.svg.appendChild(
+  d.rough.line(tx, ty + headerH, tx + tw, ty + headerH, {
+    stroke: black,
+    roughness: 0.5,
+    strokeWidth: 1.5,
+    seed: 2,
+  }),
+)
+
+// Row separators (skip last — outer border covers bottom)
+for (let i = 1; i < rows.length - 1; i++) {
+  const ry = ty + headerH + i * rowH
+  d.svg.appendChild(
+    d.rough.line(tx, ry, tx + tw, ry, {
+      stroke: black,
+      roughness: 0.4,
+      strokeWidth: 1,
+      seed: 10 + i,
+    }),
+  )
+}
+
+// Vertical separators
+for (let c = 1; c < colX.length; c++) {
+  const tableH = headerH + (rows.length - 1) * rowH
+  d.svg.appendChild(
+    d.rough.line(colX[c], ty, colX[c], ty + tableH, {
+      stroke: black,
+      roughness: 0.5,
+      strokeWidth: 1.5,
+      seed: 20 + c,
+    }),
+  )
+}
+
+// Render cells
+for (let r = 0; r < rows.length; r++) {
+  for (let c = 0; c < rows[r].cells.length; c++) {
+    const isHeader = r === 0
+    const cellY = isHeader ? ty : ty + headerH + (r - 1) * rowH
+    const cellH = isHeader ? headerH : rowH
+    const pad = 8
+    const fontSize = isHeader ? 11 : 10
+    const fontWeight = isHeader ? "600" : "400"
+    const fill = fg
+
+    d.text(colX[c] + pad, cellY + cellH / 2 + 4, rows[r].cells[c], {
+      fontSize,
+      fontWeight,
+      fill,
+      anchor: "start",
+    })
+  }
+}
+
+const svgContent = d.serialize()
+---
+
+<Fragment set:html={svgContent} />
+
+<style>
+  svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5em auto;
+  }
+</style>

@@ -1,86 +1,94 @@
 ---
-import BaseLayout from "./BaseLayout.astro"
-import "katex/dist/katex.min.css"
+import BaseLayout from "./BaseLayout.astro";
+import "katex/dist/katex.min.css";
 
 interface Props {
-  title: string
-  description: string
-  date: Date
+    title: string;
+    subtitle: string;
+    description: string;
+    date: Date;
 }
 
-const { title, description, date } = Astro.props
+const { title, subtitle, description, date } = Astro.props;
 const formattedDate = date.toLocaleDateString("en-US", {
-  month: "long",
-  day: "numeric",
-  year: "numeric",
-})
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+});
 ---
 
 <BaseLayout title={`${title} — Blog`} description={description}>
-  <div class="min-h-screen bg-background text-foreground font-sans">
-    <main id="main-content" class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-      <a
-        href="/blog/"
-        class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
-      >
-        <svg
-          class="w-4 h-4"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="m12 19-7-7 7-7" />
-          <path d="M19 12H5" />
-        </svg>
-        Back to blog
-      </a>
+    <div class="min-h-screen bg-background text-foreground font-sans">
+        <main id="main-content" class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+            <a
+                href="/blog/"
+                class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
+            >
+                <svg
+                    class="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                >
+                    <path d="m12 19-7-7 7-7"></path>
+                    <path d="M19 12H5"></path>
+                </svg>
+                Back to blog
+            </a>
 
-      <article>
-        <header class="mb-10">
-          <h1 class="text-3xl sm:text-4xl font-medium tracking-tight leading-tight mb-3">
-            {title}
-          </h1>
-          <div class="flex items-center gap-3 text-sm text-muted-foreground">
-            <time datetime={date.toISOString()}>{formattedDate}</time>
-          </div>
-          <p class="mt-4 text-lg text-muted-foreground">{description}</p>
-        </header>
+            <article>
+                <header class="mb-10">
+                    <h1 class="text-4xl sm:text-5xl font-bold tracking-tight leading-none mb-2">
+                        {title}
+                    </h1>
+                    {subtitle && (
+                        <h2 class="text-xl font-normal tracking-tight text-muted-foreground mb-8">
+                            {subtitle}
+                        </h2>
+                    )}
+                    <div class="border-t pt-6 mb-6 flex items-center gap-3 text-sm text-muted-foreground">
+                        <time datetime={date.toISOString()}>{formattedDate}</time>
+                    </div>
+                    <p class="text-base leading-relaxed text-muted-foreground">
+                        {description}
+                    </p>
+                </header>
 
-        <div class="prose prose-gray max-w-none">
-          <slot />
-        </div>
-      </article>
-    </main>
-  </div>
+                <div class="prose prose-gray max-w-none">
+                    <slot />
+                </div>
+            </article>
+        </main>
+    </div>
 </BaseLayout>
 
 <script>
-  for (const pre of document.querySelectorAll(".prose pre")) {
-    const btn = document.createElement("button")
-    btn.className = "copy-button"
-    btn.textContent = "Copy"
-    btn.addEventListener("click", async () => {
-      const code = pre.querySelector("code")
-      if (!code) return
-      try {
-        await navigator.clipboard.writeText(code.textContent || "")
-        btn.textContent = "Copied"
-        btn.classList.add("copied")
-        setTimeout(() => {
-          btn.textContent = "Copy"
-          btn.classList.remove("copied")
-        }, 2000)
-      } catch {
-        btn.textContent = "Failed"
-        setTimeout(() => {
-          btn.textContent = "Copy"
-        }, 2000)
-      }
-    })
-    pre.appendChild(btn)
-  }
+    for (const pre of document.querySelectorAll(".prose pre")) {
+        const btn = document.createElement("button");
+        btn.className = "copy-button";
+        btn.textContent = "Copy";
+        btn.addEventListener("click", async () => {
+            const code = pre.querySelector("code");
+            if (!code) return;
+            try {
+                await navigator.clipboard.writeText(code.textContent || "");
+                btn.textContent = "Copied";
+                btn.classList.add("copied");
+                setTimeout(() => {
+                    btn.textContent = "Copy";
+                    btn.classList.remove("copied");
+                }, 2000);
+            } catch {
+                btn.textContent = "Failed";
+                setTimeout(() => {
+                    btn.textContent = "Copy";
+                }, 2000);
+            }
+        });
+        pre.appendChild(btn);
+    }
 </script>

@@ -1,0 +1,93 @@
+---
+import {
+    border,
+    createDiagram,
+    fg,
+    fgMuted,
+    muted,
+    primary,
+} from "@/utils/diagram";
+
+const d = createDiagram(660, 440);
+
+const apexY = 80;
+const baseY = 352;
+const cx = 260;
+const halfBase = 210;
+const totalH = baseY - apexY;
+
+const lx = (y: number) => cx - ((y - apexY) / totalH) * halfBase;
+const rx = (y: number) => cx + ((y - apexY) / totalH) * halfBase;
+
+const layers = [
+    { y0: 80, y1: 140, label: "Higher-Kinded Types", code: "∀f. f a" },
+    { y0: 140, y1: 178, label: "Generics", code: "identity<T>(x: T)" },
+    { y0: 178, y1: 236, label: "Higher-Order Functions", code: "map(f, list)" },
+    { y0: 236, y1: 294, label: "Functions", code: "x => x + 1" },
+    { y0: 294, y1: 352, label: "Values", code: '42, "hello", true' },
+];
+
+const HILITE = 1;
+
+for (let i = 0; i < layers.length; i++) {
+    const l = layers[i];
+    const pts: [number, number][] = [
+        [lx(l.y0), l.y0],
+        [rx(l.y0), l.y0],
+        [rx(l.y1), l.y1],
+        [lx(l.y1), l.y1],
+    ];
+
+    const hilite = i === HILITE;
+
+    d.fillPolygon(pts, muted);
+    d.svg.appendChild(
+        d.rough.polygon(pts, {
+            fill: "transparent",
+            stroke: primary,
+            roughness: 0.6,
+            seed: 10 + i,
+            strokeWidth: 1.5,
+        }),
+    );
+
+    const cy = (l.y0 + l.y1) / 2;
+
+    // Code inside the trapezoid
+    d.text(cx, cy + 1, l.code, {
+        fill: fgMuted,
+        fontSize: 12,
+        anchor: "middle",
+    });
+
+    // Arrow from right edge of trapezoid to label
+    const arrowColor = hilite ? primary : fgMuted;
+    d.arrow(rx(cy), cy, 498, cy, {
+        stroke: arrowColor,
+        strokeWidth: 1.2,
+        headSize: 6,
+        seed: 50 + i,
+    });
+
+    // Label on the right
+    d.text(506, cy + 4, l.label, {
+        fill: hilite ? primary : fg,
+        fontSize: 12,
+        fontWeight: hilite ? "700" : "600",
+        anchor: "start",
+    });
+}
+
+const svgContent = d.serialize();
+---
+
+<Fragment set:html={svgContent} />
+
+<style>
+    svg {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 1.5em auto;
+    }
+</style>

@@ -1,10 +1,13 @@
 ---
-title: Understanding Generics — From Theory to Practice
-description: Generics solve a fundamental tension in programming — how do we write code that is both reusable across types and safe at compile time? A deep dive into parametric polymorphism across Java, TypeScript, and C#.
+title: Understanding Generics
+subtitle: From Theory to Practice
+description: How do we write code that is both reusable across types and safe at compile time?
 date: 2025-12-27
 ---
 
 import CodePlayground from "@/components/blog/CodePlayground.astro"
+import AbstractionLayers from "@/components/blog/diagrams/AbstractionLayers.astro"
+import ErasureVsReification from "@/components/blog/diagrams/ErasureVsReification.astro"
 
 Generics represent one of the most significant advances in type system design since static typing itself. They solve a fundamental tension in programming: how do we write code that is both reusable across types and safe at compile time? The answer lies in parametric polymorphism, a concept borrowed from functional programming that has become foundational in modern software engineering.
 
@@ -71,6 +74,8 @@ C# chose **reification**. Generic type information is preserved at runtime. The 
 This requires more sophisticated runtime support but provides more power. C# can do things Java cannot, like create arrays of generic types or perform runtime type checks on generics.
 
 Neither approach is universally superior. Erasure simplifies the runtime and maintains compatibility. Reification enables runtime introspection and optimization. The choice depends on language goals and constraints.
+
+<ErasureVsReification />
 
 ## Practical Applications: Java
 
@@ -241,7 +246,9 @@ type PartialUser = Partial<User>;
 
 These are type-level functions, operations that take types as input and produce types as output. They represent a form of metaprogramming at the type level.
 
-## The Deeper Pattern: Abstraction Layers
+## Abstraction Layers
+
+<AbstractionLayers />
 
 Generics fit into a hierarchy of abstraction:
 

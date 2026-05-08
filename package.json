@@ -17,13 +17,15 @@
     "fast-xml-parser": "^4.4.1",
     "katex": "^0.16.45",
     "rehype-katex": "^7.0.1",
-    "remark-math": "^6.0.0"
+    "remark-math": "^6.0.0",
+    "roughjs": "^4.6.6"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.14",
     "@eslint/js": "^9.39.2",
     "@tailwindcss/vite": "^4.1.18",
     "@types/node": "^22.19.8",
+    "@xmldom/xmldom": "^0.9.10",
     "astro": "^6.3.1",
     "eslint": "^9.39.2",
     "globals": "^15.15.0",

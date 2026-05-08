@@ -1,0 +1,222 @@
+---
+title: Autocomplete with Tries in Go
+subtitle: Building efficient prefix searches
+description: A deep dive into implementing autocomplete using tries in Go.
+date: 2025-12-25
+---
+
+## The Problem
+
+Autocomplete is everywhere. Start typing in a search box, and suggestions appear instantly. But how do you build this efficiently?
+
+The core challenge: given a string and a dictionary of words, return all words that start with that prefix.
+
+```
+word = "de"
+dictionary = ["dog", "deer", "deal"]
+output = ["deer", "deal"]
+```
+
+This seems straightforward, but when your dataset grows to thousands or millions of words, naive approaches break down.
+
+## My First Attempts
+
+Initially, I looped through all words and checked each one using `strings.HasPrefix`:
+
+```go
+func findWords(prefix string, words []string) []string {
+    var results []string
+    for _, word := range words {
+        if strings.HasPrefix(word, prefix) {
+            results = append(results, word)
+        }
+    }
+    return results
+}
+```
+
+Every search scans the entire dictionary. Time complexity: $O(n \times p)$, where $n$ is the number of words and $p$ is the prefix length.
+
+With 100,000 words, a simple search could check all 100,000 entries. That's too slow for real-time autocomplete.
+
+I tried grouping words by their first character using a map, which helped slightly but still wasn't efficient enough for prefix searches.
+
+## Why a Trie?
+
+A **Trie** (pronounced "try") is a tree structure designed specifically for prefix-based operations. Here's why it's perfect for autocomplete:
+
+1. **Shared prefixes**: Common beginnings are stored only once
+2. **Fast lookups**: Navigate directly to the prefix node without checking irrelevant words
+3. **Efficient collection**: Gather all matching words by traversing from the prefix node
+
+Time complexity improves dramatically to $O(p + k)$, where $p$ = prefix length and $k$ = total characters in matching words.
+
+## Understanding the Trie Structure
+
+A Trie is a tree where each node represents a single character, children are stored in a map (character to child node), and a boolean flag marks nodes that complete valid words.
+
+Inserting "car", "card", "care", "dog", and "deer" creates this structure:
+
+import TrieDiagram from "@/components/blog/diagrams/TrieDiagram.astro"
+
+<TrieDiagram />
+
+Notice how "car", "card", and "care" share the path `c → a → r`, then branch. This is the power of prefix sharing.
+
+## How the Trie Solves Autocomplete
+
+### Build the Trie
+
+Insert all dictionary words:
+
+```go
+func (t *Trie) Insert(word string) {
+    node := t.Root
+    for _, char := range word {
+        if _, exists := node.Children[char]; !exists {
+            node.Children[char] = &TrieNode{
+                Children: make(map[rune]*TrieNode),
+            }
+        }
+        node = node.Children[char]
+    }
+    node.IsEnd = true
+}
+```
+
+### Find the Prefix Node
+
+Navigate character by character:
+
+```go
+func (t *Trie) findPrefixNode(prefix string) *TrieNode {
+    node := t.Root
+    for _, char := range prefix {
+        if node.Children[char] == nil {
+            return nil
+        }
+        node = node.Children[char]
+    }
+    return node
+}
+```
+
+### Collect All Words
+
+From the prefix node, gather all complete words via DFS:
+
+```go
+func (t *Trie) collectWords(node *TrieNode, prefix string, results *[]string) {
+    if node.IsEnd {
+        *results = append(*results, prefix)
+    }
+    for char, child := range node.Children {
+        t.collectWords(child, prefix+string(char), results)
+    }
+}
+```
+
+### Complete Autocomplete
+
+```go
+func (t *Trie) AutoComplete(prefix string) []string {
+    node := t.findPrefixNode(prefix)
+    if node == nil {
+        return []string{}
+    }
+    results := []string{}
+    t.collectWords(node, prefix, &results)
+    return results
+}
+```
+
+## Core Data Structures
+
+```go
+type TrieNode struct {
+    Children map[rune]*TrieNode
+    IsEnd    bool
+}
+
+type Trie struct {
+    Root *TrieNode
+}
+
+func NewTrie() *Trie {
+    return &Trie{
+        Root: &TrieNode{
+            Children: make(map[rune]*TrieNode),
+        },
+    }
+}
+```
+
+Each node stores children in a `map[rune]*TrieNode` and an `IsEnd` flag marking word boundaries. The `Trie` struct wraps the root node.
+
+## Go Features That Made This Work
+
+- **Maps**: Dynamic child node storage with $O(1)$ lookups per character
+- **Runes**: Proper Unicode handling, not just ASCII
+- **Pointers**: Memory-efficient node connections
+- **Recursion**: Clean DFS word collection
+- **Slices**: Dynamic result arrays with append
+
+## Performance Analysis
+
+| Operation | Time | Space |
+|---|---|---|
+| Insert | $O(L)$ | $O(N)$ |
+| Find prefix | $O(P)$ | $O(1)$ |
+| Collect matches | $O(K)$ | $O(K)$ |
+| **Autocomplete** | $\mathbf{O(P + K)}$ | $O(N)$ |
+
+Where $L$ = word length, $P$ = prefix length, $K$ = total characters in matching words, $N$ = dictionary size.
+
+### Real-World Example
+
+Searching "cat" in 100,000 words:
+- **Naive**: $O(n \times p)$ — checks all 100,000 words
+- **Trie**: $O(p + k)$ — navigate 3 characters + collect matches = ~50 ops (if 50 words match)
+
+That's roughly **2,000x faster**.
+
+## Advantages and Tradeoffs
+
+**Advantages:**
+- Fast prefix searches: $O(P)$ instead of $O(N)$
+- Memory efficient for common prefixes: "car", "card", "care" share storage
+- Scales well — performance doesn't degrade linearly with dataset size
+- Extensible — easy to add word frequency or fuzzy matching
+
+**Tradeoffs:**
+- Higher memory overhead — each node stores a map of children
+- More code than simple filtering
+- Deletion requires careful cleanup
+
+## Key Lessons
+
+1. **Brute force is a starting point, not the solution** — always analyze performance as data scales
+2. **Data structures matter** — the right structure transforms hard problems into simple ones
+3. **Think recursively** — tree traversal becomes elegant with recursive thinking
+4. **Language features enable solutions** — Go's pointers and maps made this implementation clean
+5. **Optimize for the operation** — tries are built for prefix operations specifically
+
+## When to Use a Trie
+
+**Use a Trie when:**
+- You need fast prefix-based searches
+- Your dataset has many words with shared prefixes
+- You're building autocomplete, spell checkers, or IP routing tables
+
+**Don't use a Trie when:**
+- Your dataset is very small (< 100 words)
+- Exact matches are more common than prefix searches
+- Memory is extremely constrained
+
+---
+
+This project taught me that good engineering isn't about knowing all the data structures — it's about recognizing patterns and choosing the right tool. I started with a slow, obvious solution and iteratively improved it by understanding the problem's structure.
+
+The Trie isn't just a clever trick; it's a principled solution to a specific class of problems. Building it in Go reinforced that clean code comes from understanding both your language and your domain.
+
+> Want to see the full implementation? Check out the [complete code on GitHub](https://github.com/Adjanour/DailyCodingProblems/blob/main/day11) with tests.

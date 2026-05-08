@@ -1,0 +1,81 @@
+---
+import { border, createDiagram, fg, fgMuted, muted, primary } from "@/utils/diagram"
+
+const d = createDiagram(480, 260)
+
+const rows = [
+  { i: 1, bits: [0, 0, 1], subset: "{milk}" },
+  { i: 2, bits: [0, 1, 0], subset: "{butter}" },
+  { i: 3, bits: [0, 1, 1], subset: "{butter, milk}" },
+  { i: 5, bits: [1, 0, 1], subset: "{bread, milk}" },
+]
+
+const labels = ["bread", "butter", "milk"]
+const bitSize = 30
+const bitGap = 6
+const startX = 130
+const startY = 30
+const rowH = 52
+
+// Column headers
+d.text(startX + bitSize / 2, startY - 8, "bread", { fontSize: 9, fill: fgMuted, anchor: "middle" })
+d.text(startX + bitSize + bitGap + bitSize / 2, startY - 8, "butter", { fontSize: 9, fill: fgMuted, anchor: "middle" })
+d.text(startX + 2 * (bitSize + bitGap) + bitSize / 2, startY - 8, "milk", { fontSize: 9, fill: fgMuted, anchor: "middle" })
+
+// "i = " label header
+d.text(20, startY - 8, "i", { fontSize: 10, fontWeight: "600", fill: fgMuted, anchor: "start" })
+
+for (let r = 0; r < rows.length; r++) {
+  const row = rows[r]
+  const ry = startY + r * rowH
+
+  // i value label
+  d.text(20, ry + bitSize / 2 + 1, `i = ${row.i}`, { fontSize: 11, fontWeight: "600", fill: fg, anchor: "start" })
+
+  // Bit boxes
+  for (let b = 0; b < row.bits.length; b++) {
+    const bx = startX + b * (bitSize + bitGap)
+    const isSet = row.bits[b] === 1
+
+    d.box(bx, ry, bitSize, bitSize, {
+      fill: isSet ? primary : muted,
+      stroke: isSet ? primary : border,
+      roughness: 0.3,
+      seed: r * 10 + b,
+      strokeWidth: isSet ? 2 : 1.2,
+    })
+
+    d.text(bx + bitSize / 2, ry + bitSize / 2 + 1, isSet ? "1" : "0", {
+      fill: fg,
+      fontSize: 13,
+      fontWeight: "600",
+      anchor: "middle",
+    })
+  }
+
+  // Arrow
+  const arrowX = startX + 3 * (bitSize + bitGap) + 12
+  d.arrow(arrowX, ry + bitSize / 2, arrowX + 30, ry + bitSize / 2, {
+    stroke: fgMuted,
+    strokeWidth: 1.2,
+    headSize: 6,
+    seed: 50 + r,
+  })
+
+  // Subset label
+  d.text(arrowX + 38, ry + bitSize / 2 + 1, row.subset, {
+    fontSize: 11,
+    fill: primary,
+    fontWeight: "600",
+    anchor: "start",
+  })
+}
+
+const svgContent = d.serialize()
+---
+
+<Fragment set:html={svgContent} />
+
+<style>
+  svg { max-width: 100%; height: auto; display: block; margin: 1.5em auto; }
+</style>

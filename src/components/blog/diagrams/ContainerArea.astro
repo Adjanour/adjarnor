@@ -1,0 +1,139 @@
+---
+import { border, createDiagram, fg, fgMuted, muted, primary } from "@/utils/diagram"
+
+const d = createDiagram(520, 300)
+
+const heights = [3, 7, 4, 6, 2, 8, 5]
+const barW = 44
+const gap = 12
+const startX = 58
+const baseY = 230
+const maxBarH = 180
+const scale = maxBarH / Math.max(...heights)
+
+// Left pointer targets the first bar (index 0, height 3)
+// Right pointer targets the last bar (index 6, height 5)
+const leftIdx = 0
+const rightIdx = heights.length - 1
+const containerH = Math.min(heights[leftIdx], heights[rightIdx]) * scale
+const leftBarCx = startX + leftIdx * (barW + gap) + barW / 2
+const rightBarCx = startX + rightIdx * (barW + gap) + barW / 2
+
+// Draw bars
+for (let i = 0; i < heights.length; i++) {
+  const bx = startX + i * (barW + gap)
+  const bh = heights[i] * scale
+  const by = baseY - bh
+  const isPointer = i === leftIdx || i === rightIdx
+
+  d.fillPolygon(
+    [
+      [bx, by],
+      [bx + barW, by],
+      [bx + barW, baseY],
+      [bx, baseY],
+    ],
+    isPointer ? muted : muted,
+  )
+
+  d.svg.appendChild(
+    d.rough.rectangle(bx, by, barW, bh, {
+      fill: "transparent",
+      stroke: border,
+      roughness: 0.5,
+      seed: i,
+      strokeWidth: 1.5,
+    }),
+  )
+
+  // Height label above each bar
+  d.text(bx + barW / 2, by - 6, String(heights[i]), {
+    fontSize: 10,
+    fill: fgMuted,
+    anchor: "middle",
+  })
+}
+
+// Container area highlight
+const areaTop = baseY - containerH
+d.fillPolygon(
+  [
+    [leftBarCx, areaTop],
+    [rightBarCx, areaTop],
+    [rightBarCx, baseY],
+    [leftBarCx, baseY],
+  ],
+  "hsl(var(--primary))",
+)
+
+// Area semi-transparent overlay
+const svgDoc = (d.svg as any).ownerDocument as XMLDocument
+const ns = "http://www.w3.org/2000/svg"
+const areaEl = svgDoc.createElementNS(ns, "polygon")
+areaEl.setAttribute("points", `${leftBarCx},${areaTop} ${rightBarCx},${areaTop} ${rightBarCx},${baseY} ${leftBarCx},${baseY}`)
+areaEl.setAttribute("fill", "hsl(var(--primary))")
+areaEl.setAttribute("opacity", "0.12")
+d.svg.appendChild(areaEl)
+
+// Area outline
+d.svg.appendChild(
+  d.rough.rectangle(leftBarCx, areaTop, rightBarCx - leftBarCx, containerH, {
+    fill: "transparent",
+    stroke: primary,
+    roughness: 0.4,
+    strokeWidth: 2,
+    seed: 200,
+    strokeLineDash: [5, 4],
+  }),
+)
+
+// Area label
+d.text((leftBarCx + rightBarCx) / 2, areaTop + containerH / 2 + 1, `area = ${containerH.toFixed(0)}`, {
+  fontSize: 14,
+  fontWeight: "700",
+  fill: primary,
+  anchor: "middle",
+})
+
+// Pointers
+const pointerDefs: { idx: number; label: string; seed: number }[] = [
+  { idx: leftIdx, label: "left", seed: 300 },
+  { idx: rightIdx, label: "right", seed: 301 },
+]
+for (const p of pointerDefs) {
+  const cx = startX + p.idx * (barW + gap) + barW / 2
+  d.arrow(cx, baseY + 20, cx, baseY + 8, {
+    stroke: fg,
+    strokeWidth: 1.5,
+    headSize: 6,
+    seed: p.seed,
+  })
+  d.text(cx, baseY + 33, p.label, {
+    fontSize: 11,
+    fontWeight: "600",
+    fill: fg,
+    anchor: "middle",
+  })
+}
+
+// Annotation: greedy choice
+d.text(leftBarCx, baseY - containerH - 32, `${heights[leftIdx]} < ${heights[rightIdx]}`, {
+  fontSize: 11,
+  fontWeight: "600",
+  fill: fg,
+  anchor: "middle",
+})
+d.text(leftBarCx, baseY - containerH - 20, "move left → → →", {
+  fontSize: 9,
+  fill: fgMuted,
+  anchor: "middle",
+})
+
+const svgContent = d.serialize()
+---
+
+<Fragment set:html={svgContent} />
+
+<style>
+  svg { max-width: 100%; height: auto; display: block; margin: 1.5em auto; }
+</style>
