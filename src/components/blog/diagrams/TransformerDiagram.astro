@@ -1,0 +1,114 @@
+---
+import {
+  border,
+  createDiagram,
+  fg,
+  fgMuted,
+  muted,
+  primary,
+} from "@/utils/diagram";
+
+const d = createDiagram(540, 540);
+const cx = 270;
+const bw = 250;
+const bh = 38;
+const gap = 28;
+
+function stage(y: number, label: string, fill?: string) {
+  const f = fill ?? muted;
+  const textFill = f === primary ? "#fff" : undefined;
+  d.box(cx - bw / 2, y, bw, bh, { fill: f, roughness: 0.4 });
+  d.centerText(y + bh / 2 + 1, label, {
+    fontSize: 12,
+    fontWeight: "700",
+    fill: textFill,
+  });
+}
+
+function connect(y1: number, y2: number, seed: number) {
+  d.arrow(cx, y1 + bh, cx, y2 - 5, {
+    seed,
+    stroke: fg,
+    strokeWidth: 3,
+    headSize: 12,
+  });
+}
+
+const s1 = 10;
+const s2 = s1 + bh + gap;
+const blockY = s2 + bh + gap;
+const blockH = 124;
+const s4 = blockY + blockH + gap;
+const s5 = s4 + bh + gap;
+
+stage(s1, "Input: [t₁, t₂, t₃, …, tₙ]");
+connect(s1, s2, 1);
+
+stage(s2, "Token Embedding + Positional Encoding");
+connect(s2, blockY, 2);
+
+d.box(cx - 130, blockY, 260, blockH, {
+  fill: "transparent",
+  roughness: 0.6,
+  seed: 3,
+  strokeWidth: 2,
+});
+d.centerText(blockY + 16, "N × Transformer Blocks", {
+  fontSize: 13,
+  fontWeight: "700",
+});
+
+const iw = 200;
+const ih = 32;
+d.box(cx - iw / 2, blockY + 30, iw, ih, {
+  fill: muted,
+  roughness: 0.3,
+  seed: 4,
+});
+d.centerText(blockY + 30 + ih / 2 + 1, "Self-Attention (Communication)", {
+  fontSize: 11,
+});
+
+d.box(cx - iw / 2, blockY + 74, iw, ih, {
+  fill: muted,
+  roughness: 0.3,
+  seed: 5,
+});
+d.centerText(blockY + 74 + ih / 2 + 1, "Feed-Forward Network (Computation)", {
+  fontSize: 11,
+});
+
+d.arrow(cx, blockY + 62, cx, blockY + 71, {
+  seed: 8,
+  stroke: fg,
+  strokeWidth: 2,
+  headSize: 7,
+});
+
+connect(blockY + 89, s4, 6);
+
+stage(s4, "Output: [logit₁, logit₂, …, logitₙ]");
+connect(s4, s5, 7);
+
+stage(s5, "Softmax → P(yₜ | y<ₜ)", primary);
+
+const sx = cx - bw / 2 - 34;
+d.step(sx, s1, 1);
+d.step(sx, s2, 2);
+d.step(sx, blockY + (blockH / 2 - 12), 3);
+d.step(sx, s4, 4);
+d.step(sx, s5, 5);
+
+const svgContent = d.serialize();
+---
+
+<Fragment set:html={svgContent} />
+
+<style>
+  svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5em auto;
+  }
+</style>

@@ -1,43 +1,42 @@
 ---
 import { border, createDiagram, fg, fgMuted, muted, primary } from "@/utils/diagram"
 
-const d = createDiagram(480, 340)
+const d = createDiagram(520, 340)
+const R = 18
 
-// Node data: [x, y, char, isEnd]
-const nodes: [number, number, string, boolean][] = [
-  [240, 30, "", false],
-  [160, 90, "c", false],
-  [320, 90, "d", false],
-  [160, 150, "a", false],
-  [280, 150, "o", false],
-  [400, 150, "e", false],
-  [160, 210, "r", false],
-  [280, 210, "g", true],
-  [400, 210, "e", false],
-  [100, 270, "d", true],
-  [220, 270, "e", true],
-  [400, 270, "r", true],
+interface Node {
+  x: number
+  y: number
+  label: string
+  isEnd: boolean
+}
+
+// Layout: root → "Elvis" → "Presley" → "film.actor.film" → "Blue_Hawaii"
+//         root → "The" → "president"
+const nodes: Node[] = [
+  { x: 260, y: 30, label: "", isEnd: false },
+  { x: 160, y: 100, label: "Elvis", isEnd: false },
+  { x: 380, y: 100, label: "The", isEnd: false },
+  { x: 160, y: 170, label: "Presley", isEnd: false },
+  { x: 380, y: 170, label: "president", isEnd: true },
+  { x: 160, y: 240, label: "film.actor.film", isEnd: false },
+  { x: 160, y: 310, label: "Blue_Hawaii", isEnd: true },
 ]
 
 const edges: [number, number][] = [
-  [0, 1], [0, 2],
+  [0, 1],
+  [0, 2],
   [1, 3],
-  [2, 4], [2, 5],
-  [3, 6],
-  [4, 7],
-  [5, 8],
-  [6, 9], [6, 10],
-  [8, 11],
+  [2, 4],
+  [3, 5],
+  [5, 6],
 ]
 
-const R = 16
-
-// Edges
 for (const [from, to] of edges) {
-  const [x1, y1] = [nodes[from][0], nodes[from][1] + R]
-  const [x2, y2] = [nodes[to][0], nodes[to][1] - R]
+  const fy = nodes[from].y + (nodes[from].label === "" ? 6 : R)
+  const ty = nodes[to].y - R
   d.svg.appendChild(
-    d.rough.line(x1, y1, x2, y2, {
+    d.rough.line(nodes[from].x, fy, nodes[to].x, ty, {
       stroke: border,
       roughness: 0.4,
       strokeWidth: 1.5,
@@ -46,12 +45,10 @@ for (const [from, to] of edges) {
   )
 }
 
-// Nodes
-for (const [x, y, char, isEnd] of nodes) {
-  if (char === "") {
-    // root — small filled circle
+for (const n of nodes) {
+  if (n.label === "") {
     d.svg.appendChild(
-      d.rough.circle(x, y, 12, {
+      d.rough.circle(n.x, n.y, 12, {
         fill: muted,
         stroke: border,
         roughness: 0.4,
@@ -62,31 +59,36 @@ for (const [x, y, char, isEnd] of nodes) {
     continue
   }
 
+  const textW = n.label.length * 7.5
+  const boxW = Math.max(textW + 20, 36)
+  const boxH = 30
+
   d.svg.appendChild(
-    d.rough.circle(x, y, R * 2, {
+    d.rough.rectangle(n.x - boxW / 2, n.y - boxH / 2, boxW, boxH, {
       fill: muted,
       stroke: border,
       roughness: 0.5,
-      seed: x + y,
+      seed: n.x + n.y,
       strokeWidth: 1.5,
     }),
   )
 
-  if (isEnd) {
+  if (n.isEnd) {
     d.svg.appendChild(
-      d.rough.circle(x, y, 9, {
+      d.rough.rectangle(n.x - boxW / 2, n.y - boxH / 2, boxW, boxH, {
         fill: primary,
-        stroke: "transparent",
+        stroke: primary,
         roughness: 0.3,
-        seed: x + y + 100,
+        seed: n.x + n.y + 100,
+        strokeWidth: 1.5,
       }),
     )
   }
 
-  d.text(x, y + 1, char, {
-    fill: fg,
-    fontSize: 13,
-    fontWeight: "600",
+  d.text(n.x, n.y + 1, n.label, {
+    fill: n.isEnd ? "#fff" : fg,
+    fontSize: 12,
+    fontWeight: n.isEnd ? "700" : "600",
     anchor: "middle",
   })
 }

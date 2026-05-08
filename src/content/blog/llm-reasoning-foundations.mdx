@@ -1,0 +1,162 @@
+---
+title: LLM Reasoning — From Next-Token Prediction to Constrained Decoding
+subtitle: Understanding how LLMs reason, why they hallucinate, and how we can steer their output with structure
+description: A first-principles look at autoregressive transformers, the hallucination problem, and how constrained decoding can ground LLM outputs in structured knowledge.
+date: 2026-05-08
+---
+
+import TransformerDiagram from "@/components/blog/diagrams/TransformerDiagram.astro"
+import TrieDiagram from "@/components/blog/diagrams/TrieDiagram.astro"
+
+## The Deepest Question
+
+What does it mean for a machine to "reason" about the world?
+
+At its core, a Large Language Model is a single, enormous function:
+
+$$
+P(y_t \mid y_{<t}, x)
+$$
+
+At step $t$, given input $x$ and tokens generated so far $y_{<t}$, what token $y_t$ comes next?
+
+That's all it does. There is no internal monologue, no working memory, no database lookup, no verifier. It is **next-token prediction**, all the way down.
+
+And yet, from this apparently shallow operation, the following emerge:
+
+- Translation between languages
+- Code generation and debugging
+- Multi-step mathematical reasoning
+- Theory-of-mind inferences
+- Creative writing
+
+**The central mystery of LLMs:** How can a mechanism so simple produce behaviour so complex?
+
+[Andrej Karpathy](https://karpathy.github.io/) frames this as *compression*: training is a lossy compression of the entire internet into a weights file. The 15+ trillion tokens in a typical training corpus get compressed into ~140 GB of parameters for a 70B model. The result is not a database, but a *compressed world model*: a simulator of the processes that generated the text.
+
+> "The model is not exactly a database. It's more like a dream simulator of the internet. You can't lookup facts. But you can prompt it in the right way and it will simulate the fact for you."
+> — [Andrej Karpathy](https://twitter.com/karpathy/status/1733299213503787018)
+
+## How an Autoregressive Transformer Works
+
+Before we talk about constraints, we need to understand what we're constraining. Here's a simplified view of the transformer forward pass:
+
+<TransformerDiagram />
+
+Each transformer block has two phases:
+
+1. **Communication** (self-attention): tokens exchange information. Each token computes queries, keys, and values, then attends to all previous tokens (masked to prevent cheating).
+
+2. **Computation** (feed-forward): each token independently processes the information it gathered. This is where "knowledge" is primarily stored (the FFN layers act as key-value memories).
+
+Karpathy's analogy: attention is a meeting where everyone shares information; the FFN is everyone going back to their desk to process what they learned.
+
+The output is a probability distribution over the entire vocabulary (~128K tokens for Llama-3.1). The next token is sampled from this distribution.
+
+## The Two Crises
+
+This compression explains two fundamental problems:
+
+### Hallucination
+
+Because the model is a simulator, not a database, it has no fidelity guarantee. For common facts ("Paris is the capital of France"), the compression is nearly lossless. For rare facts ("the 7th largest exporter of cobalt in 2023"), the compression loses information. The model's output is always its *best statistical guess*, not a *verified retrieval*.
+
+### Knowledge Cutoff
+
+The model's knowledge is frozen at the time of training. Any fact that changes after training (e.g., "Who is the current US president?") cannot be correctly answered without external grounding.
+
+## Three Families of Solutions
+
+There are three broad approaches to grounding LLMs in facts:
+
+| Approach | Changes | Examples |
+|----------|---------|----------|
+| **Input augmentation** | What the model *sees* | RAG, prompt engineering |
+| **Model updating** | What the model *is* | Fine-tuning, LoRA |
+| **Output constraint** | What the model *can say* | Grammar constraints, structured decoding |
+
+The third family is the most interesting to me: instead of changing the model or its input, you change the *allowed output space* during decoding.
+
+## Constrained Decoding
+
+Constrained decoding modifies the token selection process to enforce structural rules:
+
+$$
+\text{Standard:} \quad y_t \sim P(y_t \mid y_{<t})
+$$
+
+$$
+\text{Constrained:} \quad y_t \sim P(y_t \mid y_{<t}) \quad \text{s.t.} \quad \text{constraint}(y_{\leq t}) = \text{True}
+$$
+
+The implementation is straightforward: **logit masking**
+
+```python
+for token_id in range(vocab_size):
+    if not is_allowed(token_id, prefix):
+        logits[token_id] = -float('inf')
+
+probabilities = softmax(logits)  # now zero for disallowed tokens
+```
+
+This is a **hard constraint**: disallowed tokens have exactly zero probability. The model cannot assign any probability to them, no matter how attractive they might seem.
+
+HuggingFace's `model.generate()` supports this via a `prefix_allowed_tokens_fn` callback, which receives the current prefix and returns the list of valid next tokens.
+
+### Types of Constraints
+
+| Constraint Type | What It Enforces |
+|-----------------|------------------|
+| **Trie / prefix tree** | Next token must continue a valid prefix |
+| **Regular expression** | Output must match a regex pattern |
+| **Grammar** | Output must follow a context-free grammar (SQL, JSON) |
+| **Length** | Total length within bounds |
+| **Vocabulary** | Certain words are forbidden |
+
+## Where Constrained Decoding Gets Interesting
+
+The most powerful applications combine structure with semantics. Consider a **knowledge graph**: a structured collection of facts stored as triples:
+
+```
+(Elvis Presley,   people.person.place_of_birth,   Tupelo)
+(Elvis Presley,   film.actor.film,                Blue_Hawaii)
+(Blue_Hawaii,     film.film.directed_by,          Norman_Taurog)
+```
+
+If you constrain the LLM to generate only valid paths through a knowledge graph, you get a guarantee that every generated reasoning path corresponds to a real sequence of facts in the graph. The model can *think out loud* in graph space, and the constraint oracle ensures it never strays from what the graph actually says.
+
+The constraint is a **trie** (prefix tree) built from all valid paths in the graph:
+
+<TrieDiagram />
+
+At each decoding step, the trie tells us which tokens are valid. The query is $O(\text{prefix length})$ and essentially instantaneous even for millions of paths, especially with compressed trie implementations like `marisa_trie`.
+
+## The Faithfulness Guarantee and Its Limit
+
+Here's where things get subtle.
+
+Constrained decoding can guarantee that a generated path is **faithful** to the knowledge graph: every relation mentioned actually exists. But faithfulness is not the same as **relevance**.
+
+A path can be faithful to the graph and irrelevant to the question simultaneously. For a question about Marie Curie's birthplace, a trie built from all paths in the graph admits:
+
+- Marie Curie $\to$ people.person.place_of_birth $\to$ Warsaw ✅ relevant
+- Marie Curie $\to$ people.person.children $\to$ Irène Joliot-Curie ❌ *faithful but irrelevant*
+- Marie Curie $\to$ award_received $\to$ Nobel_Prize ❌ *faithful but irrelevant*
+
+The constraint guarantees structural validity. It does not guarantee semantic relevance. The model still has to navigate a combinatorially large space of valid paths, many of which lead nowhere useful.
+
+This gap between *what the constraint allows* and *what the question needs* is where a lot of interesting research is happening right now. How do you make the constraint itself aware of what the question is asking?
+
+## The Path Forward
+
+Some directions being explored:
+
+- **Semantic filtering**: scoring paths by relevance to the question before building the trie, so irrelevant branches are pruned upfront
+- **Dynamic expansion**: starting with a small trie and expanding it step-by-step during generation, guided by what the model has generated so far
+- **Backtracking**: when the model goes down an unpromising path, pruning that branch and recovering
+
+All of these share a common insight: the constraint oracle should know what the question is asking, not just what paths structurally exist in the graph.
+
+---
+
+*This post scratches the surface of concepts I'm exploring in depth. If you're working on LLM reasoning, structured generation, or knowledge-grounded AI, I'd love to hear your thoughts.*
