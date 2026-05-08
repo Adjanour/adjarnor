@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import ShareButtons from "@/components/blog/ShareButtons.astro";
 import "katex/dist/katex.min.css";
 
 interface Props {
@@ -7,9 +8,10 @@ interface Props {
     subtitle: string;
     description: string;
     date: Date;
+    image?: string;
 }
 
-const { title, subtitle, description, date } = Astro.props;
+const { title, subtitle, description, date, image } = Astro.props;
 const formattedDate = date.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -17,7 +19,7 @@ const formattedDate = date.toLocaleDateString("en-US", {
 });
 ---
 
-<BaseLayout title={`${title} — Blog`} description={description}>
+<BaseLayout title={`${title} — Blog`} description={description} image={image}>
     <div class="min-h-screen bg-background text-foreground font-sans">
         <main id="main-content" class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
             <a
@@ -61,6 +63,7 @@ const formattedDate = date.toLocaleDateString("en-US", {
                 <div class="prose prose-gray max-w-none">
                     <slot />
                 </div>
+                <ShareButtons title={title} />
             </article>
         </main>
     </div>

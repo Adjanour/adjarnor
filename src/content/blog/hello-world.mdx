@@ -1,108 +1,78 @@
 ---
-title: Hello, World — Building a Technical Blog
-description: A first post to test code blocks, math rendering, and interactive demos on the new blog section.
+title: Hello, I'm Bernard Katamanso
+subtitle: Engineer, Pan-Africanist, and builder of purposeful systems
+description: A proper introduction — who I am, what I build, why I write, and where to find me around the web.
 date: 2026-05-07
 ---
 
-This is the first post on the new technical blog. Let's test everything works.
+Welcome. If we haven't met, here's the short version: I'm a software engineer and Tech Lead from Ghana who believes technology can — and should — be a force for equity across Africa and the global South.
 
-## Code Blocks
+I write about software engineering, systems architecture, programming language theory, and the craft of building things that matter. This post is a quick tour of who I am, what I do, and where to find me.
 
-Here's a simple JavaScript function:
+## Who I Am
 
-```js
-function fibonacci(n) {
-  if (n <= 1) return n
-  return fibonacci(n - 1) + fibonacci(n - 2)
-}
+I'm **Bernard Kirk Adjarnor Katamanso**, though I usually go by Bernard Katamanso. I'm the Tech Lead at [Orcta Technologies](https://www.orctatech.com), where I build scalable systems and lead engineering efforts. Before that, I worked on developer tooling, SDKs, and infrastructure — the kind of work that makes other people's work easier.
 
-console.log(fibonacci(10)) // 55
-```
+Beyond the code, I'm a Pan-Africanist. I believe that the next wave of global innovation will come from Africa, and I want to be part of building the foundations for it — through open-source tools, technical writing, mentorship, and direct engineering work.
 
-And some TypeScript with types:
+## Where to Find Me
 
-```ts
-interface User {
-  name: string
-  age: number
-}
+I maintain a few corners of the web:
 
-const greet = (user: User): string => {
-  return `Hello, ${user.name}!`
-}
-```
+- **[adjarnor.dev](https://www.adjarnor.dev)** — This site. Technical blog, projects, and writing.
+- **[folio.adjarnor.dev](https://folio.adjarnor.dev)** — My portfolio and professional background.
+- **[studio.adjarnor.dev](https://studio.adjarnor.dev)** — Photography. I also shoot.
+- **[Substack](https://bernardkirkadjanorkatamanso.substack.com)** — Longer-form essays on engineering, deep work, and Pan-Africanism.
+- **[GitHub](https://github.com/Adjanour)** — Open-source work: SDKs, CLIs, tools, and experiments.
+- **[X / Twitter](https://twitter.com/kirk_katamanso)** — Short-form thoughts and links.
 
-## Math with KaTeX
+Search my name online and you'll find talks, projects, and writing across these platforms.
 
-Inline math: $E = mc^2$
+## What This Blog Is About
 
-Display math:
+This is where I publish technical deep-dives — the kind of posts that take time to research and write. Expect content on:
 
-$$
-\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
-$$
+- **Systems architecture and distributed systems**
+- **Programming languages and type theory** (generics, type systems, compilers)
+- **Go, TypeScript, and systems programming**
+- **Engineering craft** — testing, error handling, code design
+- **AI and industrial systems** — anomaly detection, predictive maintenance, ML in production
+- **Pan-African tech** — building for and from the continent
 
-A more complex equation:
-
-$$
-f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}
-$$
-
-## Interactive Code Playground
-
-Try editing and running this JavaScript:
+Posts will include interactive code playgrounds, math rendering with KaTeX, diagrams, and callout boxes. Here's a quick demo of each:
 
 import CodePlayground from "@/components/blog/CodePlayground.astro"
-
-<CodePlayground
-  code={`function factorial(n) {
-  if (n <= 1) return 1
-  return n * factorial(n - 1)
-}
-
-console.log("factorial(5) =", factorial(5))
-console.log("factorial(10) =", factorial(10))`}
-/>
-
-## Callout Boxes
-
 import Callout from "@/components/blog/Callout.astro"
 
+### Code Playground
+
+<CodePlayground
+  code={`function greet(name) {
+  return \`Hello, \${name}! Welcome.\`
+}
+
+console.log(greet("you"))
+console.log(greet("friend"))`}
+/>
+
+### Callouts
+
+<Callout type="info">
+  Code blocks support syntax highlighting, copy buttons, and interactive editing via the playground component.
+</Callout>
+
 <Callout type="tip">
-  You can use `<Callout>` with `type="tip"`, `"info"`, `"warning"`, or `"danger"`.
+  You can use `Remark` and `Rehype` plugins — this blog renders LaTeX math via KaTeX and syntax highlighting via Shiki.
 </Callout>
 
 <Callout type="warning">
-  Remember to always validate user input before processing it.
+  Some posts are deep and assume familiarity with the topic. Newcomer-friendly content will be tagged accordingly.
 </Callout>
 
-<Callout type="info">
-  The blog supports MDX, so you can import and use any Astro component in your articles.
-</Callout>
+## Let's Build
 
-## Blockquotes
+I believe the best way to learn is to build and share. This blog is my contribution to that cycle — I learn by writing, and I hope you learn by reading.
 
-> The best way to predict the future is to invent it.
->
-> — Alan Kay
+If something here helps you, [share it](/blog/hello-world/) with someone who might benefit. If you disagree with something, [tell me on X](https://twitter.com/kirk_katamanso). And if you're building something interesting in African tech, I'd love to hear about it.
 
-## Lists
-
-1. First item
-2. Second item
-3. Third item
-
-- Unordered list item
-- Another item
-- A third item
-
-## Tables
-
-| Feature | Status | Notes |
-|---|---|---|
-| Code blocks | ✅ | Shiki syntax highlighting |
-| Math | ✅ | KaTeX rendering |
-| Interactive demos | ✅ | CodePlayground component |
-| Callouts | ✅ | Info, tip, warning, danger |
-
-That's it for the first post. More technical deep-dives coming soon.
+Thanks for stopping by. Let's build.

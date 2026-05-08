@@ -14,6 +14,7 @@
     stroke-linecap="round"
     stroke-linejoin="round"
     aria-hidden="true"
+    class="theme-icon"
   >
     <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
   </svg>
@@ -26,7 +27,7 @@
     stroke-linecap="round"
     stroke-linejoin="round"
     aria-hidden="true"
-    class="hidden"
+    class="theme-icon hidden"
   >
     <circle cx="12" cy="12" r="4"></circle>
     <path d="M12 2v2"></path>
@@ -39,6 +40,16 @@
     <path d="m19.07 4.93-1.41 1.41"></path>
   </svg>
 </button>
+
+<style>
+  .theme-icon {
+    transition: transform 0.3s ease, opacity 0.2s ease;
+  }
+  .theme-icon.spin {
+    transform: rotate(90deg);
+    opacity: 0.5;
+  }
+</style>
 
 <script is:inline>
   (() => {
@@ -82,6 +93,12 @@
           : "dark";
         localStorage.setItem(storageKey, nextTheme);
         applyTheme(nextTheme, button);
+
+        const icon = button.querySelector(`[data-theme-icon="${nextTheme === "dark" ? "moon" : "sun"}"]`);
+        if (icon) {
+          icon.classList.add("spin");
+          setTimeout(() => icon.classList.remove("spin"), 300);
+        }
       });
     };
 

@@ -1,0 +1,65 @@
+---
+const url = Astro.url.toString()
+const title = Astro.props.title
+const encodedUrl = encodeURIComponent(url)
+const tweetText = encodeURIComponent(`${title} by @kirk_katamanso`)
+---
+
+<section class="border-t pt-8 mt-12">
+  <p class="text-sm font-medium text-muted-foreground mb-4">Share this post</p>
+  <div class="flex items-center gap-3">
+    <a
+      href={`https://twitter.com/intent/tweet?text=${tweetText}&url=${encodedUrl}`}
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Share on X"
+      class="w-10 h-10 rounded-full inline-flex items-center justify-center border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+    >
+      <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2-2.2-.1-4-1.5-4.6-3.6 1 0 2-.1 3-.4-2.2-.5-3.7-2.4-3.7-4.7.6.3 1.3.5 2 .6C2.5 7.4 2 4.8 3.4 2.9c2.2 2.7 5.5 4.4 9.2 4.6-.7-3 1.6-5.7 4.7-5.7 1.3 0 2.5.5 3.4 1.4.9-.2 1.7-.5 2.4-.9z" />
+      </svg>
+    </a>
+    <a
+      href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Share on LinkedIn"
+      class="w-10 h-10 rounded-full inline-flex items-center justify-center border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+    >
+      <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+        <rect width="4" height="12" x="2" y="9" />
+        <circle cx="4" cy="4" r="2" />
+      </svg>
+    </a>
+    <button
+      id="copy-link-btn"
+      aria-label="Copy link"
+      class="w-10 h-10 rounded-full inline-flex items-center justify-center border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer relative"
+    >
+      <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+      </svg>
+      <span id="copy-feedback" class="absolute -top-8 left-1/2 -translate-x-1/2 text-xs text-muted-foreground bg-background border border-border px-2 py-1 rounded hidden whitespace-nowrap">Copied!</span>
+    </button>
+  </div>
+</section>
+
+<script>
+  const btn = document.getElementById("copy-link-btn")
+  const feedback = document.getElementById("copy-feedback")
+  if (btn) {
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href)
+        if (feedback) {
+          feedback.classList.remove("hidden")
+          setTimeout(() => feedback.classList.add("hidden"), 2000)
+        }
+      } catch {
+        // fallback
+      }
+    })
+  }
+</script>
