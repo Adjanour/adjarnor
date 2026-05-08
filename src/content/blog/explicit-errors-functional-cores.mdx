@@ -1,0 +1,216 @@
+---
+title: Explicit Errors and Functional Cores
+subtitle: Building Predictable Systems in TypeScript
+description: Error handling doesn't have to be an afterthought. By treating errors as values, separating business logic from side effects, and pushing I/O to the edges, you can build TypeScript systems that are easier to reason about, test, and trust.
+date: 2026-01-21
+---
+
+As software systems grow, they fail in more ways than we expect. Many of those failures are not caused by complex algorithms, but by unclear error handling. Exceptions, global error handlers, and catch-all `try`/`catch` blocks often hide what can go wrong, making code harder to read, harder to test, and harder to trust.
+
+This article introduces a set of ideas that help make systems easier to reason about — even as they scale:
+
+- treat errors as values, not exceptions (never throw)
+- separate business errors from system failures
+- keep business logic pure, and push I/O to the edges
+
+These ideas may sound abstract, but they lead to very practical benefits: clearer code, simpler tests, and more predictable behavior in production.
+
+## Why Exceptions Make Code Harder to Understand
+
+In TypeScript, a function that throws an exception does not say so in its type signature. When you call it, you cannot tell — just by looking at the code — whether it might fail, or how.
+
+That means failure paths are invisible. You only discover them by reading implementation details, scanning documentation, or learning the hard way in production.
+
+Now consider a different approach: instead of throwing, a function returns a value that represents success or failure.
+
+For example, a function that fetches a user might return: a `User` when successful, a `NotFound` error when the user does not exist, or a `DatabaseError` when something goes wrong with storage. Nothing is thrown. Every outcome is explicit. TypeScript forces you to handle each case. Failure becomes part of the normal control flow, not a surprise.
+
+```typescript
+type GetUserResult =
+  | { type: "SUCCESS"; user: User }
+  | { type: "NOT_FOUND" }
+  | { type: "DATABASE_ERROR"; error: unknown }
+```
+
+With this contract in place, the implementation does not throw for expected failures:
+
+```typescript
+async function getUserById(id: string): Promise<GetUserResult> {
+  try {
+    const user = await db.user.findById(id)
+    if (!user) {
+      return { type: "NOT_FOUND" }
+    }
+    return { type: "SUCCESS", user }
+  } catch (error) {
+    return { type: "DATABASE_ERROR", error }
+  }
+}
+```
+
+Every possible outcome is now explicit. Nothing is hidden, and nothing escapes unexpectedly. More importantly, callers are forced to deal with each case:
+
+```typescript
+const result = await getUserById(userId)
+
+switch (result.type) {
+  case "SUCCESS":
+    return renderUser(result.user)
+  case "NOT_FOUND":
+    return showNotFoundMessage()
+  case "DATABASE_ERROR":
+    logError(result.error)
+    return showServiceUnavailable()
+}
+```
+
+Because the failure modes are encoded in the return type, TypeScript can enforce exhaustive handling.
+
+## Not All Errors Mean the Same Thing
+
+One of the most important distinctions to learn is that not all errors are failures.
+
+Some errors are **expected business outcomes**. For example: a user does not exist, a job posting is closed, a request is invalid. These are domain errors. They describe valid states of the system and usually map cleanly to user-facing responses like 404 or 400.
+
+Other errors are **system problems**: the database is unavailable, the network is down, an unexpected exception occurs. These are infrastructure errors. They are not part of the business logic and should not be exposed directly to users.
+
+When these two kinds of errors are mixed together, systems become confusing and risky. A missing user is not a system failure; a database outage is. Keeping them separate makes intent clear and behavior safer.
+
+In TypeScript, this separation can be expressed directly in types:
+
+```typescript
+type CreateApplicationResult =
+  | { type: "CREATED"; application: Application }
+  | { type: "JOB_NOT_FOUND" }
+  | { type: "JOB_CLOSED" }
+  | { type: "INFRASTRUCTURE_ERROR"; error: InfrastructureError }
+```
+
+Anyone reading this type immediately understands what can happen — and what kind of decision each case represents.
+
+## The Functional Core and the Imperative Shell
+
+Another common source of complexity is mixing business rules with side effects like database access or HTTP calls. When logic and I/O are tangled together, code becomes hard to test and easy to break.
+
+The **functional core, imperative shell** pattern solves this by drawing a clear boundary:
+
+- The **functional core** contains pure business logic. It takes inputs and returns outputs. It does not talk to databases or the network.
+- The **imperative shell** handles I/O. It calls the database, makes HTTP requests, and translates real-world failures into explicit results.
+
+import FunctionalCore from "@/components/blog/diagrams/FunctionalCore.astro"
+
+<FunctionalCore />
+
+### The Functional Core: Pure Business Logic
+
+```typescript
+type CreateProfileDecision =
+  | { type: "ALLOWED" }
+  | { type: "USER_NOT_STUDENT" }
+  | { type: "PROFILE_ALREADY_EXISTS" }
+
+function decideCreateProfile(user: User): CreateProfileDecision {
+  if (user.role !== "student") {
+    return { type: "USER_NOT_STUDENT" }
+  }
+  if (user.profileExists) {
+    return { type: "PROFILE_ALREADY_EXISTS" }
+  }
+  return { type: "ALLOWED" }
+}
+```
+
+This function is completely deterministic. Given the same `User`, it will always return the same decision. It is easy to test exhaustively and safe to refactor, because it has no side effects.
+
+### The Imperative Shell: Handling I/O and Reality
+
+The imperative shell coordinates the workflow. It performs I/O, translates infrastructure failures into explicit results, and delegates decisions to the functional core.
+
+```typescript
+async function createStudentProfile(userId: string) {
+  const userResult = await userRepository.getById(userId)
+  if (userResult.type !== "SUCCESS") {
+    return userResult
+  }
+
+  const decision = decideCreateProfile(userResult.user)
+  if (decision.type !== "ALLOWED") {
+    return decision
+  }
+
+  return profileRepository.insert(userResult.user.id)
+}
+```
+
+The shell contains the unavoidable complexity of the real world: databases can fail, networks can be slow, and inserts can error. The functional core remains untouched by these concerns.
+
+## Repositories as Boundaries
+
+A repository sits between the application and the database. Its job is to perform queries, catch database-specific failures, and translate them into explicit, structured errors. This means the rest of the application never deals with raw exceptions or database quirks — it only sees clear outcomes.
+
+```typescript
+type GetUserResult =
+  | { type: "SUCCESS"; user: User }
+  | { type: "NOT_FOUND" }
+  | { type: "DATABASE_UNAVAILABLE" }
+
+class UserRepository {
+  async getById(userId: string): Promise<GetUserResult> {
+    try {
+      const user = await db.user.findById(userId)
+      if (!user) {
+        return { type: "NOT_FOUND" }
+      }
+      return { type: "SUCCESS", user }
+    } catch {
+      return { type: "DATABASE_UNAVAILABLE" }
+    }
+  }
+}
+```
+
+This repository performs three essential tasks: it executes the database query, it catches database-specific failures, and it translates those failures into explicit outcomes meaningful to the rest of the system.
+
+## Testing Becomes Simpler
+
+When business logic is pure, testing becomes straightforward. Unit tests focus on the functional core, where behavior is deterministic and exhaustive testing is possible. There is no need for mocks, because there are no side effects to fake.
+
+```typescript
+// Unit tests: no mocks required
+test("rejects non-students", () => {
+  const user = { role: "admin", profileExists: false }
+  expect(decideCreateProfile(user)).toEqual({ type: "USER_NOT_STUDENT" })
+})
+
+test("rejects users with existing profiles", () => {
+  const user = { role: "student", profileExists: true }
+  expect(decideCreateProfile(user)).toEqual({ type: "PROFILE_ALREADY_EXISTS" })
+})
+
+test("allows new students", () => {
+  const user = { role: "student", profileExists: false }
+  expect(decideCreateProfile(user)).toEqual({ type: "ALLOWED" })
+})
+```
+
+Integration tests then cover the imperative shell, using real databases or services. This division keeps tests stable and meaningful, even as the system evolves.
+
+## Why This Matters in Production
+
+The benefits of this approach are most visible under failure.
+
+Imagine a database outage during a busy request. Instead of throwing an exception that escapes unpredictably, the repository returns an explicit infrastructure error. The application can respond with a 503, trigger alerts, or retry — deliberately and safely.
+
+Because business logic is pure, partial failures are easier to reason about. Side effects happen in controlled places, and recovery strategies can be designed intentionally.
+
+By making failure explicit, separating business decisions from system problems, and keeping side effects at the edges, you build software that is easier to understand and safer to change. These patterns work as well in TypeScript as they do in Rust or Go. They transform error handling from an afterthought into a clear, reliable part of system design — and that clarity pays dividends as systems grow.
+
+## References
+
+- Hoare, "Null References: The Billion-Dollar Mistake" (2009)
+- Moseley & Marks, "Out of the Tar Pit" (2006)
+- Spolsky, "The Law of Leaky Abstractions" (2002)
+- Fowler, *Patterns of Enterprise Application Architecture* (2002)
+- Evans, *Domain-Driven Design* (2003)
+- Martin, *Clean Architecture* (2017)
+- Hughes, "Why Functional Programming Matters" (1989)

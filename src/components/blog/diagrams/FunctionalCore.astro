@@ -1,0 +1,136 @@
+---
+import { border, createDiagram, fg, fgMuted, muted, primary } from "@/utils/diagram"
+
+const d = createDiagram(420, 340)
+
+const cx = 210
+const cy = 170
+
+// Outer shell — Imperative
+d.svg.appendChild(
+  d.rough.rectangle(cx - 170, cy - 130, 340, 260, {
+    fill: muted,
+    stroke: border,
+    roughness: 0.6,
+    seed: 1,
+    strokeWidth: 1.5,
+  }),
+)
+d.text(cx, cy - 112, "Imperative Shell", {
+  fontSize: 13,
+  fontWeight: "700",
+  fill: fg,
+  anchor: "middle",
+})
+d.text(cx, cy - 98, "I/O, HTTP, Database", {
+  fontSize: 10,
+  fill: fgMuted,
+  anchor: "middle",
+})
+
+// Middle layer — Translation
+d.svg.appendChild(
+  d.rough.rectangle(cx - 115, cy - 80, 230, 160, {
+    fill: "transparent",
+    stroke: border,
+    roughness: 0.5,
+    seed: 2,
+    strokeWidth: 1.2,
+  }),
+)
+d.text(cx, cy - 62, "Repositories", {
+  fontSize: 11,
+  fontWeight: "600",
+  fill: fg,
+  anchor: "middle",
+})
+d.text(cx, cy - 48, "Translate infrastructure failures", {
+  fontSize: 9,
+  fill: fgMuted,
+  anchor: "middle",
+})
+d.text(cx, cy - 36, "into explicit results", {
+  fontSize: 9,
+  fill: fgMuted,
+  anchor: "middle",
+})
+
+// Core — Functional
+d.svg.appendChild(
+  d.rough.circle(cx, cy + 10, 80, {
+    fill: primary,
+    stroke: primary,
+    roughness: 0.4,
+    seed: 3,
+    strokeWidth: 2,
+  }),
+)
+d.text(cx, cy - 2, "Functional", {
+  fontSize: 12,
+  fontWeight: "700",
+  fill: fg,
+  anchor: "middle",
+})
+d.text(cx, cy + 12, "Core", {
+  fontSize: 12,
+  fontWeight: "700",
+  fill: fg,
+  anchor: "middle",
+})
+d.text(cx, cy + 26, "Pure business logic", {
+  fontSize: 9,
+  fill: fgMuted,
+  anchor: "middle",
+})
+d.text(cx, cy + 38, "No side effects", {
+  fontSize: 9,
+  fill: fgMuted,
+  anchor: "middle",
+})
+
+// Labels with arrows pointing to layers
+// Shell label
+const shellLabelX = cx + 195
+d.arrow(shellLabelX, cy - 90, shellLabelX - 30, cy - 85, {
+  stroke: fgMuted,
+  strokeWidth: 1,
+  headSize: 5,
+  seed: 10,
+})
+d.text(shellLabelX + 8, cy - 94, "side effects,", {
+  fontSize: 9,
+  fill: fgMuted,
+  anchor: "start",
+})
+d.text(shellLabelX + 8, cy - 82, "I/O, orchestration", {
+  fontSize: 9,
+  fill: fgMuted,
+  anchor: "start",
+})
+
+// Core label
+d.arrow(shellLabelX, cy + 10, shellLabelX - 30, cy + 10, {
+  stroke: fgMuted,
+  strokeWidth: 1,
+  headSize: 5,
+  seed: 11,
+})
+d.text(shellLabelX + 8, cy + 6, "pure, deterministic,", {
+  fontSize: 9,
+  fill: fgMuted,
+  anchor: "start",
+})
+d.text(shellLabelX + 8, cy + 18, "no mocks needed", {
+  fontSize: 9,
+  fill: fgMuted,
+  anchor: "start",
+})
+
+const svgContent = d.serialize()
+---
+
+<Fragment set:html={svgContent} />
+
+<style>
+  svg { max-width: 100%; height: auto; display: block; margin: 1.5em auto; }
+</style>
