@@ -79,9 +79,8 @@ interface BoxOpts {
 export function createDiagram(w: number, h: number): DiagramCtx {
   const doc = new DOMImplementation().createDocument(NS, "html", null)
   const svg = doc.createElementNS(NS, "svg")
-  svg.setAttribute("width", String(w))
-  svg.setAttribute("height", String(h))
   svg.setAttribute("viewBox", `0 0 ${w} ${h}`)
+  svg.setAttribute("style", `width:100%;height:auto;max-width:${w}px`)
   svg.setAttribute("xmlns", NS)
 
   const makeEl = (tag: string) => doc.createElementNS(NS, tag)
