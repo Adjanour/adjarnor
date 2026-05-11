@@ -94,4 +94,11 @@ const formattedDate = date.toLocaleDateString("en-US", {
         });
         pre.appendChild(btn);
     }
+
+    for (const table of document.querySelectorAll(".prose table")) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "table-wrapper";
+        table.parentNode.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+    }
 </script>

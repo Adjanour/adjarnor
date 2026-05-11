@@ -327,6 +327,23 @@ html.lenis body {
   line-height: 1.8;
   font-family: var(--font-body);
   font-size: 1.0625rem;
+  overflow-wrap: break-word;
+}
+
+.prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5em 0;
+}
+
+.prose .katex-display::-webkit-scrollbar {
+  height: 4px;
+}
+
+.prose .katex-display::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 2px;
 }
 
 .prose h1,
@@ -400,10 +417,19 @@ html.lenis body {
   font-style: italic;
 }
 
+.prose .table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.5em 0;
+}
+
+.prose .table-wrapper table {
+  margin: 0;
+}
+
 .prose table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1.5em 0;
   font-size: 0.9375rem;
   font-family: var(--font-sans);
 }
