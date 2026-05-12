@@ -4,9 +4,10 @@ interface Props {
   description: string
   date: Date
   slug: string
+  readingTime?: string
 }
 
-const { title, description, date, slug } = Astro.props
+const { title, description, date, slug, readingTime } = Astro.props
 const formattedDate = date.toLocaleDateString("en-US", {
   month: "short",
   day: "numeric",
@@ -19,9 +20,10 @@ const formattedDate = date.toLocaleDateString("en-US", {
   class="group block py-5 hover:bg-muted/30 -mx-3 px-3 rounded-sm transition-colors"
 >
   <article class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-    <time datetime={date.toISOString()} class="text-xs text-muted-foreground tabular-nums shrink-0 w-24">
-      {formattedDate}
-    </time>
+    <div class="shrink-0 w-24 text-xs text-muted-foreground tabular-nums leading-snug">
+      <time datetime={date.toISOString()}>{formattedDate}</time>
+      {readingTime && <span class="text-muted-foreground/60 block mt-0.5">{readingTime}</span>}
+    </div>
     <div class="flex-1 min-w-0">
       <h3 class="text-base font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
         {title}

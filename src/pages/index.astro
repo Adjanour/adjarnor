@@ -10,6 +10,7 @@ import Section from "@/components/site/Section.astro"
 import WritingCard from "@/components/site/WritingCard.astro"
 import { getArticles } from "@/data/articles"
 import BaseLayout from "@/layouts/BaseLayout.astro"
+import { estimateReadTime } from "@/utils/reading-time"
 
 const blogArticles = await getCollection("blog", ({ data }) => !data.draft)
 const sortedBlog = blogArticles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
@@ -125,6 +126,7 @@ const highlights = [
               description={article.data.description}
               date={article.data.date}
               slug={article.id}
+              readingTime={estimateReadTime(article.body)}
             />
           )) : (
             <p class="text-sm text-muted-foreground py-4">

@@ -1,0 +1,55 @@
+---
+import { border, createDiagram, fg, fgMuted, muted, primary } from "@/utils/diagram"
+
+const d = createDiagram(500, 320)
+const cx = 250
+
+const blobY = 240
+const blobH = 44
+const blobW = 120
+const blobGap = 20
+
+const blobCenters = [
+  cx - blobW - blobGap / 2,
+  cx,
+  cx + blobW + blobGap / 2,
+]
+
+for (const bcx of blobCenters) {
+  d.box(bcx - blobW / 2, blobY, blobW, blobH, { fill: muted, stroke: border, roughness: 0.4 })
+  d.centerText(blobY + blobH / 2 - 7, "blob", { fontSize: 13, fontWeight: "700", fill: primary, centerX: bcx })
+  d.centerText(blobY + blobH / 2 + 12, "a1b2c3…", { fontSize: 10, centerX: bcx })
+}
+
+const treeY = 120
+const treeH = 44
+const treeW = 260
+d.box(cx - treeW / 2, treeY, treeW, treeH, { fill: muted, stroke: border, roughness: 0.4 })
+d.centerText(treeY + treeH / 2 - 7, "tree", { fontSize: 13, fontWeight: "700", fill: primary })
+d.centerText(treeY + treeH / 2 + 12, "README.md  src/  lib/", { fontSize: 10 })
+
+const commitY = 20
+d.box(cx - treeW / 2, commitY, treeW, treeH, { fill: muted, stroke: border, roughness: 0.4 })
+d.centerText(commitY + treeH / 2 - 7, "commit", { fontSize: 13, fontWeight: "700", fill: primary })
+d.centerText(commitY + treeH / 2 + 12, "tree → abc123  parent → xyz789", { fontSize: 10 })
+
+d.arrow(cx, commitY + treeH, cx, treeY - 5, { stroke: fg, strokeWidth: 2, headSize: 8 })
+for (const bcx of blobCenters) {
+  d.arrow(bcx, treeY + treeH, bcx, blobY - 5, { stroke: fg, strokeWidth: 2, headSize: 8 })
+}
+
+d.text(cx, commitY - 8, "commit (snapshot)", { fontSize: 11, anchor: "middle" })
+d.text(cx, treeY - 8, "tree (directory)", { fontSize: 11, anchor: "middle" })
+d.text(cx, blobY - 8, "blobs (files)", { fontSize: 11, anchor: "middle" })
+
+const svgContent = d.serialize()
+---
+
+<Fragment set:html={svgContent} />
+
+<style>
+  svg {
+    display: block;
+    margin: 1.5em auto;
+  }
+</style>

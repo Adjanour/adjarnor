@@ -1,0 +1,36 @@
+---
+interface Heading {
+  depth: number
+  slug: string
+  text: string
+}
+
+interface Props {
+  headings: Heading[]
+}
+
+const { headings } = Astro.props
+const filtered = headings.filter((h) => h.depth <= 3)
+---
+
+{filtered.length >= 2 && (
+  <details class="toc">
+    <summary class="toc-summary">
+      <span class="toc-label">On this page</span>
+      <svg class="toc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m9 18 6-6-6-6" />
+      </svg>
+    </summary>
+    <nav class="toc-links">
+      {filtered.map((h) => (
+        <a
+          href={`#${h.slug}`}
+          class="toc-link"
+          style={{ paddingLeft: `${(h.depth - 2) * 0.75}em` }}
+        >
+          {h.text}
+        </a>
+      ))}
+    </nav>
+  </details>
+)}

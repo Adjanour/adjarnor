@@ -1,7 +1,14 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 import ShareButtons from "@/components/blog/ShareButtons.astro";
+import TableOfContents from "@/components/blog/TableOfContents.astro";
 import "katex/dist/katex.min.css";
+
+interface Heading {
+    depth: number;
+    slug: string;
+    text: string;
+}
 
 interface Props {
     title: string;
@@ -9,9 +16,11 @@ interface Props {
     description: string;
     date: Date;
     image?: string;
+    readingTime?: string;
+    headings?: Heading[];
 }
 
-const { title, subtitle, description, date, image } = Astro.props;
+const { title, subtitle, description, date, image, readingTime, headings } = Astro.props;
 const formattedDate = date.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -52,8 +61,9 @@ const formattedDate = date.toLocaleDateString("en-US", {
                             {subtitle}
                         </h2>
                     )}
-                    <div class="border-t pt-6 mb-6 flex items-center gap-3 text-sm text-muted-foreground">
+                    <div class="border-t pt-6 mb-6 flex items-center gap-2 text-sm text-muted-foreground">
                         <time datetime={date.toISOString()}>{formattedDate}</time>
+                        {readingTime && <><span class="text-muted-foreground/40">·</span><span>{readingTime}</span></>}
                     </div>
                     <p class="text-base leading-relaxed text-muted-foreground">
                         {description}
@@ -61,6 +71,7 @@ const formattedDate = date.toLocaleDateString("en-US", {
                 </header>
 
                 <div class="prose prose-gray max-w-none">
+                    {headings && <TableOfContents headings={headings} />}
                     <slot />
                 </div>
                 <ShareButtons title={title} />
@@ -70,13 +81,45 @@ const formattedDate = date.toLocaleDateString("en-US", {
 </BaseLayout>
 
 <script>
+    const LANG_LABELS = {
+        ts: "TypeScript",
+        tsx: "TSX",
+        js: "JavaScript",
+        jsx: "JSX",
+        go: "Go",
+        rust: "Rust",
+        python: "Python",
+        java: "Java",
+        c: "C",
+        cpp: "C++",
+        bash: "Bash",
+        sh: "Shell",
+        json: "JSON",
+        yaml: "YAML",
+        md: "Markdown",
+        html: "HTML",
+        css: "CSS",
+        sql: "SQL",
+    };
+
     for (const pre of document.querySelectorAll(".prose pre")) {
+        const code = pre.querySelector("code");
+        if (!code) continue;
+
+        const cls = Array.from(code.classList).find((c) => c.startsWith("language-"));
+        if (cls) {
+            const lang = cls.replace("language-", "");
+            const label = LANG_LABELS[lang] || lang;
+            const badge = document.createElement("span");
+            badge.className = "code-badge";
+            badge.textContent = label;
+            pre.parentNode.insertBefore(badge, pre);
+        }
+
         const btn = document.createElement("button");
         btn.className = "copy-button";
         btn.textContent = "Copy";
         btn.addEventListener("click", async () => {
-            const code = pre.querySelector("code");
-            if (!code) return;
             try {
                 await navigator.clipboard.writeText(code.textContent || "");
                 btn.textContent = "Copied";
@@ -101,4 +144,35 @@ const formattedDate = date.toLocaleDateString("en-US", {
         table.parentNode.insertBefore(wrapper, table);
         wrapper.appendChild(table);
     }
+
+    const backToTop = document.createElement("button");
+    backToTop.className = "back-to-top";
+    backToTop.setAttribute("aria-label", "Back to top");
+    backToTop.innerHTML =
+        '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>';
+    backToTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    document.body.appendChild(backToTop);
+
+    const progressBar = document.createElement("div");
+    progressBar.className = "reading-progress";
+    document.body.prepend(progressBar);
+
+    let ticking = false;
+    const onScroll = () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const scrollTop = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                progressBar.style.width = `${Math.min(progress, 100)}%`;
+                backToTop.classList.toggle("visible", scrollTop > 500);
+                ticking = false;
+            });
+            ticking = true;
+        }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
 </script>

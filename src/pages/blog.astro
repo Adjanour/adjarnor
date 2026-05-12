@@ -3,6 +3,7 @@ import { getCollection } from "astro:content"
 import ArticleCard from "@/components/blog/ArticleCard.astro"
 import Footer from "@/components/site/Footer.astro"
 import BaseLayout from "@/layouts/BaseLayout.astro"
+import { estimateReadTime } from "@/utils/reading-time"
 
 const allArticles = await getCollection("blog", ({ data }) => !data.draft)
 const sorted = allArticles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
@@ -65,6 +66,7 @@ const years = Object.keys(articlesByYear)
                   description={article.data.description}
                   date={article.data.date}
                   slug={article.id}
+                  readingTime={estimateReadTime(article.body)}
                 />
               ))}
             </div>

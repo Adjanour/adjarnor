@@ -3,6 +3,7 @@ import mdx from "@astrojs/mdx"
 import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
 import { defineConfig, fontProviders } from "astro/config"
+import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import rehypeKatex from "rehype-katex"
 import remarkMath from "remark-math"
 
@@ -24,7 +25,10 @@ export default defineConfig({
     sitemap(),
     mdx({
       remarkPlugins: [remarkMath],
-      rehypePlugins: [rehypeKatex],
+      rehypePlugins: [
+        rehypeKatex,
+        [rehypeAutolinkHeadings, { behavior: "wrap" }],
+      ],
     }),
   ],
   fonts: [
