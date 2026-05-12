@@ -6,7 +6,7 @@ export async function GET() {
   const sorted = articles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
 
   return rss({
-    title: "Bernard Katamanso — Blog",
+    title: "Bernard Katamanso - Blog",
     description: "Technical deep-dives on software engineering, systems architecture, and AI.",
     site: "https://www.adjarnor.dev",
     items: sorted.map((article) => ({

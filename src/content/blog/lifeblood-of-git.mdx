@@ -1,50 +1,45 @@
 ---
 title: The Object in the Machine
 subtitle: An excavation of Git's hidden filesystem
-description: Every git commit writes an object to disk. Those objects form a content-addressable filesystem — a place where a file's hash is its name and nothing is ever changed, only added. This is a walk through that place.
+description: Git stores everything as objects named by their content. This post covers the three object types (blobs, trees, commits) and how they chain together to form Git's immutable history.
 date: 2026-05-12
 tags: ["git", "version-control", "internals"]
 ---
 
 import GitObjectModel from "@/components/blog/diagrams/GitObjectModel.astro"
 
-Inside every Git repository is a hole.
+Create a repository, add a file, and commit it. Then look in `.git/objects/`. You'll find a handful of files with 40-character hex names. Those are your objects.
 
-`.git/objects/` — a directory where nothing is ever edited. Only added. Written once, never touched again. A place where a file's content becomes its name.
-
-Run this:
+Every object's name is derived from its content. Run this:
 
 ```bash
 $ echo "hello" | git hash-object --stdin
 22596363b3de40b06f981fb85dac12e3f1c0f3d5
 ```
 
-Now run it again. Same output. Give that exact string to anyone on any machine anywhere, and they get the same 40-character hash. The hash *is* the content. The content *is* the hash. They are the same thing, expressed two ways.
+Run it again — same output. Pass that string to anyone on any machine anywhere and they get the same 40-character hash. The hash is the content and the content is the hash. They are the same thing expressed two ways. This is the idea everything else is built on.
 
-That is the foundation of everything Git does. Let's see where it leads.
+So what is in `.git/objects/`?
 
 ## What Lives in `.git/objects/`
 
-Start a new repository. Make a file. Commit it. Then look:
+Start a repository, make a file, commit it. Then look inside:
 
 ```
 .git/
   objects/
-    3b/
-      18e512dba79e4c8300dd08aeb37f8e728b8dad
-    e6/
-      9de29bb2d1d6434b8b29ae775ad8c2e48c5391
-    ab/
-      c123... (and so on)
+    3b/18e512dba79e4c8300dd08aeb37f8e728b8dad
+    e6/9de29bb2d1d6434b8b29ae775ad8c2e48c5391
+    ab/c123...
 ```
 
-Those are your objects. Stored in subdirectories named after the first two hex characters of their hash. The remaining 38 characters are the filename. This is not random — it's a content-addressable filesystem.
+These are your objects, sharded into directories named after the first two hex characters of their hash. The remaining 38 characters are the filename. This is a content-addressable filesystem — ask for a hash, get the content back.
 
-There are exactly three kinds of objects. No more. A blob is the simplest. A tree describes a directory. A commit exists to remember who did what when.
+There are exactly three kinds of objects. A blob stores file content. A tree describes a directory. A commit records a snapshot.
 
 ## Blobs
 
-A blob is just the bytes of a file. Not the name. Not the permissions. Not the line endings. Just the bits.
+A blob stores only the bytes — not the name, not the permissions, not the line endings. Just the content.
 
 ```bash
 $ echo "hello world" > README.md
@@ -52,7 +47,7 @@ $ git hash-object README.md
 3b18e512dba79e4c8300dd08aeb37f8e728b8dad
 ```
 
-Now rename the file:
+Now rename it:
 
 ```bash
 $ mv README.md NOTE.md
@@ -60,27 +55,29 @@ $ git hash-object NOTE.md
 3b18e512dba79e4c8300dd08aeb37f8e728b8dad
 ```
 
-Same. The content did not change, so the hash did not change. The name is irrelevant. The blob does not know it was in a file called README.md. It does not know it is now in NOTE.md. It only knows its bytes.
+Same hash. The content did not change, so the hash could not change. The name is irrelevant. A blob is pure bytes with no filename attached.
 
-You can look at what Git actually stored:
+Peek at what Git actually stored:
 
 ```bash
 $ git cat-file -p 3b18e512dba79e4c8300dd08aeb37f8e728b8dad
 hello world
 ```
 
+That's it. No metadata, no filename, no timestamp. A blob is pure content.
+
 ## Trees
 
-Files live in directories. Directories have names. A tree is a mapping from names to hashes.
+Files live in named directories. A tree maps names to hashes:
 
 ```
 100644 blob 3b18e51    README.md
 040000 tree a1b2c34    src/
 ```
 
-Each line says: this entry has these Unix permissions, it points to an object of this type with this hash, and here's the name. That's a directory.
+Each entry gives the Unix permissions, the type of object it points to, the hash, and the name. This is a directory.
 
-The tree itself becomes an object. Its hash is computed from its own content — the sorted list of entries. If you rename a file inside a tree, the tree's hash changes. If you change a file's content (and thus its blob hash), the tree's hash changes. The tree is a commitment to a particular arrangement of names and content.
+The tree itself becomes an object. Its hash comes from its own content — the sorted list of entries. Rename a file inside a tree and the tree's hash changes. Change a file's content (which changes its blob hash) and the tree's hash changes. The tree is a commitment to a particular arrangement of names and content.
 
 You can inspect any tree:
 
@@ -92,7 +89,7 @@ $ git cat-file -p HEAD^{tree}
 
 ## Commits
 
-A commit is a small text object that says: "At this point, the project had the state described by this tree."
+A commit is a small text object that records the state of the project at a point in time.
 
 ```
 tree a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0
@@ -103,19 +100,27 @@ committer Bernard <adjanour@icloud.com> 1747000000
 Add documentation for the config parser
 ```
 
-The commit points to a tree. It points to zero or more parents. It records the author, the committer, a timestamp, and a message. Hash all of that together and you get the commit's identifier.
+The commit points to a tree. It points to zero or more parents. It records the author, the committer, a timestamp, and a message. Hash everything together and you get the commit's identifier.
 
-This is the chain. Every commit remembers its parents. The parents remember theirs. Trace backwards and you reach the root — the first commit, which has no parent.
+Every commit stores references to its parent commits. Follow those backwards and you reach the root — the first commit, which has no parent.
 
 <GitObjectModel />
 
 ## The Chain Reaction
 
-Because every object's identity is its content, the objects are all bound together. Change one byte in a file. The blob hash changes. The tree that referenced that blob now has a different entry — its hash changes. The commit that referenced that tree now points to a different tree — its hash changes. Every subsequent commit that chains from that commit changes too.
+Every object's hash depends on everything inside it. Objects reference each other by hash. So changing anything forces every object after it to get a new hash.
 
-One byte. Ripples through the entire history.
+Walk through what happens when you modify a file and commit:
 
-This is not a failsafe or a nice property. It is the mechanism. It is how Git knows whether anyone has tampered with history. It is how two clones can compare their entire histories by exchanging a single 20-byte hash.
+You change the content, so the blob hash changes. The tree that listed that blob now has an entry pointing to a hash that does not exist anymore. Update the entry and the tree content changes — new tree hash. The commit that pointed to that tree now references a tree that no longer exists. Rewrite the commit — new commit hash. The next commit in the chain pointed to this commit by its hash, and that hash just changed. The parent pointer no longer resolves. So the next commit gets rewritten too. And so on, all the way to the tip of the branch.
+
+Git does not edit the old objects. It writes new ones alongside them. The old chain still sits in `.git/objects/` — nothing in Git is ever deleted — but nothing points to it anymore.
+
+This chain is what lets two repositories verify identical history by comparing a single 20-byte hash. If your latest commit hash matches mine, then every blob, tree, commit, parent pointer, timestamp, and message in the entire chain must match too. Change anything at any point in history and the tip hash changes.
+
+It is also what makes tampering detectable. Rewrite an old commit and every hash after it shifts. The original tip hash no longer resolves to anything in the rewritten chain. Anyone who saved the original hash can compare and see the divergence.
+
+Here is what a chain looks like for a repo with three commits:
 
 ```bash
 $ git log --oneline
@@ -124,7 +129,7 @@ d4e5f6a Implement config parser
 g7h8i9b Initial commit
 ```
 
-What the output doesn't show: each of those hashes commits to everything before it.
+Each commit stores a pointer to its tree and its parent:
 
 ```
 a1b2c3d → tree:xyz, parent:d4e5f6a
@@ -132,11 +137,11 @@ d4e5f6a → tree:uvw, parent:g7h8i9b
 g7h8i9b → tree:rst, parent:(none)
 ```
 
-The root commit is the only one without a parent. Everything else traces back. If you change something in g7h8i9b's tree, d4e5f6a's hash changes. Which means a1b2c3d's hash changes. The entire chain moves.
+Change something in g7h8i9b's tree and d4e5f6a's tree pointer no longer resolves — new tree, new commit hash. Which means a1b2c3d's parent pointer no longer resolves — new commit hash. The whole chain shifts. This structure has a name: a Merkle DAG. Git's history is tamper-evident by design.
 
 ## Plumbing
 
-Git's user-friendly commands are called *porcelain*. The low-level commands are *plumbing*. Once you know the object model, the plumbing makes sense:
+Git's user-friendly commands are called *porcelain*. The low-level commands — the ones that actually talk to the object store — are called *plumbing*. Once you understand the object model, the plumbing is straightforward:
 
 | Command | What it does |
 |---------|-------------|
@@ -147,9 +152,9 @@ Git's user-friendly commands are called *porcelain*. The low-level commands are 
 | `git commit-tree` | Create a commit object from a tree |
 | `git update-ref` | Move a branch pointer to a different commit |
 
-These are the primitives. Porcelain commands call plumbing commands. `git add` calls `hash-object` and `update-index`. `git commit` calls `write-tree` and `commit-tree`. There is no magic — the higher commands are just scripts that string the low-level ones together.
+Porcelain commands call plumbing commands. `git add` calls `hash-object` and `update-index`. `git commit` calls `write-tree` and `commit-tree`. There is no magic — the higher commands are just scripts that string the low-level ones together.
 
-You can prove this to yourself. Make a commit without using `git commit`:
+You can prove this. Here is a commit built without `git add` or `git commit`:
 
 ```bash
 $ echo "hello" | git hash-object -w --stdin
@@ -168,14 +173,21 @@ $ git log --oneline
 a1b2c3d my commit
 ```
 
-No `git add`. No `git commit`. Yet the commit exists. The tree exists. The blob exists. Git does not care how the objects got there. It only cares that they are there, named by what they contain.
+No `git add`. No `git commit`. Yet the commit exists, the tree exists, the blob exists. Git does not care how the objects got there. It only cares that they are there, named by what they contain.
 
 ## What This Means
 
-Content addressing creates a universal namespace. You and I, on different machines, in different countries, can create files with the same content and get the same hash. We can create trees with identical entries and get the same hash. We can craft commits with identical metadata — tree, parent, message, timestamps — and get the same hash.
+Content addressing gives every object a universal name. Two people on different continents who create the same file get the same hash. The same holds for trees and commits: identical entries, identical metadata, identical hash.
 
-Git does not store files. It stores objects. A filename is just a piece of metadata in a tree object. A file's *content* is its true identity. This is why Git detects renames automatically. This is why identical files across a repository share a single blob. This is why clones are cryptographic backups: every hash is verifiable, every chain traceable.
+Git does not store files; it stores objects. A filename is just an entry in a tree. A file's *content* is its true identity. This is why Git detects renames, deduplicates identical blobs, and lets any two clones verify their entire history with a single hash.
 
-The next time you commit, consider what actually happens. Your files become blobs. Your directory structure becomes a tree. A small text object — the commit — records the tree hash, the parent hash, your name, and your message. A branch pointer moves. Nothing is ever edited. Everything is added.
+When you commit, your files become blobs, your directory tree becomes a tree object, and a small text object — the commit — ties them all together with the tree hash, the parent hash, your name, and your message. A branch pointer moves forward one step. Nothing is ever edited; everything is added.
 
-The object store accumulates. It never forgets.
+That's the object model. Three types of objects, content-addressed storage, and a chain of commits tying everything together. It is not complicated, but it is the foundation everything else is built on.
+
+## Further Reading
+
+- [Pro Git Book](https://git-scm.com/book/en/v2) — The official Git book. Chapters 10 and 7 cover the object model and plumbing commands in detail.
+- [Git Internals — Git Objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects) — The relevant chapter from Pro Git, focused entirely on the object store.
+- [Git Reference Documentation](https://git-scm.com/docs) — Every command documented, including all plumbing commands.
+- [Think Like (a) Git](https://think-like-a-git.net/) — A practical guide to Git's mental model, useful for building intuition about the DAG.

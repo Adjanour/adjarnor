@@ -10,7 +10,7 @@ interface Props {
 
 const {
   title = "Bernard Katamanso",
-  description = "Engineer and Pan-Africanist building purposeful systems and tools.",
+  description = "Technical blog on software engineering, systems architecture, developer tooling, and infrastructure by Bernard Katamanso, engineer at Orcta Technologies.",
   image = "/og-image.png",
 } = Astro.props
 
@@ -50,6 +50,7 @@ const themeScript = `(() => {
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:url" content={canonicalUrl.toString()} />
+    <meta property="og:logo" content={ogImage} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
@@ -57,10 +58,10 @@ const themeScript = `(() => {
     <meta name="twitter:image" content={ogImage} />
 
     <meta name="theme-color" content="#ffffff" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <Font cssVariable="--font-body" />

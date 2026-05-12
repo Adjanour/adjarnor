@@ -30,7 +30,7 @@ const formattedDate = date.toLocaleDateString("en-US", {
 
 <BaseLayout title={`${title} — Blog`} description={description} image={image}>
     <div class="min-h-screen bg-background text-foreground font-sans">
-        <main id="main-content" class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+        <main id="main-content" class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
             <a
                 href="/blog/"
                 class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
@@ -51,31 +51,38 @@ const formattedDate = date.toLocaleDateString("en-US", {
                 Back to blog
             </a>
 
-            <article>
-                <header class="mb-10">
-                    <h1 class="text-4xl sm:text-5xl font-bold tracking-tight leading-none mb-2">
-                        {title}
-                    </h1>
-                    {subtitle && (
-                        <h2 class="text-xl font-normal tracking-tight text-muted-foreground mb-8">
-                            {subtitle}
-                        </h2>
-                    )}
-                    <div class="border-t pt-6 mb-6 flex items-center gap-2 text-sm text-muted-foreground">
-                        <time datetime={date.toISOString()}>{formattedDate}</time>
-                        {readingTime && <><span class="text-muted-foreground/40">·</span><span>{readingTime}</span></>}
-                    </div>
-                    <p class="text-base leading-relaxed text-muted-foreground">
-                        {description}
-                    </p>
-                </header>
+            <div class="blog-layout">
+                <article class="blog-article">
+                    <header class="mb-10">
+                        <h1 class="text-4xl sm:text-5xl font-bold tracking-tight leading-none mb-2">
+                            {title}
+                        </h1>
+                        {subtitle && (
+                            <h2 class="text-xl font-normal tracking-tight text-muted-foreground mb-8">
+                                {subtitle}
+                            </h2>
+                        )}
+                        <div class="border-t pt-6 mb-6 flex items-center gap-2 text-sm text-muted-foreground">
+                            <time datetime={date.toISOString()}>{formattedDate}</time>
+                            {readingTime && <><span class="text-muted-foreground/40">·</span><span>{readingTime}</span></>}
+                        </div>
+                        <p class="text-base leading-relaxed text-muted-foreground">
+                            {description}
+                        </p>
+                    </header>
 
-                <div class="prose prose-gray max-w-none">
-                    {headings && <TableOfContents headings={headings} />}
-                    <slot />
-                </div>
-                <ShareButtons title={title} />
-            </article>
+                    <div class="prose prose-gray max-w-none">
+                        <slot />
+                    </div>
+                    <ShareButtons title={title} />
+                </article>
+
+                {headings && (
+                  <aside class="blog-sidebar">
+                    <TableOfContents headings={headings} />
+                  </aside>
+                )}
+            </div>
         </main>
     </div>
 </BaseLayout>

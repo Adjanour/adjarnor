@@ -444,60 +444,67 @@ html.lenis body {
   font-style: italic;
 }
 
-.prose .toc {
-  border: 1px solid hsl(var(--border));
-  border-radius: 0.5rem;
-  margin: 1.5em 0;
-  overflow: hidden;
+.blog-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 720px) minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: start;
 }
 
-.prose .toc-summary {
-  cursor: pointer;
-  padding: 0.75em 1em;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5em;
-  user-select: none;
+.blog-sidebar {
+  position: sticky;
+  top: 2rem;
+  padding-top: 0.25rem;
+}
+
+.toc-sidebar-heading {
   font-family: var(--font-sans);
+  font-size: 0.8125rem;
   font-weight: 600;
-  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(var(--foreground) / 0.5);
+  margin-bottom: 0.75rem;
 }
 
-.prose .toc-summary::marker,
-.prose .toc-summary::-webkit-details-marker {
-  display: none;
-}
-
-.prose .toc-chevron {
-  width: 1em;
-  height: 1em;
-  transition: transform 0.2s;
-  color: var(--prose-muted);
-}
-
-.prose .toc[open] .toc-chevron {
-  transform: rotate(90deg);
-}
-
-.prose .toc-links {
+.toc-sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  padding: 0 0 0.75em;
+  gap: 0.25rem;
 }
 
-.prose .toc-link {
-  padding: 0.3em 1em;
+.toc-sidebar-link {
+  display: block;
+  padding: 0.4em 1em 0.4em 1.25em;
   font-size: 0.875rem;
-  color: var(--prose-muted);
+  line-height: 1.4;
+  color: hsl(var(--foreground) / 0.6);
   text-decoration: none;
-  border-left: 2px solid transparent;
-  transition: color 0.15s, border-color 0.15s;
+  border-radius: 0.375rem;
+  transition: color 0.15s, background-color 0.15s;
 }
 
-.prose .toc-link:hover {
-  color: var(--prose-primary);
-  border-left-color: var(--prose-primary);
+.toc-sidebar-link:hover {
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--foreground) / 0.06);
+}
+
+.toc-sidebar-link.active {
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--foreground) / 0.08);
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .blog-layout {
+    grid-template-columns: 1fr;
+  }
+  .blog-sidebar {
+    display: none;
+  }
 }
 
 .prose .table-wrapper {

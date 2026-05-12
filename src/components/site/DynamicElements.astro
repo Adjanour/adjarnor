@@ -1,17 +1,35 @@
 ---
 const inspirationalQuotes = [
-  "Innovation distinguishes between a leader and a follower.",
-  "The future belongs to those who believe in the beauty of their dreams.",
-  "Technology is a useful servant but a dangerous master.",
-  "Code is poetry written in logic.",
-  "Every expert was once a beginner.",
-  "Progress is impossible without change.",
-  "Dream big, start small, move fast.",
-  "Simplicity is the soul of efficiency.",
-  "The best way to predict the future is to invent it.",
-  "Learning to code is learning to think.",
-  "Focus on the fundamentals, the rest will follow.",
-  "Mistakes are proof that you are trying.",
+  "Measure twice, cut once.",
+  "Software is a craft, not a commodity.",
+  "The most dangerous phrase in engineering is 'it works in my environment.'",
+  "Good engineering is about saying no to complexity.",
+  "The best code is the code you don't have to write.",
+  "Software is never finished, only abandoned.",
+  "If you educate a man, you educate an individual. If you educate a woman, you educate a nation.",
+  "Technology is best when it brings people together.",
+  "Consistency is what transforms average into excellence.",
+  "The best tools feel invisible.",
+  "Debugging is twice as hard as writing code in the first place.",
+  "The illusion of simplicity is the hardest thing to engineer.",
+  "Contrary to popular belief, computers are not complicated. People are.",
+  "Until the lion learns to write, every story will glorify the hunter.",
+  "Make it correct, make it clear, make it concise, make it fast. In that order.",
+  "First solve the problem, then write the code.",
+  "A well-placed abstraction eliminates an entire class of bugs.",
+  "The purpose of abstraction is not to be vague, but to create a new semantic level.",
+  "Freedom is not something one people can bestow on another as a gift. They claim it as their own.",
+  "Tomorrow belongs to the people who prepare for it today.",
+  "Don't repeat yourself. Once is fine, twice is a pattern, three times is refactoring time.",
+  "Engineering is not about perfection. It is about trade-offs, and knowing which ones to make.",
+  "There is no better than adversity. Every defeat, every heartbreak, every loss, contains its own seed.",
+  "Good interfaces hide complexity. Great interfaces make complexity feel like simplicity.",
+  "Every line of code is a liability. Make each one earn its keep.",
+  "We have the right and duty to remake this world.",
+  "Premature optimization is the root of all evil.",
+  "A people without the knowledge of their past history, origin and culture is like a tree without roots.",
+  "Pull requests are conversations, not verdicts.",
+  "I am the master of my fate, I am the captain of my soul.",
 ]
 
 const now = new Date()
@@ -54,12 +72,53 @@ const currentQuote = inspirationalQuotes[now.getUTCDate() % inspirationalQuotes.
       Now - {currentStatus}
     </span>
   </div>
-  <div class="flex items-center gap-2 backdrop-blur-sm bg-background/40 px-3 py-2 rounded-md border border-border/30 min-w-0 max-w-sm">
+  <div class="flex items-center gap-2 backdrop-blur-sm bg-background/40 px-3 py-2 rounded-md border border-border/30 min-w-0 max-w-sm quote-trigger">
     <svg viewBox="0 0 24 24" class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M3 21c3 0 7-1 9-5"></path>
       <path d="M13 5a4 4 0 0 1 4 4c0 3-2 5-4 7"></path>
       <path d="M7 5a4 4 0 0 1 4 4c0 3-2 5-4 7"></path>
     </svg>
     <span class="truncate text-sm">{currentQuote}</span>
+    <div class="quote-tooltip">
+      <p>{currentQuote}</p>
+    </div>
   </div>
+
+<style>
+  .quote-trigger {
+    position: relative;
+  }
+
+  .quote-tooltip {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    background: hsl(var(--background) / 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid hsl(var(--border) / 0.5);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    width: max-content;
+    max-width: 320px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 8px 32px hsl(0 0% 0% / 0.12);
+  }
+
+  .quote-tooltip p {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: hsl(var(--foreground) / 0.9);
+    text-wrap: pretty;
+  }
+
+  .quote-trigger:hover .quote-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
 </div>

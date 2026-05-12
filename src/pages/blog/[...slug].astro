@@ -22,6 +22,7 @@ const { Content, headings } = await render(article)
   date={article.data.date}
   image={`/og/${article.id}.png`}
   readingTime={estimateReadTime(article.body)}
+  headings={headings}
 >
   <Content />
 </BlogLayout>
