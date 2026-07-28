@@ -1,5 +1,6 @@
 ---
 import Footer from "@/components/site/Footer.astro"
+import Navbar from "@/components/site/Navbar.astro"
 import WritingCard from "@/components/site/WritingCard.astro"
 import { getArticles } from "@/data/articles"
 import BaseLayout from "@/layouts/BaseLayout.astro"
@@ -23,6 +24,7 @@ const years = Object.keys(articlesByYear)
   image="/og-image.png"
 >
   <div class="min-h-screen bg-background text-foreground font-sans">
+    <Navbar />
     <main id="main-content" class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
       <header class="mb-16">
         <a

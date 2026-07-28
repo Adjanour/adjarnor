@@ -1,0 +1,95 @@
+---
+title: "What Is a Polyfill?"
+subtitle: "Patching the holes in your browser's JavaScript runtime"
+description: "Polyfills let you write modern JavaScript without leaving legacy browsers behind. Here is how they work under the hood and why they matter."
+date: 2026-07-28
+tags: ["javascript", "web-development", "polyfills"]
+---
+
+## Ever heard of polyfills?
+
+All things change over time and so does the software we build.
+
+For a programming language, this can manifest in the form of changes to the syntax, runtime behavior, or the introduction and removal of methods or functions from the standard library. For a language like JavaScript, this tends to happen a lot. With the release of each new ECMAScript specification, additions are made to the language — both in terms of syntax and brand-new runtime APIs.
+
+To maintain backwards compatibility while still allowing developers to write modern code, the JavaScript ecosystem relies on two core mechanisms: **transpilation** and **polyfilling**.
+
+---
+
+## What is a Polyfill?
+
+A **polyfill** is a piece of code (typically JavaScript) used to implement modern functionality on older engines or browsers that do not natively support it yet.
+
+The term was coined by **Remy Sharp in 2009**. He borrowed it from _Polyfilla_, a well-known British brand of spackling paste used to fill cracks and holes in walls. In web development, a polyfill does essentially the same thing: it patches over the "holes" in a browser's implementation of the JavaScript standard library.
+
+---
+
+## Polyfills vs. Transpilers: Understanding the Line
+
+When a new ECMAScript feature is introduced, it falls into one of two categories. Knowing which is which determines whether you need a **polyfill** or a **transpiler** (like Babel or SWC):
+
+| Category                      | Description                                                               | Examples                                                          | Solution                                                        |
+| ----------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------- |
+| **New Standard Library APIs** | Functions, objects, or prototype methods added to the global environment. | `Promise`, `fetch()`, `Array.prototype.flat()`, `Object.hasOwn()` | **Polyfill** (injects missing runtime behavior)                 |
+| **New Language Syntax**       | Structural changes to how code is parsed by the engine.                   | Arrow functions `() => {}`, Optional Chaining `?.`, Destructuring | **Transpiler** (rewrites modern syntax into older `ES5` syntax) |
+
+> **Why can't a polyfill fix missing syntax?**
+> If an older JavaScript engine encounters syntax it doesn't recognize (like `?.`), it throws a `SyntaxError` during the **parsing phase** — before a single line of JavaScript actually executes. A polyfill runs during execution, so it is already too late. Syntax changes _must_ be transpiled before reaching the browser.
+
+---
+
+## How a Polyfill Works Under the Hood
+
+Under the hood, a polyfill performs a conditional check on the global scope (`window` or `globalThis`). If the method already exists natively, it steps out of the way. If it doesn't exist, it defines the method manually using existing JavaScript capabilities.
+
+Here is a simplified example of how `Array.prototype.includes` (introduced in ES2016) is polyfilled:
+
+```javascript
+if (!Array.prototype.includes) {
+  Object.defineProperty(Array.prototype, "includes", {
+    value: function (searchElement, fromIndex) {
+      if (this == null) {
+        throw new TypeError('"this" is null or not defined');
+      }
+
+      var o = Object(this);
+      var len = o.length >>> 0;
+
+      if (len === 0) return false;
+
+      var n = fromIndex | 0;
+      var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+      while (k < len) {
+        if (
+          o[k] === searchElement ||
+          (searchElement !== searchElement && o[k] !== o[k])
+        ) {
+          return true;
+        }
+        k++;
+      }
+
+      return false;
+    },
+    configurable: true,
+    writable: true,
+  });
+}
+```
+
+---
+
+## Modern Polyfilling in Practice
+
+Manually writing or importing individual polyfills is largely a thing of the past. Today's build tools automate polyfilling as part of the compilation process:
+
+1. **`core-js`**: The standard modular library for polyfills in the JS ecosystem. It contains polyfills for almost every ECMAScript feature up to the latest proposal stages.
+2. **`@babel/preset-env`**: Works alongside your target environment configuration (such as a `.browserslistrc` file). It analyzes which browsers you support, looks at your source code, and automatically injects _only_ the specific `core-js` polyfills required by those target browsers.
+3. **Polyfill on Demand**: Rather than shipping polyfills to everyone, modern CDNs can analyze the incoming browser's `User-Agent` header and dynamically serve only the polyfills that specific browser lacks, reducing bundle sizes for modern browsers.
+
+---
+
+## Summary
+
+As JavaScript continues to evolve rapidly, polyfills serve as the glue that keeps the web backwards compatible. They allow developers to write clean, modern, forward-looking code without abandoning users on legacy platforms — ensuring the web remains accessible to everyone, regardless of the device or browser they use.

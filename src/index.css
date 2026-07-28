@@ -15,9 +15,9 @@ html.lenis body {
 
 @theme {
     /* Font families */
-    --font-sans: "Open Sans", ui-sans-serif, system-ui, sans-serif;
-    --font-body: "Lora", Georgia, serif;
-    --font-mono: "Inconsolata", ui-monospace, monospace;
+    --font-sans: var(--font-geist), system-ui, sans-serif;
+    --font-body: var(--font-geist), system-ui, sans-serif;
+    --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
     /* Border radius */
     --radius-sm: calc(var(--radius) - 4px);
@@ -282,7 +282,7 @@ html.lenis body {
 
   body {
     @apply bg-background text-foreground font-body antialiased;
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 
@@ -542,9 +542,7 @@ html.lenis body {
 }
 
 .prose hr {
-  border: none;
-  border-top: 1px solid var(--prose-border);
-  margin: 2em 0;
+  display: none;
 }
 
 .prose img {

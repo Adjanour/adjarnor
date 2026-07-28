@@ -33,20 +33,19 @@ export default defineConfig({
   ],
   fonts: [
     {
-      name: "Lora",
+      name: "Geist",
       cssVariable: "--font-body",
       provider: fontProviders.google(),
-      weights: [400, 700],
-      styles: ["normal", "italic"],
+      weights: [400, 500, 600, 700],
     },
     {
-      name: "Open Sans",
+      name: "Geist",
       cssVariable: "--font-sans",
       provider: fontProviders.google(),
-      weights: [300, 400, 600, 700, 800],
+      weights: [300, 400, 500, 600, 700],
     },
     {
-      name: "Inconsolata",
+      name: "Geist Mono",
       cssVariable: "--font-mono",
       provider: fontProviders.google(),
       weights: [400, 700],

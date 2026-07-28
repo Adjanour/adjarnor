@@ -2,39 +2,43 @@
 import BaseLayout from "@/layouts/BaseLayout.astro"
 ---
 
-<BaseLayout title="Page Not Found | Bernard Katamanso">
+<BaseLayout title="404 — Page Not Found | Bernard Katamanso">
   <main class="min-h-screen flex items-center justify-center px-4 sm:px-6 py-12 sm:py-24">
-    <div class="text-center max-w-xl">
-      <!-- Error code -->
-      <div class="mb-8 sm:mb-12">
-        <p class="text-6xl sm:text-8xl font-light text-muted-foreground/60 tracking-tight">
+    <div class="text-center max-w-lg">
+      <div class="mb-10 relative">
+        <span class="text-[8rem] sm:text-[10rem] font-mono font-bold text-foreground/[0.03] leading-none select-none absolute inset-0 flex items-center justify-center">
           404
-        </p>
+        </span>
+        <div class="relative">
+          <div class="inline-block font-mono text-sm text-muted-foreground bg-muted/40 rounded-md px-4 py-3 border border-border/50">
+            <span class="text-primary/70">$</span> curl -s /page-you-wanted
+            <br />
+            <span class="text-destructive/80">error: path not found</span>
+            <br />
+            <span class="text-muted-foreground/50">exit code: 404</span>
+          </div>
+        </div>
       </div>
-      
-      <!-- Heading -->
-      <h1 class="font-serif text-2xl sm:text-4xl font-normal mb-4 tracking-tight text-foreground">
-        Page not found
+
+      <h1 class="text-2xl sm:text-3xl font-serif font-normal mb-3 tracking-tight text-foreground">
+        Lost in the void
       </h1>
-      
-      <!-- Description -->
-      <p class="text-base sm:text-lg text-muted-foreground mb-8 leading-relaxed">
-        The page you're looking for doesn't exist. It may have moved or been removed.
+      <p class="text-muted-foreground mb-8 leading-relaxed max-w-md mx-auto">
+        This page doesn't exist. Either it was never here, or it moved somewhere you can't reach.
       </p>
-      
-      <!-- Navigation -->
+
       <div class="flex flex-col sm:flex-row gap-3 justify-center">
-        <a 
-          href="/" 
-          class="px-6 py-2.5 bg-background border border-border/60 text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors font-sans text-sm font-medium"
+        <a
+          href="/"
+          class="px-5 py-2.5 bg-foreground text-background rounded-md hover:opacity-90 transition-opacity font-sans text-sm font-medium"
         >
-          Return Home
+          Back to safety
         </a>
-        <a 
-          href="/writing" 
-          class="px-6 py-2.5 bg-background border border-border/60 text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors font-sans text-sm font-medium"
+        <a
+          href="/blog/"
+          class="px-5 py-2.5 border border-border/60 text-foreground rounded-md hover:bg-accent transition-colors font-sans text-sm font-medium"
         >
-          Read Writing
+          Read the blog
         </a>
       </div>
     </div>

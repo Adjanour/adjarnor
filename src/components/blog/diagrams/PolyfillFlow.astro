@@ -1,0 +1,68 @@
+---
+import { border, createDiagram, fg, fgMuted, muted, primary } from "@/utils/diagram"
+
+const d = createDiagram(460, 280)
+const cx = 230
+
+const bw = 180
+const bh = 38
+
+// Modern Code
+const y0 = 10
+d.box(cx - bw / 2, y0, bw, bh, { fill: muted, stroke: border, roughness: 0.3 })
+d.centerText(y0 + bh / 2 + 1, "Modern Code", { fontSize: 11, fontWeight: "600" })
+
+// Arrow down
+d.arrow(cx, y0 + bh, cx, 72, { stroke: fg, strokeWidth: 1.5, headSize: 7 })
+
+// Decision
+d.text(cx, 76, "Supports it?", { fontSize: 12, fontWeight: "600", anchor: "middle" })
+
+// Left arrow — YES
+const lx = 100
+d.arrow(cx - 30, 82, lx, 82, { stroke: fg, strokeWidth: 1.5, headSize: 7 })
+d.text(lx + 2, 76, "YES", { fontSize: 10, fontWeight: "700", fill: primary })
+
+// Right arrow — NO
+const rx = 360
+d.arrow(cx + 30, 82, rx, 82, { stroke: fg, strokeWidth: 1.5, headSize: 7 })
+d.text(rx - 12, 76, "NO", { fontSize: 10, fontWeight: "700", fill: primary })
+
+// YES box
+const y1 = 115
+d.box(lx - bw / 2 + 10, y1, bw - 20, bh, { fill: muted, stroke: border, roughness: 0.3 })
+d.centerText(y1 + bh / 2 + 1, "Run Native", { fontSize: 11, fontWeight: "600" })
+
+// Arrow down from YES
+d.arrow(lx, y1 + bh, lx, 185, { stroke: fg, strokeWidth: 1.5, headSize: 7 })
+
+// NO box
+d.box(rx - bw / 2 + 10, y1, bw - 20, bh, { fill: muted, stroke: border, roughness: 0.3 })
+d.centerText(y1 + bh / 2 - 6, "Load Polyfill", { fontSize: 11, fontWeight: "600" })
+d.centerText(y1 + bh / 2 + 9, "(patches API)", { fontSize: 9, fill: fgMuted })
+
+// Arrow down from NO
+d.arrow(rx, y1 + bh, rx, 185, { stroke: fg, strokeWidth: 1.5, headSize: 7 })
+
+// Horizontal merge line
+d.arrow(lx, 185, rx, 185, { stroke: fg, strokeWidth: 1.5, headSize: 0 })
+
+// Arrow down to final
+d.arrow(cx, 185, cx, 215, { stroke: fg, strokeWidth: 1.5, headSize: 7 })
+
+// Seamless Execution
+const y2 = 220
+d.box(cx - bw / 2, y2, bw, bh, { fill: muted, stroke: border, roughness: 0.3 })
+d.centerText(y2 + bh / 2 + 1, "Seamless Execution", { fontSize: 11, fontWeight: "600" })
+
+const svgContent = d.serialize()
+---
+
+<Fragment set:html={svgContent} />
+
+<style>
+  svg {
+    display: block;
+    margin: 1.5em auto;
+  }
+</style>

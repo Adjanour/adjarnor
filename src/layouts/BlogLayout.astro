@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import Navbar from "@/components/site/Navbar.astro";
 import ShareButtons from "@/components/blog/ShareButtons.astro";
 import TableOfContents from "@/components/blog/TableOfContents.astro";
 import "katex/dist/katex.min.css";
@@ -30,6 +31,7 @@ const formattedDate = date.toLocaleDateString("en-US", {
 
 <BaseLayout title={`${title} — Blog`} description={description} image={image}>
     <div class="min-h-screen bg-background text-foreground font-sans">
+        <Navbar />
         <main id="main-content" class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
             <a
                 href="/blog/"

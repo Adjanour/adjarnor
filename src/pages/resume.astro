@@ -1,0 +1,359 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import Navbar from "@/components/site/Navbar.astro"
+
+const education = [
+  {
+    institution: "University of Mines and Technology (UMaT)",
+    location: "Tarkwa, Ghana",
+    dates: "Jan 2023 – Sep 2026",
+    degree: "B.Sc. Computer Science and Engineering",
+    highlights: [
+      "Current CWA: 88+ | Expected First Class Honours",
+      "Coursework: Data Structures & Algorithms, Linear Algebra & Calculus, Cybersecurity, Data Science, HCI",
+      "Research Interests: Systems Design, Automation, Computational Efficiency",
+    ],
+  },
+]
+
+const experience = [
+  {
+    title: "Tech Lead",
+    company: "Orcta",
+    location: "Remote / Ghana",
+    dates: "Feb 2024 – Present",
+    bullets: [
+      "Lead architecture and backend for Orcta Go, a logistics platform serving Ghana",
+      "Manage 4 engineers; established documentation standards that cut onboarding time",
+      "Drive technical decisions balancing reliability, cost, and shipping velocity",
+    ],
+  },
+  {
+    title: "Software Engineer (Volunteer)",
+    company: "Cbreeve Foundation",
+    location: "Remote",
+    dates: "Nov 2024 – Present",
+    bullets: [
+      "Built internal tools for reporting and transparency — roughly 30% efficiency gain on operational workflows",
+    ],
+  },
+  {
+    title: "Software Engineering Intern",
+    company: "University IT Unit, UMaT",
+    location: "Tarkwa, Ghana",
+    dates: "Jun 2023 – Sep 2023",
+    bullets: [
+      "Maintained backend systems and optimized database workflows for student-facing services",
+    ],
+  },
+]
+
+const projects = [
+  {
+    name: "mNotify TypeScript SDK",
+    role: "Open Source",
+    link: "https://github.com/Adjanour/mnotify-ts-sdk",
+    bullets: [
+      "Published type-safe SDK for mNotify's Bulk Messaging API. Available on npm.",
+    ],
+  },
+  {
+    name: "SESS CLI",
+    role: "Open Source",
+    link: "https://github.com/Orctatech-Engineering-Team/sess-cli",
+    bullets: [
+      "Session-based Git CLI that turns units of work into explicit sessions with SQLite state tracking.",
+    ],
+  },
+  {
+    name: "React Components Library",
+    role: "Open Source",
+    link: "https://github.com/Adjanour/ReactComponents",
+    bullets: [
+      "Designed and published reusable UI components for scalable application development.",
+    ],
+  },
+  {
+    name: "Programming Playground",
+    role: "Systems",
+    link: null,
+    bullets: [
+      "Built HTTP servers and JSON parsers from scratch to deepen understanding of network protocols and language fundamentals.",
+    ],
+  },
+  {
+    name: "Valkey Collab",
+    role: "Open Source",
+    link: "https://github.com/Orctatech-Engineering-Team/valkey-collab-demo",
+    bullets: [
+      "Real-time collaborative whiteboard with FastAPI, Vue.js, and WebSocket-based sync.",
+    ],
+  },
+  {
+    name: "Listen to This Article",
+    role: "Open Source",
+    link: "https://github.com/Adjanour/listen-to-this-article",
+    bullets: [
+      "WordPress plugin adding text-to-speech accessibility to posts.",
+    ],
+  },
+  {
+    name: "Vesper",
+    role: "Personal",
+    link: "https://github.com/Adjanour/vesper",
+    bullets: [
+      "Time blocking application for structuring deep work sessions. In progress.",
+    ],
+  },
+]
+
+const leadership = [
+  {
+    activity: "Co-Lead, Google Developer Groups (GDG) UMaT",
+    bullets: [
+      "Organized sessions on cloud infrastructure, AI, and backend systems reaching 100+ students",
+    ],
+  },
+  {
+    activity: "Panel Member, ACSES Vetting Committee",
+    bullets: [
+      "Evaluated executive candidates on communication, reasoning, and technical competence",
+    ],
+  },
+  {
+    activity: "Core Member, Salem Aid Foundation",
+    bullets: [
+      "Co-authored governance and transparency frameworks for community education projects",
+    ],
+  },
+]
+
+const skills = [
+  {
+    label: "Languages",
+    value: "Python, C#, TypeScript, JavaScript, Go, Java, SQL, Bash",
+  },
+  {
+    label: "Frameworks & Tools",
+    value: ".NET, Node.js, React, PostgreSQL, Supabase, Firebase, Docker, Git, Jupyter Lab",
+  },
+  {
+    label: "Focus Areas",
+    value: "Systems Design, APIs, Database Architecture, Infrastructure, Developer Tooling",
+  },
+]
+---
+
+<BaseLayout
+  title="Resume | Bernard Katamanso"
+  description="CV of Bernard Kirk Adjarnor Katamanso — Software Engineer & Tech Lead from Accra, Ghana."
+>
+  <div class="min-h-screen bg-background text-foreground font-sans">
+    <Navbar />
+    <main id="main-content" class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+      <header class="mb-12">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
+        >
+          <svg
+            class="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m12 19-7-7 7-7" />
+            <path d="M19 12H5" />
+          </svg>
+          Back home
+        </a>
+
+        <div class="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight leading-none mb-2">
+              Bernard Katamanso
+            </h1>
+            <p class="text-muted-foreground text-lg mt-3">
+              Software Engineer & Tech Lead — Accra, Ghana
+            </p>
+          </div>
+          <div class="flex gap-3 mt-2">
+            <a
+              href="https://adjarnor.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              adjarnor.dev
+            </a>
+            <span class="text-muted-foreground/40">·</span>
+            <a
+              href="mailto:adjanour@icloud.com"
+              class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              adjanour@icloud.com
+            </a>
+            <span class="text-muted-foreground/40">·</span>
+            <a
+              href="https://github.com/Adjanour"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              GitHub
+            </a>
+            <span class="text-muted-foreground/40">·</span>
+            <a
+              href="https://linkedin.com/in/kirk-katamanso"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <div class="space-y-12">
+        <!-- Education -->
+        <section>
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-5">
+            Education
+          </h2>
+          <div class="space-y-6">
+            {education.map((edu) => (
+              <div>
+                <div class="flex items-baseline justify-between gap-4 flex-wrap mb-1">
+                  <h3 class="font-medium text-foreground">{edu.degree}</h3>
+                  <span class="text-sm text-muted-foreground shrink-0">{edu.dates}</span>
+                </div>
+                <p class="text-sm text-muted-foreground mb-2">
+                  {edu.institution} — {edu.location}
+                </p>
+                <ul class="list-disc list-inside space-y-1 text-sm text-muted-foreground/80">
+                  {edu.highlights.map((h) => (
+                    <li>{h}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <!-- Experience -->
+        <section>
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-5">
+            Experience
+          </h2>
+          <div class="space-y-6">
+            {experience.map((job) => (
+              <div>
+                <div class="flex items-baseline justify-between gap-4 flex-wrap mb-1">
+                  <h3 class="font-medium text-foreground">
+                    {job.title} <span class="text-muted-foreground font-normal">at {job.company}</span>
+                  </h3>
+                  <span class="text-sm text-muted-foreground shrink-0">{job.dates}</span>
+                </div>
+                <p class="text-sm text-muted-foreground mb-2">{job.location}</p>
+                <ul class="list-disc list-inside space-y-1 text-sm text-muted-foreground/80">
+                  {job.bullets.map((b) => (
+                    <li>{b}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <!-- Projects -->
+        <section>
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-5">
+            Projects
+          </h2>
+          <div class="space-y-6">
+            {projects.map((proj) => (
+              <div>
+                <h3 class="font-medium text-foreground mb-1">
+                  {proj.link ? (
+                    <a
+                      href={proj.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="underline underline-offset-2 hover:text-muted-foreground transition-colors"
+                    >{proj.name}</a>
+                  ) : proj.name}
+                  <span class="text-muted-foreground font-normal"> — {proj.role}</span>
+                </h3>
+                <ul class="list-disc list-inside space-y-1 text-sm text-muted-foreground/80">
+                  {proj.bullets.map((b) => (
+                    <li>{b}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <!-- Leadership & Community -->
+        <section>
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-5">
+            Leadership & Community
+          </h2>
+          <div class="space-y-6">
+            {leadership.map((item) => (
+              <div>
+                <h3 class="font-medium text-foreground mb-1">{item.activity}</h3>
+                <ul class="list-disc list-inside space-y-1 text-sm text-muted-foreground/80">
+                  {item.bullets.map((b) => (
+                    <li>{b}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <!-- Skills -->
+        <section>
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-5">
+            Skills
+          </h2>
+          <div class="space-y-2 text-sm text-muted-foreground/80">
+            {skills.map((s) => (
+              <p>
+                <span class="font-medium text-foreground">{s.label}:</span>{" "}
+                {s.value}
+              </p>
+            ))}
+          </div>
+        </section>
+
+        <!-- Publications -->
+        <section>
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-5">
+            Publications
+          </h2>
+          <div>
+            <h3 class="font-medium text-foreground mb-1">
+              Compilers Griot <span class="text-muted-foreground font-normal">— Writer</span>
+            </h3>
+            <p class="text-sm text-muted-foreground/80">
+              Essays connecting computing, philosophy, and Africa's digital future.
+              Published at <a
+                href="https://adjarnor.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="underline underline-offset-2 hover:text-foreground transition-colors"
+              >adjarnor.dev</a>.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</BaseLayout>

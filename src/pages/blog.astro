@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content"
 import ArticleCard from "@/components/blog/ArticleCard.astro"
 import Footer from "@/components/site/Footer.astro"
+import Navbar from "@/components/site/Navbar.astro"
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import { estimateReadTime } from "@/utils/reading-time"
 
@@ -25,6 +26,7 @@ const years = Object.keys(articlesByYear)
   description="Technical writing on software engineering, systems, and AI."
 >
   <div class="min-h-screen bg-background text-foreground font-sans">
+    <Navbar />
     <main id="main-content" class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
       <header class="mb-16">
         <a
