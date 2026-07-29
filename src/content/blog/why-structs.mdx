@@ -1,0 +1,260 @@
+---
+title: "Why Structs"
+subtitle: "Practical patterns that make structs indispensable"
+description: "Structs solve real problems in production code: parameter explosion, scattered state, and fragile function signatures. Here are the patterns that show up again and again."
+date: 2026-07-30
+tags: ["c", "structs", "code-design", "best-practices"]
+---
+
+In the [previous article](/blog/what-is-a-struct), we covered what a struct is and why the concept exists. But knowing the definition is different from knowing when and how to reach for it. This article is about the practical side: the patterns that make structs indispensable in real code, and the mistakes that make them painful.
+
+---
+
+## Taming Parameter Explosion
+
+The most immediate benefit of structs is cleaning up function signatures. Without them, a function that operates on a domain entity must accept every field individually:
+
+```c
+void create_user(const char *name, const char *email, int age, int role, int active);
+```
+
+Five parameters. Now imagine calling this from three different places in your codebase. Every call site must remember the correct order. Swap `age` and `role` and the compiler won't say a word—they're both `int`.
+
+A struct collapses this into a single, self-documenting parameter:
+
+```c
+struct CreateUserParams {
+    const char *name;
+    const char *email;
+    int age;
+    int role;
+    int active;
+};
+
+void create_user(struct CreateUserParams params);
+```
+
+The call site becomes readable:
+
+```c
+create_user((struct CreateUserParams){
+    .name  = "Alice",
+    .email = "alice@example.com",
+    .age   = 30,
+    .role  = ROLE_ADMIN,
+    .active = 1,
+});
+```
+
+Designated initializers make the order irrelevant and the intent explicit. If you add a field later, every call site that doesn't name it gets a compiler warning (with `-Wmissing-field-initializers`), not a silent bug.
+
+---
+
+## Grouping Related State
+
+Some data simply belongs together. A 2D position has an x and a y. A date has a year, month, and day. A configuration has a timeout, a retry count, and a base URL. Splitting these across separate variables scatters related state and makes it easy to pass half of it to one function and the other half to another.
+
+```c
+struct Vec2 {
+    float x;
+    float y;
+};
+
+struct Date {
+    int year;
+    int month;
+    int day;
+};
+```
+
+Once grouped, these types become first-class citizens. You can pass a `Vec2` to a function, return it from a function, store it in an array, and compose it with other types. The grouping isn't just organizational—it changes what operations become possible.
+
+A function that previously needed two parameters:
+
+```c
+float distance(float x1, float y1, float x2, float y2);
+```
+
+Becomes:
+
+```c
+float distance(struct Vec2 a, struct Vec2 b);
+```
+
+The second version is harder to call incorrectly. You can't accidentally swap `x1` with `y2`.
+
+---
+
+## Value vs. Pointer Passing
+
+Structs give you a choice that scalar types don't: pass the whole thing by value, or pass a pointer to it.
+
+**Pass by value** copies the struct onto the stack. This is appropriate for small structs (a few dozen bytes) where the copy cost is negligible and you want the function to work with its own independent copy:
+
+```c
+void translate(struct Vec2 *pos, struct Vec2 delta) {
+    pos->x += delta.x;
+    pos->y += delta.y;
+}
+```
+
+Here, `delta` is small (8 bytes) and read-only, so passing by value is clean. `pos` is modified, so it's passed by pointer.
+
+**Pass by pointer** avoids the copy and allows mutation. This is the right choice for large structs, or when the function needs to modify the original:
+
+```c
+void process_order(struct Order *order) {
+    order->status = STATUS_SHIPPED;
+    order->shipped_at = now();
+}
+```
+
+The rule of thumb: small and read-only goes by value. Large, mutable, or output-only goes by pointer. Structs make this choice explicit in a way that raw scalars never force you to think about.
+
+---
+
+## Common Patterns
+
+### Config Objects
+
+Instead of passing ten separate configuration values, bundle them into a struct:
+
+```c
+struct ServerConfig {
+    const char *host;
+    int port;
+    int max_connections;
+    int timeout_ms;
+    int tls_enabled;
+};
+
+struct ServerConfig config = {
+    .host = "0.0.0.0",
+    .port = 8080,
+    .max_connections = 100,
+    .timeout_ms = 5000,
+    .tls_enabled = 1,
+};
+
+start_server(&config);
+```
+
+Adding a new configuration option means adding a field to the struct. Functions that don't care about the new option don't need to change their signature—they just receive the same struct pointer they always did.
+
+### Return Types
+
+When a function needs to return multiple values, a struct is the cleanest option in C:
+
+```c
+struct ParseResult {
+    int success;
+    int value;
+    const char *error;
+};
+
+struct ParseResult parse_int(const char *str) {
+    struct ParseResult result = {0};
+    // ... parse logic ...
+    return result;
+}
+```
+
+The caller checks `result.success` and uses `result.value` or `result.error` as appropriate. No output parameters, no magic return values.
+
+### Handles
+
+A handle is an opaque struct that hides internal state from the caller. The caller receives a pointer to the struct but never accesses its fields directly:
+
+```c
+// In header (public)
+struct Database;
+struct Database *db_open(const char *path);
+void db_query(struct Database *db, const char *sql);
+
+// In implementation (private)
+struct Database {
+    sqlite3 *handle;
+    char *path;
+    int is_open;
+};
+```
+
+The caller sees `struct Database` but never knows—or needs to know—that it contains a `sqlite3` handle. This is the foundation of encapsulation in C: the struct definition lives in the `.c` file, not the `.h` file, so the caller can only interact through the functions you provide.
+
+---
+
+## Common Mistakes
+
+### God Structs
+
+When a struct accumulates too many responsibilities, it becomes a dumping ground:
+
+```c
+struct AppState {
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    int screen_width;
+    int screen_height;
+    int fps;
+    int is_running;
+    int score;
+    int lives;
+    int level;
+    float player_x;
+    float player_y;
+    float player_vx;
+    float player_vy;
+    // ... 40 more fields
+};
+```
+
+This struct knows everything about everything. Every function depends on it, so every function is coupled to every field. Changes to the player logic risk breaking the rendering code. The fix is decomposition: split the god struct into smaller, focused types that each own a single concern.
+
+### Leaking Internals
+
+When a struct definition lives in a public header, every field becomes part of the public API. Change the layout and every caller recompiles. The handle pattern from earlier avoids this: keep the struct definition in the `.c` file, expose only an opaque pointer in the header. The caller can't depend on fields it can't see.
+
+### Ignoring Padding
+
+A struct with poor field ordering wastes memory. Group fields by size, largest first, to minimize padding:
+
+```c
+// Wasteful: 16 bytes (8 + 1 + 1 + 2 bytes padding + 4 bytes)
+struct Bad {
+    double price;
+    char active;
+    char type;
+    int count;
+};
+
+// Compact: 16 bytes but fewer cache lines accessed
+struct Good {
+    double price;
+    int count;
+    char active;
+    char type;
+};
+```
+
+In practice, for most applications the savings are negligible. But in tight loops processing millions of structs, or in data structures that live in cache-sensitive paths, field ordering matters.
+
+---
+
+## When to Reach for a Struct
+
+Reach for a struct when:
+
+- A function has more than three related parameters.
+- You find yourself passing the same group of variables to multiple functions.
+- A return value needs to carry more than one piece of information.
+- You want to hide implementation details behind an opaque pointer.
+
+Don't reach for a struct when:
+
+- You're wrapping a single value (that's what `typedef` is for, or just use the type directly).
+- The fields don't share a logical relationship (a struct is not a bag of random state).
+- You're using it purely for namespace decoration without grouping data.
+
+---
+
+**Previous:** [What Is a Struct?](/blog/what-is-a-struct) &nbsp;|&nbsp; **Next:** [What a Struct Actually Is](/blog/what-a-struct-actually-is) →

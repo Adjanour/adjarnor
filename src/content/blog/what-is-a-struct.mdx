@@ -1,0 +1,100 @@
+---
+title: "What Is a Struct?"
+subtitle: "Grouping related data into one logical unit"
+description: "A struct is a user-defined composite type that combines multiple variables into a single object. Here is what structs are, why we need them, and how they map to memory."
+date: 2026-07-29
+tags: ["c", "structs", "memory-layout", "data-structures"]
+---
+
+A `struct` is a user-defined composite type that combines one or more variables, called **members** or **fields**, into a single object. Each member may have a different type, allowing a `struct` to represent data that cannot be expressed by a single primitive value.
+
+The members of a `struct` are laid out consecutively in memory (subject to alignment and padding requirements) and are accessed through a single variable of the `struct` type. By grouping related data together, a `struct` allows the compiler and the programmer to treat multiple values as one logical unit.
+
+---
+
+## The Problem With Scalars
+
+As programs grow beyond a few hundred lines, we stop thinking in terms of isolated values and start thinking in terms of entities. Instead of manipulating individual integers or floating-point numbers, we begin modeling concepts from the problem domain: a `User`, a `BankAccount`, a `Vector3`, a hardware register, or a network packet.
+
+These entities are rarely represented by a single value. A user has an ID, a name, and an email address. A bank account has an owner, a balance, and an account number. A 3D vector has three coordinates. Each individual field has meaning on its own, but the concept itself only emerges when those related pieces of data are treated as a single, coherent unit.
+
+The fundamental building block we have so far is the variable. A variable binds a name to a single value of some type. C provides primitive types such as `int`, `float`, `char`, `double`, and pointers, each representing a single, atomic value that maps naturally to CPU registers and machine instructions. These primitives are excellent for modeling standalone quantities, but they cannot express that several values collectively represent one logical object.
+
+```c
+int age = 20;
+float temperature = 98.6f;
+```
+
+However, this approach quickly becomes impractical. Attempting to model complex domain entities using nothing but primitive variables forces us to manage each attribute independently, even though they all belong to the same conceptual object. Consider modeling just three employees using scalar variables alone:
+
+```c
+// Employee 1
+int   emp1_id = 101;
+char *emp1_name = "Alice";
+float emp1_salary = 75000.0f;
+
+// Employee 2
+int   emp2_id = 102;
+char *emp2_name = "Bob";
+float emp2_salary = 82000.0f;
+```
+
+This approach suffers from three fundamental flaws. First, it introduces **loose coupling**: the language sees zero relationship between `emp1_id`, `emp1_name`, and `emp1_salary`. Their conceptual binding exists solely in the programmer's mind. Second, it causes **parameter explosion**: a function processing an employee must accept every field individually, like `void print_employee(int id, char *name, float salary);`, which becomes unmanageable if an employee has fifteen attributes. Third, it creates a **high risk of bugs** because it is trivially easy to mix up arguments at the call site, such as calling `print_employee(emp1_id, emp2_name, emp1_salary)` and silently corrupting domain logic.
+
+---
+
+## Why Arrays Don't Solve This
+
+To solve the grouping problem, we might look to another tool: arrays. An array represents a contiguous sequence of elements stored back-to-back in memory, accessible via an integer index:
+
+```c
+int test_scores[100]; // 100 contiguous integers
+```
+
+Arrays excel at managing homogeneous collections—lists where every element shares the exact same data type. But domain entities are almost always heterogeneous, composed of varying types like an integer ID, a string pointer for a name, and a float for salary.
+
+---
+
+## What We Actually Need
+
+To model real-world entities cleanly, we need a native abstraction that unifies four key traits:
+
+- the single-entity binding of a scalar variable,
+- the contiguous memory allocation of an array,
+- heterogeneous typing to mix different data types,
+- and named fields for semantic access.
+
+In C, this construct is the structure (`struct`).
+
+---
+
+## Declaring a Struct
+
+Declaring a `struct` registers a new compound type in C's type system:
+
+```c
+struct Employee {
+    int id;           // 4 bytes
+    const char *name; // 8 bytes (on 64-bit architecture)
+    float salary;     // 4 bytes
+};
+```
+
+Notice that in C, the full canonical type name is `struct Employee`, not simply `Employee`. Physically, a struct instance maps directly to a single, contiguous block of memory large enough to hold all of its fields sequentially, along with any necessary compiler padding inserted for CPU word alignment (more on that in the next article):
+
+```
+       +-------------------+-------------------+-------------------+
+Offset | +0                | +8                | +16               |
+       |  int id (4B) + pad|  const char* (8B) |  float salary (4B)|
+       +-------------------+-------------------+-------------------+
+```
+
+---
+
+## Value Semantics
+
+Because C treats a struct as a unified, contiguous block of memory, it follows strict value semantics. Assigning one struct to another (`emp2 = emp1;`) performs a direct, single-operation byte copy (`memcpy`) of the entire memory region. An entire struct can be passed to a function by value (`void process(struct Employee e)`), which copies the block onto the stack, or passed by reference (`void process(const struct Employee *e)`) using a pointer. Members are accessed using either the direct member selection operator (`.`) on values or the structure pointer operator (`->`) when referencing memory addresses.
+
+---
+
+**Next in series:** [Why Structs](/blog/why-structs) →

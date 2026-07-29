@@ -1,0 +1,359 @@
+---
+title: "What a Struct Actually Is"
+subtitle: "Memory layout, alignment, and the hidden cost of virtual functions"
+description: "A struct is a compiler-verified contract about where every field lives in memory. This article compares C, C++, and Zig to show what that contract actually guarantees—and what it doesn't."
+date: 2026-07-31
+tags: ["c", "cpp", "zig", "structs", "memory-layout", "alignment"]
+---
+
+**TL;DR**
+
+- **Why structs exist:** Modeling a real entity (a user, an employee, a 3D vector) with separate scalar variables breaks down fast: no relationship between the fields in the language's eyes, functions explode in parameter count, and it's easy to mix up arguments at the call site. A `struct` groups heterogeneous, named fields into one contiguous block of memory, giving you the binding of a variable with the layout of an array.
+- **C sets the baseline:** In C, a struct's members appear in memory in declaration order, with only alignment padding inserted. Nothing gets reordered or hidden, because C was built to describe memory layouts imposed by hardware, file formats, and network protocols.
+- **C++ vs. Zig semantics:** C++ inherited C's `struct` and layered `class` on top of it for backward compatibility; the only language-level differences are default member access and default inheritance access. In Zig, a `struct` is a namespace that groups data and functions, without inheritance, vtables, or hidden runtime behavior.
+- **Hidden overhead (`vptr`):** Adding a `virtual` function in C++ triggers every mainstream ABI to prepend an 8-byte vtable pointer to the struct (the standard itself doesn't mandate this, but GCC, Clang, and MSVC all do it). Zig has no virtual functions, so a struct's size is strictly its fields plus whatever padding and alignment the compiler inserts.
+- **Field reordering:** C++ guarantees fields appear in declaration order (mandatory across the whole class since C++23, previously only within a single access-control block); the compiler can still pad between them, which often wastes bytes. Zig leaves field layout unspecified by default; today's compiler reorders fields to minimize padding, but code must never depend on the exact layout. `extern struct` opts into a fixed, C-style layout.
+- **Why alignment matters:** CPUs fetch memory in fixed, aligned blocks. A misaligned value crossing a block boundary may require two internal reads stitched together in a register, and can outright fault on some architectures. Padding trades a few bytes at compile time to keep every read inside a single aligned block.
+- **The unifying idea:** A struct isn't just a bag of fields. It's a compiler-verified contract about where every field lives in memory and what alignment guarantee it satisfies. Padding, `vptr`s, field order, `extern struct`, and tail padding in arrays are all that one idea, worked out in different directions.
+
+---
+
+A `struct` is a user-defined composite type that combines one or more variables, called **members** or **fields**, into a single object. Each member may have a different type, allowing a `struct` to represent data that cannot be expressed by a single primitive value.
+
+The members of a `struct` are laid out consecutively in memory (subject to alignment and padding requirements) and are accessed through a single variable of the `struct` type. By grouping related data together, a `struct` allows the compiler and the programmer to treat multiple values as one logical unit.
+
+As programs grow beyond a few hundred lines, we stop thinking in terms of isolated values and start thinking in terms of entities. Instead of manipulating individual integers or floating-point numbers, we begin modeling concepts from the problem domain: a `User`, a `BankAccount`, a `Vector3`, a hardware register, or a network packet.
+
+These entities are rarely represented by a single value. A user has an ID, a name, and an email address. A bank account has an owner, a balance, and an account number. A 3D vector has three coordinates. Each individual field has meaning on its own, but the concept itself only emerges when those related pieces of data are treated as a single, coherent unit.
+
+The fundamental building block we have so far is the variable. A variable binds a name to a single value of some type. C provides primitive types such as `int`, `float`, `char`, `double`, and pointers, each representing a single, atomic value that maps naturally to CPU registers and machine instructions. These primitives are excellent for modeling standalone quantities, but they cannot express that several values collectively represent one logical object.
+
+```c
+int age = 20;
+float temperature = 98.6f;
+```
+
+However, this approach quickly becomes impractical. Attempting to model complex domain entities using nothing but primitive variables forces us to manage each attribute independently, even though they all belong to the same conceptual object. Consider modeling just three employees using scalar variables alone:
+
+```c
+// Employee 1
+int   emp1_id = 101;
+char *emp1_name = "Alice";
+float emp1_salary = 75000.0f;
+
+// Employee 2
+int   emp2_id = 102;
+char *emp2_name = "Bob";
+float emp2_salary = 82000.0f;
+```
+
+This approach suffers from three fundamental flaws. First, it introduces loose coupling: the language sees zero relationship between `emp1_id`, `emp1_name`, and `emp1_salary`. Their conceptual binding exists solely in the programmer's mind. Second, it causes parameter explosion: a function processing an employee must accept every field individually, like `void print_employee(int id, char *name, float salary);`, which becomes unmanageable if an employee has fifteen attributes. Third, it creates a high risk of bugs because it is trivially easy to mix up arguments at the call site, such as calling `print_employee(emp1_id, emp2_name, emp1_salary)` and silently corrupting domain logic.
+
+To solve the grouping problem, we might look to another tool: arrays. An array represents a contiguous sequence of elements stored back-to-back in memory, accessible via an integer index:
+
+```c
+int test_scores[100]; // 100 contiguous integers
+```
+
+Arrays excel at managing homogeneous collections—lists where every element shares the exact same data type. But domain entities are almost always heterogeneous, composed of varying types like an integer ID, a string pointer for a name, and a float for salary.
+
+To model real-world entities cleanly, we need a native abstraction that unifies four key traits:
+
+- the single-entity binding of a scalar variable,
+- the contiguous memory allocation of an array,
+- heterogeneous typing to mix different data types,
+- and named fields for semantic access.
+
+In C, this construct is the structure (`struct`).
+
+Declaring a `struct` registers a new compound type in C's type system:
+
+```c
+struct Employee {
+    int id;           // 4 bytes
+    const char *name; // 8 bytes (on 64-bit architecture)
+    float salary;     // 4 bytes
+};
+```
+
+Notice that in C, the full canonical type name is `struct Employee`, not simply `Employee`. Physically, a struct instance maps directly to a single, contiguous block of memory large enough to hold all of its fields sequentially, along with any necessary compiler padding inserted for CPU word alignment (more on that later):
+
+```
+       +-------------------+-------------------+-------------------+
+Offset | +0                | +8                | +16               |
+       |  int id (4B) + pad|  const char* (8B) |  float salary (4B)|
+       +-------------------+-------------------+-------------------+
+```
+
+Because C treats a struct as a unified, contiguous block of memory, it follows strict value semantics. Assigning one struct to another (`emp2 = emp1;`) performs a direct, single-operation byte copy (`memcpy`) of the entire memory region. An entire struct can be passed to a function by value (`void process(struct Employee e)`), which copies the block onto the stack, or passed by reference (`void process(const struct Employee *e)`) using a pointer. Members are accessed using either the direct member selection operator (`.`) on values or the structure pointer operator (`->`) when referencing memory addresses.
+
+---
+
+## Which Parts Are Guaranteed?
+
+A struct declaration describes the logical structure of a type. The processor, however, knows nothing about structs, types, or variables. It only understands instructions, registers, addresses, and bytes. The compiler's job is to bridge those two worlds.
+
+When the compiler translates a struct into machine code, it has to decide how that type will be represented in memory. To do this, the language specifies some aspects of that representation exactly and intentionally leaves others unspecified, giving the compiler room to optimize while preserving the meaning of the program.
+
+This leads to an important question:
+
+**Which parts of a struct's memory layout are guaranteed, and which parts are implementation details?**
+
+Should fields always appear in the order they were declared? May the compiler reorder them to reduce padding? Can it insert hidden metadata? Is the layout stable enough to write directly to disk or send across a network? Can another language interpret the same bytes without translation?
+
+These questions determine what guarantees the language makes about its representation in memory. The differences between C, C++, and Zig are about which decisions the language makes for the compiler, and which decisions it leaves to the programmer.
+
+---
+
+## C: The Baseline
+
+In C, a `struct` describes a contiguous region of memory whose members appear in declaration order, with only the padding required for alignment. The compiler may optimize the generated machine code, but it may not reorder members or otherwise change the layout you described.
+
+That behavior reflects what C was designed to do. C was created to write operating systems and other low-level software where programs often have to match memory layouts defined by hardware, operating systems, file formats, and network protocols. If a hardware register lives at a particular offset, or a network packet specifies that a field begins at byte 8, the language has to let you describe that layout exactly.
+
+---
+
+## C++: Inherited and Extended
+
+C++ chose to inherit that model rather than replace it. One of Bjarne Stroustrup's primary design goals was that existing C programs should continue to compile as C++, and that meant preserving the representation programs already relied on.
+
+That is why C++ has both `struct` and `class`. The only language-defined differences are their defaults: members of a `struct` are `public` unless stated otherwise, members of a `class` are `private`; inheritance is likewise `public` by default for `struct` and `private` for `class`. Constructors, destructors, templates, virtual functions, operator overloading, inheritance, and even private members are equally available to both.
+
+---
+
+## Zig: Structs Without the Object Model
+
+Zig approaches the same problem from a different direction. Rather than extending structs into objects with implicit behavior, Zig keeps structs close to their original purpose: describing data. A struct is a way to group related values into a single type, while the operations performed on that data remain explicit.
+
+A Zig struct does not carry any object model behind it. There are no implicit constructors, destructors, inheritance hierarchies, or hidden pointers. If initialization requires work, the programmer writes that code. If cleanup requires work, the programmer writes that code.
+
+Methods in Zig follow the same principle. A function declared inside a struct's namespace is still just a function. There is no special `this` or `self` mechanism provided by the runtime. The instance is passed explicitly, making the relationship between data and behavior visible in the source code.
+
+This design gives Zig a different balance between compiler freedom and programmer control. The default struct layout is optimized by the compiler: fields may be rearranged to reduce padding and improve alignment, and programs cannot rely on a particular memory arrangement unless they request one explicitly.
+
+This is also why comparing a C++ `struct` to a Zig `struct` by name alone is misleading. A Zig `struct` can declare functions, but those functions are simply namespaced declarations associated with the type.
+
+The two languages therefore arrive at similar-looking syntax from very different philosophies. C++'s `struct` exists because of decades of compatibility and object-oriented evolution. Zig's `struct` exists because a type is simply a namespace for data and functions, with no implicit runtime behavior attached.
+
+---
+
+## The Virtual Function Tax
+
+Take the plainest possible struct in both languages:
+
+```cpp
+// C++
+struct Data {
+    char a;   // 1 byte
+    int b;    // 4 bytes
+};
+```
+
+```zig
+// Zig
+const Data = struct {
+    a: u8,    // 1 byte
+    b: i32,   // 4 bytes
+};
+```
+
+Both languages lay this out identically: one byte for `a`, three bytes of padding, four bytes for `b`. Eight bytes total. This is because of the hardware constraint of data alignment. `b`, a 4-byte type, must sit at an address divisible by 4, so the compiler inserts 3 bytes of padding between `a` and `b` to push `b` onto that boundary.
+
+```
+Address:   0     1     2     3     4     5     6     7
+Byte:    [ a ] [ pad ][ pad ][ pad ][      b (4 bytes)     ]
+             ↑ 3 bytes wasted so `b` starts at address 4
+```
+
+**Check yourself:** if you swapped the declaration order, `int b` first and `char a` second, would the struct still be 8 bytes?
+
+Adding a virtual function to the C++ version changes the memory layout:
+
+```cpp
+struct OOPData {
+    char a;
+    int b;
+    virtual void print() {}
+};
+```
+
+The compiler now typically prepends an 8-byte vtable pointer (the mechanism that makes dynamic dispatch possible) before `a`. The C++ standard never specifies where the vptr should be put, or that there should even be one, but every mainstream ABI (Itanium, used by GCC and Clang; MSVC's ABI) places it at offset 0. What was once an 8-byte struct becomes 16 bytes.
+
+```
+Address:    0                    8    9   10 11 12          15
+Byte:     [        vptr        ][ a ][pad][pad][pad][    b    ]
+             ↑ 8 bytes you never declared, added the moment `virtual` appears
+```
+
+A Zig struct's size is exactly the sum of what you declared, plus whatever padding alignment demands. This is the concrete cost of runtime polymorphism through virtual dispatch: it always buys itself a pointer's worth of overhead per object, whether or not you use it on that particular struct.
+
+**Check yourself:** if `OOPData` had two virtual functions instead of one, would the struct grow to 24 bytes, or stay at 16?
+
+---
+
+## Field Reordering
+
+Take a struct where field order is deliberately bad for packing:
+
+```cpp
+struct Unoptimized {
+    char a;   // 1 byte
+    int b;    // 4 bytes, needs 3 bytes of padding before it
+    char c;   // 1 byte, needs 3 bytes of padding after it
+};
+// 12 bytes total
+```
+
+C++ guarantees that non-static data members will appear in memory in declaration order. The compiler is free to insert padding between them, and free to leave overall object size implementation-defined, but it cannot reorder them to save space. That guarantee has actually gotten stronger over time: through C++20 it only held within a single access-control block, so a compiler could in principle interleave a `public:` block with a `private:` block placed elsewhere; C++23's P1847R4 closed that gap and made declaration order mandatory across the whole class. `Unoptimized` never used more than one access specifier to begin with, so it was pinned to this order under every standard version. The cost is that `a` and `c`, both single bytes, end up separated by `b` and stranded in their own padding regions. Six bytes of the twelve are wasted.
+
+```
+C++ layout (declaration order, fixed):
+
+Address:  0     1     2     3     4       5     6     7     8     9     10    11
+Byte:   [ a ] [pad] [pad] [pad] [    b (4 bytes)     ] [ c ] [pad] [pad] [pad]
+                                                              ↑ 6 bytes total padding
+```
+
+Zig's default `struct` doesn't make that promise. It intentionally leaves field layout unspecified: the language guarantee isn't that fields get reordered, it's that you're never allowed to assume declaration order equals memory order. Today's compiler happens to use that freedom to reorder fields and minimize padding (grouping `a` and `c` together here), and the same declaration shrinks to 8 bytes with zero code changes on your part, but that specific layout could change in a future compiler version without breaking any guarantee the language made you. If you need the C-compatible guarantee (say, you're handing this struct across an FFI boundary) you say so explicitly with `extern struct`, which forces the rigid, ordered layout C++ can't escape. The tradeoff is opt-in instead of mandatory.
+
+```
+One valid layout the compiler may choose (a future compiler is free to pick a different one):
+
+Address:  0     1     2     3     4       5     6     7
+Byte:   [ a ] [ c ] [pad] [pad] [    b (4 bytes)     ]
+                ↑ a and c share the gap `b`'s alignment leaves behind
+```
+
+**Check yourself:** if you added a fourth field, `bool d`, to `Unoptimized`, where would Zig place it: next to `a` and `c`, or somewhere else? What would the new total size be?
+
+---
+
+## What Alignment Actually Is
+
+None of the padding above is arbitrary. It exists because of a physical constraint in how a CPU talks to memory, and it's worth walking through the mechanism directly instead of taking it on faith.
+
+A memory bus doesn't transfer data one byte at a time. It transfers data in fixed-width chunks, called words, matched to the width of the bus itself: 8 bytes on a typical 64-bit machine. Those chunks always start at addresses that are multiples of the word size—addresses 0, 8, 16, 24, and so on. The precise electrical path varies by architecture, real CPUs add cache hierarchies, cache-line fetches, and byte-enable signals on top of this, but the conceptual model holds everywhere: hardware fetches aligned blocks (a word, or in practice often a whole cache line), and the low bits of the address are what select the specific bytes you want out of that block once it's back on-chip. Those low bits are never treated as an independent request for a single byte; they're metadata used locally, after the fetch, to index into the block. From the programmer's perspective, memory is serviced in aligned transfers rather than arbitrary byte ranges. The bus can only hand over whole aligned blocks that begin at those fixed boundaries.
+
+The "word index" is just the address with the last few bits chopped off, and because word sizes are always powers of two, the chopping happens for free in binary. An 8-byte word is 2³ bytes, so the bottom 3 bits of any address are exactly the information "which byte inside this word," and everything above those 3 bits is "which word." Take address 20. In binary that's `00010100`. Split it after the bottom 3 bits and you get `00010` and `100`: word index 2, byte offset 4. Word index 2 covers addresses 16 through 23, and address 20 is indeed the 5th byte into that range. Conceptually, only the word index needs to travel out to fetch the block; the byte offset is what's used afterward, locally, to pick byte offset 4 out of whatever came back. The exact hardware implementation of that split varies by architecture, but the arithmetic behind it doesn't: there's no addressing scheme that lets you request anything finer-grained than a whole aligned block in a single fetch.
+
+```
+Address 20 in binary:   0  0  0  1  0  1  0  0
+                        └──word index──┘└byte┘
+                             = 2          = 4
+
+Sent down the bus:      00010            (word index 2 → fetches addresses 16–23)
+Kept inside the CPU:        100          (byte offset 4 → picked from the returned word)
+```
+
+**Check yourself:** using the same 8-byte-word logic, split address 27 into its word index and byte offset. Which word gets fetched, and which byte inside it is address 27?
+
+---
+
+## The Warehouse Analogy
+
+The closest physical analogy is a warehouse where forklifts move pallets, and the rack system is bolted down in fixed 8-foot modules starting at position 0. A crate that's exactly 8 feet wide and happens to sit flush with a rack boundary gets lifted in a single motion: one forklift, one pass. A crate that's the same width but starts 2 feet into a rack module straddles two adjacent racks. Now it takes two separate lifts, one for each rack section the crate overlaps, and someone still has to fit the two pieces back together into a single unit before the crate can actually be used. The forklift didn't get slower. It's doing twice the work because the crate wasn't positioned to match the fixed geometry of the racks.
+
+That's exactly what happens with a misaligned read. A value is aligned when its own memory address is a multiple of its size: a 4-byte integer at address 4 is aligned, one at address 6 is not. Read a 4-byte integer sitting at address 4 and it fits entirely inside the word spanning addresses 0 through 7, so it's fetched in one aligned block. Read that same 4-byte integer sitting at address 6 instead, and it occupies bytes 6 and 7 of one word plus bytes 8 and 9 of the next, straddling the boundary between two aligned blocks. A misaligned access like that may require two aligned reads internally rather than one, plus the extra work of shifting and combining the pieces before the value is usable; whether that actually costs extra time depends on where the boundary falls and how the specific processor's load/store unit handles it; sometimes it's absorbed for free inside a single cache line, sometimes it isn't. On architectures where the hardware doesn't bother implementing that shift-and-combine path at all—some ARM configurations among them—a misaligned access doesn't degrade gracefully. It can raise a fault and crash the program outright.
+
+```
+Aligned read (address 4, one fetch):
+  Word 0:  [0][1][2][3][4][5][6][7]
+                        └──┴──┴──┴──┘  ← int lives entirely inside word 0
+
+Misaligned read (address 6, may require two internal reads):
+  Word 0:  [0][1][2][3][4][5][6][7]   Word 1:  [8][9][10][11]...
+                              └──┴──┘              └──┴──┘
+                    2 bytes from word 0    +    2 bytes from word 1
+                              → shifted and combined in a register
+```
+
+Padding is what buys that alignment back at compile time instead of paying for it, or crashing on it, at runtime. Given a `struct { a: u8; b: i32 }`, the compiler places `a` at address 0, then has to decide where `b` goes. Address 1 is the next free byte, but `b` needs an address divisible by 4, so addresses 1 through 3 are left empty and `b` starts at address 4. Those three bytes cost you nothing in execution time; they cost you nothing in code you have to write. They exist purely so that every access to `b` begins at an address satisfying its alignment requirement.
+
+A struct, looked at this way, isn't just a collection of fields. It's a contract: if you hand someone a pointer to one of these, every field inside it can be loaded with the alignment its type expects, no exceptions, no special cases. Padding is the price of that contract, and it's a price the compiler decided was worth paying over saving a few bytes.
+
+---
+
+## Checking the Compiler's Work
+
+You don't have to take any of these numbers on faith either. Both languages let you ask the compiler directly what it did:
+
+```cpp
+// C++
+sizeof(Data)          // total size in bytes
+alignof(Data)         // required alignment
+offsetof(Data, b)     // byte offset of field b
+```
+
+```zig
+// Zig
+@sizeOf(Data)
+@alignOf(Data)
+@offsetOf(Data, "b")
+```
+
+Run these against the structs above and every diagram in this article is checkable on your own machine, with your own compiler, on your own architecture. Here's a complete program for the three-field `Unoptimized`/reordered case:
+
+```zig
+const std = @import("std");
+
+const Data = struct {
+    a: u8,
+    b: i32,
+    c: u8,
+};
+
+pub fn main() void {
+    std.debug.print("size: {}\n", .{@sizeOf(Data)});
+    std.debug.print("align: {}\n", .{@alignOf(Data)});
+    std.debug.print("a: {}\n", .{@offsetOf(Data, "a")});
+    std.debug.print("b: {}\n", .{@offsetOf(Data, "b")});
+    std.debug.print("c: {}\n", .{@offsetOf(Data, "c")});
+}
+```
+
+Before you compile it, write your predictions down for all five numbers, using the reordering logic from the section above. Then compile it and check. Getting a prediction wrong here is more useful than getting it right—it tells you exactly which part of the mental model still has a gap in it.
+
+---
+
+## Tail Padding
+
+The same logic extends to the struct as a whole, not just its individual fields. A struct's overall alignment requirement is set by its largest member: a struct containing a 4-byte int must itself start at an address divisible by 4, wherever it's allocated. And the compiler adds trailing padding at the end of the struct, after the last field, for a reason that only shows up once you allocate more than one: an array of these structs packs them back to back in memory, and without tail padding, every element after the first would start at a misaligned offset relative to the one before it. Tail padding is what keeps element two of the array as aligned as element one.
+
+```c
+struct ArrayItem { int a; char b; };   // 4 + 1 = 5 bytes of real data
+
+// Without tail padding (elements misaligned after the first):
+//   [0]: a a a a b          [1]: a a a a b        ← element [1]'s `a` starts at
+//        0 1 2 3 4               5 6 7 8 9          address 5, not divisible by 4
+
+// With tail padding (3 bytes added, size rounds up to 8):
+//   [0]: a a a a b pad pad pad    [1]: a a a a b pad pad pad
+//        0 1 2 3 4 5   6   7           8 9 10 11 12 13  14  15
+//                                     ↑ element [1]'s `a` lands on address 8, aligned
+```
+
+**Check yourself:** why does tail padding only need to round the struct's size up to a multiple of 4 here, rather than up to a multiple of 8? What decides that number?
+
+None of this is a compiler being generous. It's the compiler doing arithmetic you'd otherwise have to do by hand, and getting it wrong once, on the wrong architecture, is the difference between a slow read and a segfault.
+
+---
+
+## The Unifying Idea
+
+Struct versus class was never really about the keyword. It's about what a language is willing to hide from you, and whether it tells you the price. C++ will hide a vtable pointer the moment you write `virtual`, and it'll lock your field order in stone whether you asked for that or not. Zig does neither by default: nothing appears in your struct that you didn't put there, and nothing about its layout is fixed unless you say `extern`. One language decided convenience was worth the silence. The other decided you should always be able to ask what something costs.
+
+Neither position is wrong. But "struct" and "class" in C++, and "struct" in Zig, are answering different questions, and the memory layout is where you can actually see the answer instead of taking anyone's word for it.
+
+Which points at something past the keyword debate entirely. A struct isn't an object, and it isn't just a bag of fields either. It's a compiler-verified description of a region of memory: what lives there, where it lives, and what alignment guarantee every piece of it satisfies. Padding, field order, the vtable pointer, `extern struct`, tail padding in arrays, `offsetof`—every piece of this article is just that one idea worked out in a different direction.
+
+---
+
+**Questions to sit with**
+
+- If you compile the same `Unoptimized` struct on two different Zig versions and get two different sizes, has anything actually broken? What does that imply about ever `memcpy`ing a Zig struct to disk and reading it back with a different compiler?
+- C++ guarantees field order but not overall struct size across compilers. Zig guarantees neither by default. Which guarantee would you actually reach for while debugging a real memory corruption bug, and why?
+- `extern struct` gets you C-compatible layout. `packed struct` gets you zero padding, bit-level control. When would you want alignment guarantees without giving up padding, and is that combination even expressible in either language?
+
+---
+
+**Previous:** [Why Structs](/blog/why-structs)
