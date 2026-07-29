@@ -1,0 +1,61 @@
+---
+import { readFile } from "node:fs/promises"
+import { join } from "node:path"
+
+interface Props {
+  name: string
+  alt?: string
+  caption?: string
+}
+
+const { name, alt = "", caption } = Astro.props
+
+const svgPath = join(import.meta.dirname, "..", "..", "..", "public", "diagrams", `${name}.svg`)
+let svgContent = ""
+
+try {
+  svgContent = await readFile(svgPath, "utf-8")
+} catch {
+  console.warn(`[ExcalidrawDiagram] SVG not found: ${svgPath} — run "pnpm diagrams" first`)
+}
+---
+
+{svgContent && (
+  <figure class="excalidraw-figure">
+    <div class="excalidraw-container" set:html={svgContent} />
+    {(alt || caption) && (
+      <figcaption class="excalidraw-caption">
+        {caption || alt}
+      </figcaption>
+    )}
+  </figure>
+)}
+
+<style>
+  .excalidraw-figure {
+    margin: 2em 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .excalidraw-container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .excalidraw-container :global(svg) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .excalidraw-caption {
+    margin-top: 0.75em;
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    text-align: center;
+    font-style: italic;
+  }
+</style>
