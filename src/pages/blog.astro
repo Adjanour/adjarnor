@@ -49,7 +49,30 @@ const years = Object.keys(articlesByYear)
           Back home
         </a>
 
-        <h1 class="text-3xl font-medium tracking-tight mb-4">Blog</h1>
+        <div class="flex items-center justify-between gap-4 mb-4">
+          <h1 class="text-3xl font-medium tracking-tight">Blog</h1>
+          <a
+            href="/rss.xml"
+            class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors shrink-0"
+            aria-label="Subscribe via RSS"
+          >
+            <svg
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M4 11a9 9 0 0 1 9 9" />
+              <path d="M4 4a16 16 0 0 1 16 16" />
+              <circle cx="5" cy="19" r="1" />
+            </svg>
+            RSS
+          </a>
+        </div>
         <p class="text-muted-foreground text-lg max-w-xl">
           Technical deep-dives on software engineering, systems architecture, and AI.
         </p>
