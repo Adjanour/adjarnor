@@ -7,7 +7,18 @@ const OUT_DIR = join(import.meta.dirname, "..", "public", "diagrams")
 async function main() {
   await mkdir(OUT_DIR, { recursive: true })
 
-  const files = (await readdir(SRC_DIR)).filter((f) => f.endsWith(".excalidraw"))
+  let entries: string[]
+  try {
+    entries = await readdir(SRC_DIR)
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      console.log("No diagrams directory found at", SRC_DIR)
+      return
+    }
+    throw err
+  }
+
+  const files = entries.filter((f) => f.endsWith(".excalidraw"))
 
   if (files.length === 0) {
     console.log("No .excalidraw files found in", SRC_DIR)
