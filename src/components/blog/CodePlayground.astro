@@ -58,8 +58,10 @@ const { code, title = "Interactive example" } = Astro.props
   }
   .pg-header {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+    gap: 6px;
     padding: 8px 12px;
     border-bottom: 1px solid hsl(var(--muted));
     background: hsl(var(--muted) / 0.3);
@@ -68,11 +70,18 @@ const { code, title = "Interactive example" } = Astro.props
     font-size: 13px;
     color: hsl(var(--muted-foreground));
     font-family: var(--font-sans);
+    white-space: nowrap;
   }
   .pg-actions {
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-wrap: wrap;
+  }
+  @media (max-width: 400px) {
+    .pg-hint {
+      display: none;
+    }
   }
   .pg-btn {
     display: inline-flex;

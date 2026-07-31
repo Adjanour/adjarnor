@@ -3,6 +3,11 @@
 /* Prevent default scrolling behavior for smooth scrolling */
 html {
   scroll-behavior: unset;
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
 }
 
 html.lenis {
@@ -451,6 +456,10 @@ html.lenis body {
   align-items: start;
 }
 
+.blog-layout > * {
+  min-width: 0;
+}
+
 .blog-sidebar {
   position: sticky;
   top: 2rem;
@@ -498,7 +507,7 @@ html.lenis body {
   font-weight: 500;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1030px) {
   .blog-layout {
     grid-template-columns: 1fr;
   }
