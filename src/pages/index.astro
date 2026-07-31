@@ -25,15 +25,13 @@ const formatDate = (value: string) =>
     day: "numeric",
     year: "numeric",
   })
-const highlights = [
+const professionalHighlights = [
   "Tech Lead, Orcta Technologies",
   "Software Engineer",
   "Democratize tech access",
   "Craft scalable systems",
-  "Deep work",
-  "Pan-Africanism",
-  "Kindness",
 ]
+const personalHighlights = ["Deep work", "Pan-Africanism", "Kindness"]
 ---
 
 <BaseLayout
@@ -55,6 +53,21 @@ const highlights = [
               Engineer & Pan-Africanist 🇬🇭
             </p>
             <div class="space-y-4 mt-3 leading-relaxed">
+              <div class="float-right ml-4 mb-3 w-24 h-24 sm:w-28 sm:h-28 shrink-0 overflow-hidden rounded-xl md:hidden">
+                <picture>
+                  <source type="image/webp" srcset="/profile-hero-320.webp" />
+                  <img
+                    src="/profile-hero-320.jpg"
+                    width="112"
+                    height="112"
+                    alt="Bernard Katamanso portrait"
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
+                    class="h-full w-full object-cover"
+                  />
+                </picture>
+              </div>
               <p>
                 I build infrastructure and tools that shape how people create
                 software. I work from Ghana, and I believe in engineering that
@@ -71,34 +84,44 @@ const highlights = [
 
             <aside class="space-y-3 mt-8">
               <h3 class="font-medium">Highlights</h3>
-              <div class="flex flex-wrap gap-2">
-                {
-                  highlights.map((fact) => (
-                    <span class="inline-flex items-center rounded-md border px-2.5 py-2 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground border-border bg-background hover:bg-accent hover:text-accent-foreground">
-                      {fact}
-                    </span>
-                  ))
-                }
+              <div class="space-y-2">
+                <div class="flex flex-wrap gap-2">
+                  {
+                    professionalHighlights.map((fact) => (
+                      <span class="inline-flex items-center rounded-md border px-2.5 py-2 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground border-border bg-background hover:bg-accent hover:text-accent-foreground">
+                        {fact}
+                      </span>
+                    ))
+                  }
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  {
+                    personalHighlights.map((fact) => (
+                      <span class="inline-flex items-center rounded-md border px-2.5 py-2 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground border-border bg-background hover:bg-accent hover:text-accent-foreground">
+                        {fact}
+                      </span>
+                    ))
+                  }
+                </div>
               </div>
             </aside>
           </div>
 
-          <div class="shrink-0 w-full md:w-80">
+          <div class="hidden md:block shrink-0 w-full md:w-80">
             <picture>
               <source
                 type="image/webp"
                 srcset="/profile-hero-320.webp 320w, /profile-hero-640.webp 640w"
-                sizes="(max-width: 768px) 100vw, 320px"
+                sizes="320px"
               />
               <img
                 src="/profile-hero-320.jpg"
                 srcset="/profile-hero-320.jpg 320w, /profile-hero-640.jpg 640w"
-                sizes="(max-width: 768px) 100vw, 320px"
+                sizes="320px"
                 width="320"
                 height="480"
                 alt="Bernard Katamanso portrait"
-                loading="eager"
-                fetchpriority="high"
+                loading="lazy"
                 decoding="async"
                 class="h-auto w-full rounded-lg object-cover"
               />
@@ -158,7 +181,7 @@ const highlights = [
                 class="group block border border-border/60 rounded-md overflow-hidden transition-colors hover:border-border"
               >
                 <div class="grid gap-4 md:grid-cols-[180px_1fr]">
-                  <div class="relative h-32 sm:h-36 md:h-full bg-muted/40 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
+                  <div class="relative h-32 sm:h-36 md:h-full min-w-0 bg-muted/40 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
                     {featuredArticle.image && (
                       <img
                         src={featuredArticle.image}
@@ -169,7 +192,7 @@ const highlights = [
                       />
                     )}
                   </div>
-                  <div class="px-4 py-4 md:px-5 md:py-5">
+                  <div class="px-4 py-4 md:px-5 md:py-5 min-w-0">
                     <p class="text-xs uppercase tracking-[0.2em] text-muted-foreground">
                       Latest from Substack
                     </p>
