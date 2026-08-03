@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises"
+import { join } from "node:path"
 import satori from "satori"
 import { Resvg } from "@resvg/resvg-js"
 import { getCollection } from "astro:content"
@@ -11,20 +12,35 @@ interface FontData {
   style: "normal"
 }
 
-async function loadFont(name: string, weight: number): Promise<FontData> {
-  const css = await (
-    await fetch(
-      `https://fonts.googleapis.com/css2?family=${name.replace(/ /g, "+")}:wght@${weight}`,
-      {
-        headers: { "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36" },
-      },
+const FONTS_DIR = join("src", "assets", "og-fonts")
+
+async function loadFont(
+  fileName: string,
+  name: string,
+  weight: 400 | 700,
+): Promise<FontData> {
+  const buffer = await readFile(join(FONTS_DIR, fileName))
+  const data = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)
+  return { name, data, weight, style: "normal" }
+}
+
+// Bundled locally (not fetched from Google Fonts at build time) so static
+// generation of a dozen OG images doesn't depend on network reachability.
+function getFonts(): Promise<[FontData, FontData]> {
+  return Promise.all([
+    loadFont("space-grotesk-700.ttf", "Space Grotesk", 700),
+    loadFont("inter-400.ttf", "Inter", 400),
+  ])
+}
+
+let logoSrcPromise: Promise<string> | null = null
+function getLogoSrc() {
+  if (!logoSrcPromise) {
+    logoSrcPromise = readFile("public/logo.png").then(
+      (data) => `data:image/png;base64,${data.toString("base64")}`,
     )
-  ).text()
-  const urls = [...css.matchAll(/src:\s*url\(([^)]+)\)/g)]
-  const url = urls[urls.length - 1]?.[1]
-  if (!url) throw new Error(`Could not find font URL for ${name} weight ${weight}`)
-  const data = await (await fetch(url)).arrayBuffer()
-  return { name, data, weight: weight as 400 | 700, style: "normal" }
+  }
+  return logoSrcPromise
 }
 
 export async function getStaticPaths() {
@@ -44,13 +60,7 @@ export const GET: APIRoute = async ({ props }) => {
   const shortTitle = title.length > 90 ? title.slice(0, 87) + "..." : title
   const titleSize = title.length < 35 ? 64 : title.length < 60 ? 52 : 42
 
-  const [titleFont, bodyFont] = await Promise.all([
-    loadFont("Space Grotesk", 700),
-    loadFont("Inter", 400),
-  ])
-
-  const logoData = await readFile("public/logo.png")
-  const logoSrc = `data:image/png;base64,${logoData.toString("base64")}`
+  const [[titleFont, bodyFont], logoSrc] = await Promise.all([getFonts(), getLogoSrc()])
 
   const svg = await satori(
     {
@@ -65,37 +75,20 @@ export const GET: APIRoute = async ({ props }) => {
           justifyContent: "center",
           position: "relative",
           overflow: "hidden",
-          backgroundColor: "#0f0f1a",
+          backgroundColor: "#020817",
         },
         children: [
-          // Decorative circles behind content
+          // Single flat accent bar in the site's green-to-gold brand gradient
           {
             type: "div",
             props: {
               style: {
                 position: "absolute",
-                top: -150,
-                left: -100,
-                width: 500,
-                height: 500,
-                borderRadius: 9999,
-                backgroundColor: "#6366f1",
-                opacity: 0.04,
-              },
-            },
-          },
-          {
-            type: "div",
-            props: {
-              style: {
-                position: "absolute",
-                bottom: -200,
-                right: -100,
-                width: 600,
-                height: 600,
-                borderRadius: 9999,
-                backgroundColor: "#a855f7",
-                opacity: 0.04,
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: 6,
+                backgroundImage: "linear-gradient(90deg, #27b07d, #f9b310)",
               },
             },
           },
