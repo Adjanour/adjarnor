@@ -1,4 +1,12 @@
 {
+  "ko-language": {
+    "stars": 5,
+    "forks": 2,
+    "language": "Zig",
+    "languageColor": "#6e7681",
+    "updatedAt": "2026-08-10T01:43:59Z",
+    "description": "Kō - vibecoded a minimal functional programming language"
+  },
   "sess-cli": {
     "stars": 1,
     "forks": 0,
@@ -15,6 +23,14 @@
     "updatedAt": "2026-05-20T18:49:14Z",
     "description": null
   },
+  "react-components": {
+    "stars": 3,
+    "forks": 0,
+    "language": "TypeScript",
+    "languageColor": "#3178C6",
+    "updatedAt": "2026-05-22T23:11:31Z",
+    "description": "A repo full of feature rich react components"
+  },
   "valkey-collab": {
     "stars": 0,
     "forks": 0,
@@ -30,14 +46,6 @@
     "languageColor": "#4F5D95",
     "updatedAt": "2026-05-07T22:37:02Z",
     "description": "A plugin to make tts feature available on wordpress sites"
-  },
-  "react-components": {
-    "stars": 3,
-    "forks": 0,
-    "language": "TypeScript",
-    "languageColor": "#3178C6",
-    "updatedAt": "2026-05-22T23:11:31Z",
-    "description": "A repo full of feature rich react components"
   },
   "podcast-player-app": {
     "stars": 1,

@@ -12,6 +12,17 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: "ko-language",
+    title: "Kō Language",
+    shortDescription: "A minimal functional programming language built with Zig.",
+    fullDescription:
+      "Kō is a vibecoded minimal functional programming language with no parens, ADTs, pattern matching, and LLVM native compilation. Built from scratch in Zig as an exploration of language design and compiler internals.",
+    techs: ["Zig", "LLVM", "Language Design"],
+    github: "https://github.com/Adjanour/ko-language",
+    status: "completed",
+    featured: true,
+  },
+  {
     id: "sess-cli",
     title: "SESS CLI",
     shortDescription: "Session-based Git CLI for issue-driven repos.",
@@ -34,6 +45,17 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    id: "react-components",
+    title: "React Components",
+    shortDescription: "Feature-rich reusable React components.",
+    fullDescription:
+      "Collection of feature-rich React components including accordion with search, navigation utilities, and other reusable UI patterns.",
+    techs: ["React", "TypeScript", "JavaScript"],
+    github: "https://github.com/Adjanour/ReactComponents",
+    status: "completed",
+    featured: true,
+  },
+  {
     id: "valkey-collab",
     title: "Valkey Collab",
     shortDescription: "Real-time collaborative whiteboard.",
@@ -42,7 +64,6 @@ export const projects: Project[] = [
     techs: ["Python", "FastAPI", "Vue.js", "Valkey"],
     github: "https://github.com/Orctatech-Engineering-Team/valkey-collab-demo",
     status: "completed",
-    featured: true,
   },
   {
     id: "listen-to-this-article",
@@ -52,16 +73,6 @@ export const projects: Project[] = [
       "A WordPress plugin that adds text-to-speech functionality to posts, letting visitors listen to article content via generated audio files. Supports audio generation, regeneration, and media library integration.",
     techs: ["PHP", "WordPress", "JavaScript"],
     github: "https://github.com/Adjanour/listen-to-this-article",
-    status: "completed",
-  },
-  {
-    id: "react-components",
-    title: "React Components",
-    shortDescription: "Feature-rich reusable React components.",
-    fullDescription:
-      "Collection of feature-rich React components including accordion with search, navigation utilities, and other reusable UI patterns.",
-    techs: ["React", "TypeScript", "JavaScript"],
-    github: "https://github.com/Adjanour/ReactComponents",
     status: "completed",
   },
   {
@@ -92,16 +103,6 @@ export const projects: Project[] = [
       "Comprehensive messaging application with bulk SMS capabilities, intelligent scheduling, automated reminders, and analytics dashboard.",
     techs: ["TypeScript", "Node.js", "React", "Hono", "Drizzle ORM"],
     github: "https://github.com/Africoda/smsx",
-    status: "completed",
-  },
-  {
-    id: "text-editor",
-    title: "Text Editor",
-    shortDescription: "Desktop text editor in Java.",
-    fullDescription:
-      "A desktop text editor application built with Java and Maven, featuring core text editing functionality.",
-    techs: ["Java", "Maven"],
-    github: "https://github.com/Adjanour/TextEditor",
     status: "completed",
   },
 ]
