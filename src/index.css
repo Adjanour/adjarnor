@@ -464,6 +464,8 @@ html.lenis body {
   position: sticky;
   top: 6rem;
   padding-top: 0.25rem;
+  max-height: calc(100vh - 8rem);
+  overflow-y: auto;
 }
 
 .toc-sidebar-heading {
