@@ -1,0 +1,342 @@
+---
+title: "What These Statements Look Like in Code"
+subtitle: "Applying 36 Things to Real Systems"
+description: "Principles are only as good as the code they produce. Here are six of the 36 statements applied to real TypeScript code, showing before and after what each principle looks like when you actually write it."
+date: 2026-04-24
+tags: ["software-design", "code-quality", "typescript", "refactoring"]
+---
+
+In [36 Things We Keep Learning About Software](/blog/36-statements-for-good-code), I listed recurring truths about software design that keep surfacing across decades of research and practice. The list is dense by design, but principles without code are just opinions. This post takes six of those statements and shows what they look like when you actually apply them to real TypeScript code.
+
+Each example follows the same structure: the principle, the code that violates it, the code that follows it, and why the difference matters.
+
+---
+
+## 1. A Good Module Is Deep: Small Interface, Large Hidden Logic
+
+> Statement 8: A good module is deep: small interface, large hidden logic.
+
+A shallow module is one whose interface is nearly as complex as its implementation. It adds indirection without adding value. The most common symptom is a service layer that does nothing but forward calls to a repository layer.
+
+### Before
+
+```typescript
+class UserService {
+  constructor(private userRepo: UserRepository) {}
+
+  async getUser(id: string): Promise<User | null> {
+    return this.userRepo.findById(id)
+  }
+
+  async createUser(data: CreateUserInput): Promise<User> {
+    return this.userRepo.insert(data)
+  }
+
+  async updateUser(id: string, data: UpdateUserInput): Promise<User> {
+    return this.userRepo.update(id, data)
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    return this.userRepo.delete(id)
+  }
+}
+```
+
+This `UserService` is a pass-through. Every method does exactly what the repository does, and the caller could just use the repository directly. The interface is wide, and the hidden logic is zero.
+
+### After
+
+```typescript
+class UserService {
+  constructor(
+    private userRepo: UserRepository,
+    private emailService: EmailService,
+    private eventBus: EventBus,
+  ) {}
+
+  async createUserWithOnboarding(data: CreateUserInput): Promise<CreateUserResult> {
+    const existing = await this.userRepo.findByEmail(data.email)
+    if (existing) {
+      return { type: "DUPLICATE_EMAIL", email: data.email }
+    }
+
+    const user = await this.userRepo.insert(data)
+    await this.emailService.sendWelcome(user.email, user.name)
+    await this.eventBus.emit("user.created", { userId: user.id })
+
+    return { type: "CREATED", user }
+  }
+}
+```
+
+The interface is narrow: one method instead of four. But the hidden logic is substantial: duplicate detection, creation, welcome email, event emission. The caller does not need to know about any of those steps. That is depth.
+
+---
+
+## 2. Abstractions Should Be Discovered, Not Invented
+
+> Statement 12: Abstractions should be discovered, not invented.
+
+The premature interface is one of the most common sources of accidental complexity in modern codebases. You create an interface for a repository before a second implementation exists, then spend years maintaining an abstraction that no one ever needed.
+
+### Before
+
+```typescript
+interface NotificationSender {
+  send(to: string, message: string): Promise<void>
+}
+
+class SMSNotificationSender implements NotificationSender {
+  async send(to: string, message: string): Promise<void> {
+    // SMS logic
+  }
+}
+```
+
+This interface exists because someone imagined a future push notification implementation. It was invented, not discovered. The abstraction adds a layer that every caller must depend on, and the second implementation may never arrive.
+
+### After
+
+```typescript
+class SMSSender {
+  async send(to: string, message: string): Promise<void> {
+    // SMS logic
+  }
+}
+```
+
+Start with a concrete class. If a second sender appears later, extract the interface then, when the boundary is real rather than hypothetical. The interface is discovered because two consumers actually need it, not because someone predicted a future that may never come.
+
+---
+
+## 3. Composition Makes Dependencies Explicit
+
+> Statement 26: Behavior should not depend on inheritance chains.
+> Statement 23: Prefer composition over hierarchy.
+
+Inheritance creates implicit dependencies. When you change a base class, every subclass is affected, even if the change seems unrelated to their behavior. Composition makes each dependency explicit and independent.
+
+### Before
+
+```typescript
+class Animal {
+  constructor(public name: string) {}
+
+  eat(): string {
+    return `${this.name} is eating`
+  }
+}
+
+class Dog extends Animal {
+  bark(): string {
+    return `${this.name} is barking`
+  }
+
+  fetch(item: string): string {
+    return `${this.name} fetches the ${item}`
+  }
+}
+
+class WorkingDog extends Dog {
+  guide(direction: string): string {
+    return `${this.name} guides you ${direction}`
+  }
+}
+```
+
+`WorkingDog` depends on `Dog`, which depends on `Animal`. If you change how `eat` works in `Animal`, `WorkingDog` is affected, even though guiding has nothing to do with eating. The behavior of `WorkingDog` depends on the entire chain above it.
+
+### After
+
+```typescript
+const barker = (name: string) => ({
+  bark: () => `${name} is barking`,
+})
+
+const fetcher = (name: string) => ({
+  fetch: (item: string) => `${name} fetches the ${item}`,
+})
+
+const guide = (name: string) => ({
+  guide: (direction: string) => `${name} guides you ${direction}`,
+})
+
+function createWorkingDog(name: string) {
+  return {
+    name,
+    ...barker(name),
+    ...fetcher(name),
+    ...guide(name),
+  }
+}
+```
+
+Each behavior is an independent function. Changing `barker` does not affect `guide`. The dependencies are explicit: `createWorkingDog` composes three behaviors, and each behavior is self-contained. The independence is real rather than illusory.
+
+---
+
+## 4. Explicit Constraints Make Composed Behavior Predictable
+
+> Statement 27: Explicit constraints make composed behavior predictable.
+
+When you compose functions, each function's constraints become the system's constraints. A function that accepts anything will propagate chaos through the composition. A function that accepts only valid input catches problems at the boundary.
+
+### Before
+
+```typescript
+function processOrder(order: any) {
+  const total = order.items.reduce(
+    (sum: number, item: any) => sum + item.price * item.quantity,
+    0,
+  )
+  return { total, tax: total * 0.08 }
+}
+```
+
+This function accepts anything. It does not validate that `order` has items, that items have prices, or that prices are numbers. The constraint is implicit, and the violation is silent: `NaN` propagates through the composition until someone notices the tax is not a number.
+
+### After
+
+```typescript
+interface OrderItem {
+  name: string
+  price: number
+  quantity: number
+}
+
+interface Order {
+  items: OrderItem[]
+}
+
+function processOrder(order: Order): OrderTotal {
+  const total = order.items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  )
+  return {
+    subtotal: total,
+    tax: total * 0.08,
+    total: total * 1.08,
+  }
+}
+```
+
+The constraint is explicit: `Order` must have `items`, and each item must have a `price` and `quantity`. TypeScript enforces this at compile time. If someone passes an invalid order, the error is caught before the code runs, not after.
+
+---
+
+## 5. Optimize for Data Layout Before Abstraction Layers
+
+> Statement 18: Optimize for data layout before abstraction layers.
+> Statement 19: Cache behavior matters more than elegance.
+
+When you iterate over data, what matters is the layout of that data in memory, not the elegance of the abstraction wrapping it. The Array of Structures pattern is the default in most languages, but it is often the wrong choice for hot loops.
+
+### Before
+
+```typescript
+interface Particle {
+  x: number
+  y: number
+  z: number
+  r: number
+  g: number
+  b: number
+}
+
+const particles: Particle[] = getAllParticles()
+
+function updatePositions(dt: number) {
+  for (const p of particles) {
+    p.x += p.vx * dt
+    p.y += p.vy * dt
+    p.z += p.vz * dt
+  }
+}
+```
+
+Each particle's data is contiguous in memory. But when you iterate over positions, you load the entire struct into cache, including r, g, b that you are not touching. The cache lines are wasted on data you do not need.
+
+### After
+
+```typescript
+const particles = {
+  x: new Float64Array(count),
+  y: new Float64Array(count),
+  z: new Float64Array(count),
+  r: new Float64Array(count),
+  g: new Float64Array(count),
+  b: new Float64Array(count),
+  vx: new Float64Array(count),
+  vy: new Float64Array(count),
+  vz: new Float64Array(count),
+}
+
+function updatePositions(dt: number) {
+  for (let i = 0; i < count; i++) {
+    particles.x[i] += particles.vx[i] * dt
+    particles.y[i] += particles.vy[i] * dt
+    particles.z[i] += particles.vz[i] * dt
+  }
+}
+```
+
+The data you need is contiguous. The color data sits elsewhere, and you do not pay for loading it. This is not a micro-optimization. It is a statement about the physical reality of how machines execute code.
+
+---
+
+## 6. Misaligned Boundaries Create Coordination Overhead
+
+> Statement 31: Misaligned boundaries create coordination overhead.
+
+When the boundary between two modules does not match the boundary between two teams, every change that crosses that boundary requires coordination. The cost is not in the code, but in the meetings, the Slack threads, the waiting.
+
+### Before
+
+```
+team-auth/
+  auth-service/
+    user-service.ts    ← imports from team-payments
+    payment-gateway.ts ← imports from team-payments
+  
+team-payments/
+  payment-service/
+    billing.ts         ← imports from team-auth
+    subscription.ts    ← imports from team-auth
+```
+
+Both teams own code that depends on the other team's service. A change to the user model in `team-auth` requires coordinating with `team-payments`. A change to the billing logic in `team-payments` requires coordinating with `team-auth`. The boundaries are crossed in both directions, and every crossing is a meeting.
+
+### After
+
+```
+team-platform/
+  shared-types/
+    user.ts
+    payment.ts
+  
+team-auth/
+  auth-service/
+    user-service.ts    ← imports only from shared-types
+
+team-payments/
+  payment-service/
+    billing.ts         ← imports only from shared-types
+```
+
+The shared types are the boundary. Each team owns its service and depends only on the shared types, not on each other's implementation. A change to the user model in `team-auth` does not require coordinating with `team-payments`, because the boundary is explicit and one-directional. The cost is in maintaining the shared types, which is predictable and bounded.
+
+---
+
+## The Pattern
+
+The common thread across all six examples is the same: **make the important things explicit and the accidental things invisible.**
+
+- Deep modules hide implementation complexity behind narrow interfaces.
+- Discovered abstractions hide future speculation behind concrete code.
+- Composition hides coupling behind explicit dependencies.
+- Explicit constraints hide runtime surprises behind compile-time guarantees.
+- Data layout hides hardware reality behind performance-aware design.
+- Aligned boundaries hide coordination cost behind clear ownership.
+
+These are not separate ideas. They are the same idea applied to different parts of the system. Good code is code where the important decisions are visible and the accidental decisions are hidden. That is what it means to place complexity where it can be understood and controlled.
