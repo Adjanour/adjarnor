@@ -45,7 +45,7 @@ export default defineConfig({
       weights: [300, 400, 500, 600, 700],
     },
     {
-      name: "Geist Mono",
+      name: "Google Sans Code",
       cssVariable: "--font-mono",
       provider: fontProviders.google(),
       weights: [400, 700],
