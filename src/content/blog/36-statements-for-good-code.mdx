@@ -121,14 +121,14 @@ This is not an optimization for game engines, but a general principle about what
 24. Build small, orthogonal capabilities.
 25. Abstractions should compose without coordination.
 26. Behavior should not depend on inheritance chains.
-27. Correctness benefits from explicit constraints.
+27. Explicit constraints make composed behavior predictable.
 28. Reuse emerges from composition, not generalization.
 
 Much of the trouble in object-oriented design came from treating inheritance as a primary mechanism for modeling behavior. The instinct to organize code into deep inheritance hierarchies, Animal, then Dog, then WorkingDog, creates coupling that compounds. Changes to Animal ripple through Dog, through WorkingDog, through every subclass. The behavior of a WorkingDog depends not just on its own implementation but on the entire chain above it. This is not a theoretical problem. It is the reason large Java codebases from the early 2000s became unmaintainable: every new feature required understanding the entire class hierarchy, and every change risked breaking something three levels up.
 
 Composition sidesteps this entirely. A WorkingDog is not a Dog that is an Animal, but a set of behaviors, bark, fetch, guide, composed together. When you change `bark`, only `bark` changes, and the independence is real rather than illusory. The historical lesson is that inheritance works well for a small, stable hierarchy, but it degrades as the hierarchy grows or changes. Composition works at any scale because each piece is independent.
 
-Statement 27, "correctness benefits from explicit constraints," is about making invalid states unrepresentable. A function that takes a `string` and a `number` is less safe than one that takes a `PositiveInteger` and a `NonEmptyString`. The constraint is part of the interface, and the type system enforces it. This is the difference between debugging a `TypeError` in production and catching it at compile time. Violating this looks like a function that accepts a `string` parameter named `email` but does not validate that it is actually an email address, then fails silently downstream when the string is not what the function expected.
+Statement 27, "explicit constraints make composed behavior predictable," is about the relationship between composition and correctness. When you compose independent pieces, each piece needs explicit boundaries on what it accepts and what it produces. A function that takes a `string` and a `number` is less safe than one that takes a `PositiveInteger` and a `NonEmptyString`. The constraint is part of the interface, and the type system enforces it. This is the difference between debugging a `TypeError` in production and catching it at compile time. Violating this looks like a function that accepts a `string` parameter named `email` but does not validate that it is actually an email address, then fails silently downstream when the string is not what the function expected. The principle stops applying only when your composition is trivial, when each piece has exactly one caller and one input, which is to say, almost never in real systems.
 
 ---
 
@@ -140,7 +140,7 @@ Statement 27, "correctness benefits from explicit constraints," is about making 
 32. Conceptual integrity must dominate local optimizations.
 33. Design boundaries where ownership is clear.
 34. Teams that own complexity must own the code that contains it.
-35. Simplicity at the boundary is more valuable than simplicity at the center.
+35. Complexity at the boundary costs more than complexity at the center.
 36. Place complexity where it can be understood and controlled.
 
 Melvin Conway observed in 1968 that organizations produce designs that mirror their communication structures. This is usually cited as a warning, your monolith reflects your org chart, but the inverse is also useful: if you want a particular system structure, you need the team structure to match it. The code will follow the communication, whether you planned for it or not. The historical evidence is overwhelming: every time a company tries to ship a microservices architecture while maintaining a monolithic team structure, the result is a distributed monolith, all the downsides of both approaches with the benefits of neither.
@@ -153,7 +153,7 @@ Statement 32 is Brooks again: "Conceptual integrity is the most important consid
 
 Statement 34, "teams that own complexity must own the code that contains it," is about accountability. When a team is responsible for a complex subsystem but does not own the code, the result is finger-pointing when things break. The team that understands the complexity is the team that should maintain the code, because they are the only ones who can reason about it correctly.
 
-Statement 35, "simplicity at the boundary is more valuable than simplicity at the center," is about where to spend your effort. The center of a system can be as complex as it needs to be, because it is internal and can be refactored freely. The boundary, the public API, the interface between teams, the contract with the caller, must be simple, because simplicity at the boundary reduces coordination cost across the entire organization.
+Statement 35, "complexity at the boundary costs more than complexity at the center," is about where complexity is most expensive. The center of a system can be as complex as it needs to be, because it is internal and can be refactored freely. The boundary, the public API, the interface between teams, the contract with the caller, is where complexity multiplies across every consumer. A complex internal module is someone's problem. A complex public interface is everyone's problem.
 
 Statement 36 is the thesis of the entire article: **place complexity where it can be understood and controlled.** This is the one principle that unifies all the others. Essential complexity is organized, not removed. Abstractions hide detail where it is not needed. Indirection is spent where the boundary matters. Complexity lives where someone owns it. The entire history of software engineering can be read as a long, slow discovery of this fact.
 
