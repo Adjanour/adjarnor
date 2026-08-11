@@ -14,7 +14,7 @@ export const projects: Project[] = [
   {
     id: "ko-language",
     title: "Kō Language",
-    shortDescription: "A minimal functional programming language built with Zig.",
+    shortDescription: "A minimal functional programming language with no parens, ADTs, pattern matching, and LLVM native compilation. Built from scratch in Zig.",
     fullDescription:
       "Kō is a vibecoded minimal functional programming language with no parens, ADTs, pattern matching, and LLVM native compilation. Built from scratch in Zig as an exploration of language design and compiler internals.",
     techs: ["Zig", "LLVM", "Language Design"],
@@ -25,7 +25,7 @@ export const projects: Project[] = [
   {
     id: "sess-cli",
     title: "SESS CLI",
-    shortDescription: "Session-based Git CLI for issue-driven repos.",
+    shortDescription: "Session-based Git CLI that turns units of work into explicit sessions with start, pause, resume, and PR handoff via GitHub issues.",
     fullDescription:
       "A session-based Git CLI that turns units of work into explicit sessions: start, pause, resume, and end with a branch push and PR handoff. Uses SQLite to track state and integrates with GitHub issues via gh.",
     techs: ["Go", "SQLite", "CLI"],
@@ -36,69 +36,27 @@ export const projects: Project[] = [
   {
     id: "mnotify-sdk",
     title: "mNotify TS SDK",
-    shortDescription: "TypeScript SDK for mNotify messaging APIs.",
+    shortDescription: "Type-safe TypeScript SDK for mNotify's Bulk Messaging API with SMS sending, contact management, templates, and webhook validation.",
     fullDescription:
       "Type-safe TypeScript SDK for mNotify's Bulk Messaging Solution API. Features SMS sending, contact management, templates, and webhook validation with automatic retries.",
     techs: ["TypeScript", "Node.js", "API Design"],
     github: "https://github.com/Adjanour/mnotify-ts-sdk",
     status: "completed",
-    featured: true,
   },
   {
-    id: "react-components",
-    title: "React Components",
-    shortDescription: "Feature-rich reusable React components.",
+    id: "easechaos",
+    title: "EaseChaos",
+    shortDescription: "Class scheduling platform built with TypeScript and React.",
     fullDescription:
-      "Collection of feature-rich React components including accordion with search, navigation utilities, and other reusable UI patterns.",
-    techs: ["React", "TypeScript", "JavaScript"],
-    github: "https://github.com/Adjanour/ReactComponents",
+      "A class scheduling application that simplifies organizing and managing class schedules. Built with TypeScript and React for a smooth user experience.",
+    techs: ["TypeScript", "React", "FastAPI"],
+    github: "https://github.com/Adjanour/easechaos",
     status: "completed",
-    featured: true,
-  },
-  {
-    id: "valkey-collab",
-    title: "Valkey Collab",
-    shortDescription: "Real-time collaborative whiteboard.",
-    fullDescription:
-      "Real-time collaborative whiteboard application built with FastAPI, Vue.js, and Valkey. WebSocket-based synchronization with persistent storage.",
-    techs: ["Python", "FastAPI", "Vue.js", "Valkey"],
-    github: "https://github.com/Orctatech-Engineering-Team/valkey-collab-demo",
-    status: "completed",
-  },
-  {
-    id: "listen-to-this-article",
-    title: "Listen to This Article",
-    shortDescription: "WordPress TTS plugin for accessibility.",
-    fullDescription:
-      "A WordPress plugin that adds text-to-speech functionality to posts, letting visitors listen to article content via generated audio files. Supports audio generation, regeneration, and media library integration.",
-    techs: ["PHP", "WordPress", "JavaScript"],
-    github: "https://github.com/Adjanour/listen-to-this-article",
-    status: "completed",
-  },
-  {
-    id: "podcast-player-app",
-    title: "PodPlay",
-    shortDescription: "Modern podcast player with glassmorphism UI.",
-    fullDescription:
-      "A minimal podcast player web app with Apple-inspired glassmorphism design. Features RSS feed support, offline downloads, playback speed control, keyboard shortcuts, and a Python backend for serving audio downloads.",
-    techs: ["JavaScript", "Python", "HTML", "CSS"],
-    github: "https://github.com/Adjanour/podcast-player-app",
-    status: "completed",
-  },
-  {
-    id: "vesper",
-    title: "Vesper",
-    shortDescription: "Time blocking for deep work.",
-    fullDescription:
-      "A time blocking application designed to help structure your day, maintain focus, and achieve deep work states.",
-    techs: ["Go"],
-    github: "https://github.com/Adjanour/vesper",
-    status: "in-progress",
   },
   {
     id: "smsx",
     title: "SMSX",
-    shortDescription: "Bulk SMS platform with scheduling.",
+    shortDescription: "Comprehensive bulk SMS platform with intelligent scheduling, automated reminders, and analytics dashboard.",
     fullDescription:
       "Comprehensive messaging application with bulk SMS capabilities, intelligent scheduling, automated reminders, and analytics dashboard.",
     techs: ["TypeScript", "Node.js", "React", "Hono", "Drizzle ORM"],

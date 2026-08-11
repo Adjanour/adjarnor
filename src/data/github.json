@@ -23,45 +23,13 @@
     "updatedAt": "2026-05-20T18:49:14Z",
     "description": null
   },
-  "react-components": {
-    "stars": 3,
-    "forks": 0,
-    "language": "TypeScript",
-    "languageColor": "#3178C6",
-    "updatedAt": "2026-05-22T23:11:31Z",
-    "description": "A repo full of feature rich react components"
-  },
-  "valkey-collab": {
+  "easechaos": {
     "stars": 0,
     "forks": 0,
-    "language": "Python",
-    "languageColor": "#3572A5",
-    "updatedAt": "2026-05-12T09:04:09Z",
-    "description": "A demo of valkey for white board collab"
-  },
-  "listen-to-this-article": {
-    "stars": 0,
-    "forks": 0,
-    "language": "PHP",
-    "languageColor": "#4F5D95",
-    "updatedAt": "2026-05-07T22:37:02Z",
-    "description": "A plugin to make tts feature available on wordpress sites"
-  },
-  "podcast-player-app": {
-    "stars": 1,
-    "forks": 0,
-    "language": "JavaScript",
-    "languageColor": "#F7DF1E",
-    "updatedAt": "2025-12-24T17:10:59Z",
-    "description": null
-  },
-  "vesper": {
-    "stars": 0,
-    "forks": 0,
-    "language": "Go",
-    "languageColor": "#00ADD8",
-    "updatedAt": "2026-02-07T20:40:17Z",
-    "description": "time block"
+    "language": null,
+    "languageColor": null,
+    "updatedAt": "2026-06-08T11:37:17Z",
+    "description": "Class schedules provided at ease"
   },
   "smsx": {
     "stars": 1,
