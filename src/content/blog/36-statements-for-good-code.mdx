@@ -1,0 +1,180 @@
+---
+title: "36 Things We Keep Learning About Software"
+subtitle: "A Distillation from History, Research, and Reality"
+description: "After seventy years of software engineering, what have we actually learned? These 36 statements are a distillation of recurring truths about complexity, abstraction, data layout, and organizational boundaries that keep appearing across decades of research and practice."
+date: 2026-04-17
+tags: ["software-design", "complexity", "abstractions", "code-quality"]
+---
+
+Improving as an engineer usually starts with collecting patterns and best practices. But eventually, you notice that most of the "new" theories are just rebrandings of the same fundamental truths. Some ideas are backed by decades of research and observation, yet only a handful truly make a difference when a system is under pressure.
+
+These 36 statements are a distillation of those recurring truths that have actually stood the test of time and continue to advance the way we build. They are not original. They are observed, repeatedly and independently, across seventy years of software engineering. The interesting question is not "What is the newest software engineering methodology?" It is: **After all this time, what have we actually learned?**
+
+Good code is about managing **complexity and its complicated nature**:
+
+- human cognition
+- machine execution
+- organizational structure
+
+---
+
+## I. Reality & Complexity
+
+1. Essential complexity cannot be removed but only organized.
+2. Accidental complexity is the primary target of design.
+3. Every abstraction leaks.
+4. Performance, latency, and failure always surface.
+5. Do not design abstractions that deny physical reality.
+6. Systems fail along the boundaries you fail to realise exist.
+
+These are the axioms, observations about the nature of software itself rather than prescriptive advice.
+
+Fred Brooks drew the line between essential and accidental complexity in 1975, and it remains the most useful distinction in the field. Essential complexity is the problem itself, the reason the software exists. Accidental complexity is everything else: the ceremony we add around the problem, the boilerplate, the layers of abstraction that exist because of our tools rather than the domain. The goal is not to eliminate complexity, but to target the right kind.
+
+Statement 3, "every abstraction leaks," is Joel Spolsky's observation from 2002, but the phenomenon predates the name. TCP pretends to be a reliable stream; underneath, packets are dropped and reordered. ORM pretends to be an object graph; underneath, there are joins and indexes. The abstraction is useful precisely because it hides detail, but the detail still exists, and when it surfaces, you need to understand what lies beneath.
+
+Statements 4 and 5 push further into the physical realities of hardware. Software runs on machines with hierarchical memory, network calls that take milliseconds, disk I/O that takes milliseconds, and CPU cache misses that take nanoseconds that add up. An abstraction that denies these realities, that treats a database call as free or network latency as negligible, will eventually produce systems that are inexplicably slow under load. Casey Muratori's work on Handmade Hero made this case for games, but it applies everywhere: the machine has opinions about your design, and they will surface eventually.
+
+Statement 6 is about the places you did not think to look. Distributed systems fail at network boundaries. Monoliths fail at module boundaries where ownership is unclear. APIs fail at the boundary between what you control and what your caller controls. The failure is always at the edge you did not draw.
+
+---
+
+## II. Abstraction & Interfaces
+
+7. An abstraction must remove more complexity than it introduces.
+8. A good module is deep: small interface, large hidden logic.
+9. A shallow abstraction is worse than none.
+10. Interfaces that mirror implementations are noise.
+11. Do not abstract without demonstrated need.
+12. Abstractions should be discovered, not invented.
+13. Use interfaces only where variability is real.
+14. Prefer capability-based, minimal interfaces.
+15. Wide interfaces indicate poor cohesion.
+16. Indirection is a cost; spend it deliberately.
+
+This section is where most engineering teams go wrong. The instinct to abstract early, to create an interface before a second implementation exists, to introduce a layer before the complexity it hides has actually materialized, is the single most common source of accidental complexity in modern codebases.
+
+John Ousterhout's distinction between deep and shallow modules is the anchor here. A deep module, one with a small interface and substantial internal logic, is powerful precisely because it hides complexity. A shallow module, one whose interface is nearly as complex as its implementation, adds indirection without adding value. Statement 9 follows directly: a shallow abstraction is worse than no abstraction because it adds cognitive overhead without reducing it.
+
+Statement 12, "abstractions should be discovered, not invented," is where the real argument lives. Consider this Go interface:
+
+```go
+type UserRepository interface {
+    Find(ctx context.Context, id string) (*User, error)
+}
+```
+
+With a single Postgres implementation, this interface is premature. It exists because someone imagined a future Redis implementation that may never arrive. The abstraction was invented, not discovered. It would have been better to start with a concrete struct and extract the interface later, when a second consumer actually appeared, when the boundary became real rather than hypothetical.
+
+But there is a tension here worth naming. Statement 13 says "use interfaces only where variability is real," yet statement 15 says "interfaces are for boundaries, not decoration," and these point in different directions. A `PaymentGateway` interface may have exactly one Stripe implementation, but the interface is justified, not because a second implementation exists, but because the boundary matters. It matters for testing, for dependency direction, for ownership. The real rule is that interfaces exist at boundaries where the cost of a hard dependency is high. One implementation can justify an interface when the boundary is genuine. The mistake is not interfaces with one implementation, but interfaces that exist because someone assumed a second implementation might appear someday.
+
+---
+
+## III. Data & Execution
+
+17. Start with concrete data and direct functions.
+18. Optimize for data layout before abstraction layers.
+19. Cache behavior matters more than elegance.
+20. Indirection harms predictability.
+21. Structure code to match execution, not ideology.
+22. Simplicity at runtime is as important as simplicity in reading.
+
+This section comes from Muratori, and it is the sharpest block in the list, pushing back against a common tendency in high-level language communities to treat code as purely abstract logic divorced from the CPU.
+
+Consider an Array of Structures (AoS):
+
+```typescript
+interface Particle {
+  x: number
+  y: number
+  z: number
+  r: number
+  g: number
+  b: number
+}
+
+const particles: Particle[] = getAllParticles()
+```
+
+Now consider a Structure of Arrays (SoA):
+
+```typescript
+const particles = {
+  x: Float64Array.from(allX),
+  y: Float64Array.from(allY),
+  z: Float64Array.from(allZ),
+  r: Float64Array.from(allR),
+  g: Float64Array.from(allG),
+  b: Float64Array.from(allB),
+}
+```
+
+In AoS, each particle's data is contiguous, but if you only need to update positions, x, y, z, you load the entire struct into cache, including r, g, b that you are not touching. In SoA, the data you need is contiguous. The color data sits elsewhere, and you do not pay for loading it.
+
+This is not an optimization for game engines, but a general principle about what makes code fast in practice. When you iterate over data, what matters is the layout of that data in memory, not the elegance of the abstraction wrapping it. "Cache behavior matters more than elegance" is not a micro-optimization, but a statement about the physical reality of how machines execute code.
+
+---
+
+## IV. Composition & Behavior
+
+23. Prefer composition over hierarchy.
+24. Build small, orthogonal capabilities.
+25. Abstractions should compose without coordination.
+26. Behavior should not depend on inheritance chains.
+27. Correctness benefits from explicit constraints.
+28. Reuse emerges from composition, not generalization.
+
+This is the section where the object-oriented world got it wrong for decades, and where functional programming got it right.
+
+The instinct to organize code into deep inheritance hierarchies, Animal, then Dog, then WorkingDog, creates coupling that compounds. Changes to Animal ripple through Dog, through WorkingDog, through every subclass. The behavior of a WorkingDog depends not just on its own implementation but on the entire chain above it.
+
+Composition sidesteps this entirely. A WorkingDog is not a Dog that is an Animal, but a set of behaviors, bark, fetch, guide, composed together. When you change `bark`, only `bark` changes, and the independence is real rather than illusory.
+
+Statement 27, "correctness benefits from explicit constraints," is about making invalid states unrepresentable. A function that takes a `string` and a `number` is less safe than one that takes a `PositiveInteger` and a `NonEmptyString`. The constraint is part of the interface, and the type system enforces it. This is the difference between debugging a `TypeError` in production and catching it at compile time.
+
+---
+
+## V. Systems & Organization
+
+29. System structure mirrors team structure.
+30. Interfaces often exist to manage communication, not code.
+31. Misaligned boundaries create coordination overhead.
+32. Conceptual integrity must dominate local optimizations.
+33. Design boundaries where ownership is clear.
+34. Place complexity where it can be understood and controlled.
+
+Melvin Conway observed in 1968 that organizations produce designs that mirror their communication structures. This is usually cited as a warning, your monolith reflects your org chart, but the inverse is also useful: if you want a particular system structure, you need the team structure to match it. The code will follow the communication, whether you planned for it or not.
+
+Statement 30 extends this idea further: interfaces between modules often exist not because the code requires them, but because the teams do. A well-defined API between two services is a communication contract between two groups of people. The code is the artifact, and the interface is the agreement.
+
+Statement 31, "misaligned boundaries create coordination overhead," is the testable corollary. When the boundary between two modules does not match the boundary between two teams, every change that crosses that boundary requires coordination. The cost is not in the code, but in the meetings, the Slack threads, the waiting.
+
+Statement 34 is Brooks again: "Conceptual integrity is the most important consideration in system design." A system designed by one person, or by a small team with shared vision, tends to be consistent. A system designed by committee tends to be a collection of competing visions, and the technical term for that is "incoherent."
+
+Statement 36 is the thesis of the entire article: **place complexity where it can be understood and controlled.** This is the one principle that unifies all the others. Essential complexity is organized, not removed. Abstractions hide detail where it is not needed. Indirection is spent where the boundary matters. Complexity lives where someone owns it.
+
+---
+
+## Key Influences
+
+**Fred Brooks**, *The Mythical Man-Month* (1975)
+
+> "The essence of software development is the specification, design, and testing of this conceptual construct, not the labor of representing it."
+> "Conceptual integrity is the most important consideration in system design."
+
+**Melvin Conway**, "How Do Committees Invent?" (1968)
+
+> "Organizations which design systems … are constrained to produce designs which are copies of the communication structures of these organizations."
+
+**John Ousterhout**, *A Philosophy of Software Design* (2018)
+
+> "The best modules are those whose interfaces are much simpler than their implementations."
+> "Deep modules are more powerful than shallow ones."
+
+**Joel Spolsky**, Law of Leaky Abstractions (2002)
+
+> "All non-trivial abstractions, to some degree, are leaky."
+
+**Casey Muratori**, *Handmade Hero* (2014–)
+
+> Emphasis on minimizing indirection, maximizing data locality, and aligning software structure with execution behavior.
