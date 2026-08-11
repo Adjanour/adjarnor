@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "pnpm diagrams && astro build",
+    "build": "pnpm fetch-github && pnpm diagrams && astro build",
+    "fetch-github": "tsx scripts/fetch-github.ts",
     "diagrams": "tsx scripts/excalidraw-to-svg.ts",
     "og:home": "tsx scripts/generate-og-image.ts",
     "lint": "eslint .",
