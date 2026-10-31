@@ -2,12 +2,28 @@ import { createRequire } from "node:module"
 
 const _require = createRequire(import.meta.url)
 const { DOMImplementation, XMLSerializer } = _require("@xmldom/xmldom")
+
+interface SvgNodeLike {
+  nodeName?: string
+}
+
+interface SvgElementLike extends SvgNodeLike {
+  childNodes?: readonly SvgNodeLike[]
+  getAttribute(name: string): string | null
+  setAttribute(name: string, value: string): void
+  removeAttribute(name: string): void
+  appendChild(child: SvgNodeLike): SvgNodeLike
+  textContent: string | null
+}
+
+type RoughOptions = Record<string, unknown>
+
 const roughMod = _require("roughjs/bundled/rough.cjs.js") as {
-  svg(svgEl: any): {
-    line(x1: number, y1: number, x2: number, y2: number, opts?: any): any
-    rectangle(x: number, y: number, w: number, h: number, opts?: any): any
-    polygon(pts: [number, number][], opts?: any): any
-    circle(x: number, y: number, d: number, opts?: any): any
+  svg(svgEl: SvgElementLike): {
+    line(x1: number, y1: number, x2: number, y2: number, opts?: RoughOptions): SvgNodeLike
+    rectangle(x: number, y: number, w: number, h: number, opts?: RoughOptions): SvgNodeLike
+    polygon(pts: [number, number][], opts?: RoughOptions): SvgNodeLike
+    circle(x: number, y: number, d: number, opts?: RoughOptions): SvgNodeLike
   }
 }
 
@@ -18,7 +34,7 @@ const NS = "http://www.w3.org/2000/svg"
  *  move any attribute carrying a var() into an inline style declaration. */
 const VAR_ATTRS = ["fill", "stroke", "font-family", "color"] as const
 
-function attrVarsToStyle(el: any): void {
+function attrVarsToStyle(el: SvgElementLike): void {
   for (const name of VAR_ATTRS) {
     const v = el.getAttribute?.(name)
     if (v && v.includes("var(--")) {
@@ -40,7 +56,7 @@ export const muted = "hsl(var(--muted))"
 export const destructive = "hsl(var(--destructive))"
 
 export interface DiagramCtx {
-  svg: any
+  svg: SvgElementLike
   rough: ReturnType<typeof roughMod.svg>
   serialize(): string
   width: number

@@ -42,7 +42,7 @@ async function main() {
   globalThis.DOMParser = window.DOMParser
   globalThis.XMLSerializer = window.XMLSerializer
   globalThis.document = document
-  globalThis.window = window as any
+  globalThis.window = window as unknown as typeof globalThis.window
   try {
     globalThis.navigator = window.navigator
   } catch {
