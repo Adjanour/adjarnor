@@ -1,12 +1,12 @@
 ---
-import "@/index.css"
-import { Font } from "astro:assets"
+import "@/index.css";
+import { Font } from "astro:assets";
 
 interface Props {
-  title?: string
-  description?: string
-  image?: string
-  noindex?: boolean
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
 }
 
 const {
@@ -14,17 +14,19 @@ const {
   description = "Technical blog on software engineering, systems architecture, developer tooling, and infrastructure by Bernard Katamanso, engineer at Orcta Technologies.",
   image = "/og-image.png",
   noindex = false,
-} = Astro.props
+} = Astro.props;
 
-const siteUrl = Astro.site ?? new URL("https://www.adjarnor.dev")
+const siteUrl = Astro.site ?? new URL("https://www.bernardkatamanso.com");
 const canonicalPath =
   Astro.url.pathname === "/"
     ? "/"
     : Astro.url.pathname.includes(".") || Astro.url.pathname.endsWith("/")
       ? Astro.url.pathname
-      : `${Astro.url.pathname}/`
-const canonicalUrl = new URL(canonicalPath, siteUrl)
-const ogImage = image.startsWith("http") ? image : new URL(image, siteUrl).toString()
+      : `${Astro.url.pathname}/`;
+const canonicalUrl = new URL(canonicalPath, siteUrl);
+const ogImage = image.startsWith("http")
+  ? image
+  : new URL(image, siteUrl).toString();
 const themeScript = `(() => {
   try {
     const storageKey = "theme";
@@ -34,7 +36,7 @@ const themeScript = `(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
     document.documentElement.style.colorScheme = theme;
   } catch {}
-})();`
+})();`;
 ---
 
 <!doctype html>
@@ -60,8 +62,16 @@ const themeScript = `(() => {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#020817" />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: light)"
+      content="#ffffff"
+    />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content="#020817"
+    />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -71,7 +81,7 @@ const themeScript = `(() => {
     <Font cssVariable="--font-sans" />
     <Font cssVariable="--font-mono" />
     <Font cssVariable="--font-signature" preload />
-    <script is:inline set:html={themeScript}></script>
+    <script is:inline set:html={themeScript} />
   </head>
   <body>
     <a

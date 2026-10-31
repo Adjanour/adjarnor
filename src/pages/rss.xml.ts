@@ -8,7 +8,7 @@ export async function GET() {
   return rss({
     title: "Bernard Katamanso - Blog",
     description: "Technical deep-dives on software engineering, systems architecture, and AI.",
-    site: "https://www.adjarnor.dev",
+    site: "https://www.bernardkatamanso.com",
     items: sorted.map((article) => ({
       title: article.data.title,
       description: article.data.description,
