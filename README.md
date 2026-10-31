@@ -1,6 +1,6 @@
-# adjarnor.dev
+# bernardkatamanso.com
 
-Personal portfolio and writing site for [Bernard Kirk Adjarnor Katamanso](https://www.adjarnor.dev).
+Personal portfolio and writing site for [Bernard Kirk Adjarnor Katamanso](https://www.bernardkatamanso.com).
 
 Built with Astro v6, Tailwind CSS v4, and TypeScript.
 
@@ -16,12 +16,12 @@ Built with Astro v6, Tailwind CSS v4, and TypeScript.
 
 | Command | Action |
 |---|---|
-| `npm run dev` | Start dev server at `0.0.0.0:8080` |
-| `npm run build` | Build to `dist/` |
-| `npm run preview` | Preview production build |
-| `npm run format` | Format and lint-fix with Biome |
-| `npm run lint` | Lint with ESLint |
-| `npm run test` | Run tests |
+| `pnpm run dev` | Start dev server at `0.0.0.0:8080` |
+| `pnpm run build` | Build to `dist/` |
+| `pnpm run preview` | Preview production build |
+| `pnpm run format` | Format and lint-fix with Biome |
+| `pnpm run lint` | Lint with ESLint |
+| `pnpm run test` | Run tests |
 
 ## Structure
 
