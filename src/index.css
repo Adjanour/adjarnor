@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* The theme system's single truth is the `.dark` class on <html> (toggled
+   pre-paint by BaseLayout's flash-guard, then by ThemeToggle). Bind the
+   Tailwind `dark:` variant to that class — v4 defaults to media queries,
+   which would make dark: utilities follow the OS and drift from tokens. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Prevent default scrolling behavior for smooth scrolling */
 html {
   scroll-behavior: unset;
@@ -7,6 +13,8 @@ html {
 
 body {
   overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
 }
 
 html.lenis {
@@ -18,149 +26,158 @@ html.lenis body {
 }
 
 @theme {
-    /* Font families */
-    --font-sans: var(--font-geist), system-ui, sans-serif;
-    --font-body: var(--font-geist), system-ui, sans-serif;
-    --font-mono: var(--font-google-sans-code), ui-monospace, monospace;
+  /* Font families */
+  --font-sans: var(--font-geist), system-ui, sans-serif;
+  --font-body: var(--font-geist), system-ui, sans-serif;
+  --font-mono: var(--font-google-sans-code), ui-monospace, monospace;
+  --font-signature: var(--font-caveat), cursive;
 
-    /* Border radius */
-    --radius-sm: calc(var(--radius) - 4px);
-    --radius-md: calc(var(--radius) - 2px);
-    --radius-lg: var(--radius);
+  /* Border radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
 
-    /* Colors - semantic tokens */
-    --color-border: hsl(var(--border));
-    --color-input: hsl(var(--input));
-    --color-ring: hsl(var(--ring));
-    --color-background: hsl(var(--background));
-    --color-foreground: hsl(var(--foreground));
+  /* Colors - semantic tokens */
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
 
-    --color-primary: hsl(var(--primary));
-    --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary: var(--primary);
+  --color-primary-foreground: hsl(var(--primary-foreground));
 
-    --color-secondary: hsl(var(--secondary));
-    --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
 
-    --color-destructive: hsl(var(--destructive));
-    --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
 
-    --color-muted: hsl(var(--muted));
-    --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
 
-    --color-accent: hsl(var(--accent));
-    --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent: var(--accent);
+  --color-accent-foreground: hsl(var(--accent-foreground));
 
-    --color-popover: hsl(var(--popover));
-    --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
 
-    --color-card: hsl(var(--card));
-    --color-card-foreground: hsl(var(--card-foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
 
-    /* Sidebar colors */
-    --color-sidebar: hsl(var(--sidebar-background));
-    --color-sidebar-foreground: hsl(var(--sidebar-foreground));
-    --color-sidebar-primary: hsl(var(--sidebar-primary));
-    --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
-    --color-sidebar-accent: hsl(var(--sidebar-accent));
-    --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
-    --color-sidebar-border: hsl(var(--sidebar-border));
-    --color-sidebar-ring: hsl(var(--sidebar-ring));
+  /* Sidebar colors */
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
 
-    /* Animations */
-    --animate-accordion-down: accordion-down 0.2s ease-out;
-    --animate-accordion-up: accordion-up 0.2s ease-out;
-    --animate-fade-in: fade-in 0.35s ease-out;
-    --animate-fade-out: fade-out 0.35s ease-out;
-    --animate-scale-in: scale-in 0.2s ease-out;
-    --animate-scale-out: scale-out 0.2s ease-out;
-    --animate-slide-in-right: slide-in-right 0.3s ease-out;
-    --animate-slide-out-right: slide-out-right 0.3s ease-out;
-    --animate-enter: fade-in 0.35s ease-out, scale-in 0.2s ease-out;
-    --animate-exit: fade-out 0.35s ease-out, scale-out 0.2s ease-out;
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-fade-in: fade-in 0.35s ease-out;
+  --animate-fade-out: fade-out 0.35s ease-out;
+  --animate-scale-in: scale-in 0.2s ease-out;
+  --animate-scale-out: scale-out 0.2s ease-out;
+  --animate-slide-in-right: slide-in-right 0.3s ease-out;
+  --animate-slide-out-right: slide-out-right 0.3s ease-out;
+  --animate-enter: fade-in 0.35s ease-out, scale-in 0.2s ease-out;
+  --animate-exit: fade-out 0.35s ease-out, scale-out 0.2s ease-out;
 
-    @keyframes accordion-down {
-        from {
-            height: 0;
-            opacity: 0;
-        }
-        to {
-            height: var(--radix-accordion-content-height);
-            opacity: 1;
-        }
+  @keyframes accordion-down {
+    from {
+      height: 0;
+      opacity: 0;
     }
 
-    @keyframes accordion-up {
-        from {
-            height: var(--radix-accordion-content-height);
-            opacity: 1;
-        }
-        to {
-            height: 0;
-            opacity: 0;
-        }
+    to {
+      height: var(--radix-accordion-content-height);
+      opacity: 1;
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+      opacity: 1;
     }
 
-    @keyframes fade-in {
-        0% {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    to {
+      height: 0;
+      opacity: 0;
+    }
+  }
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
     }
 
-    @keyframes fade-out {
-        0% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        100% {
-            opacity: 0;
-            transform: translateY(10px);
-        }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-out {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    @keyframes scale-in {
-        0% {
-            transform: scale(0.95);
-            opacity: 0;
-        }
-        100% {
-            transform: scale(1);
-            opacity: 1;
-        }
+    100% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  @keyframes scale-in {
+    0% {
+      transform: scale(0.95);
+      opacity: 0;
     }
 
-    @keyframes scale-out {
-        from {
-            transform: scale(1);
-            opacity: 1;
-        }
-        to {
-            transform: scale(0.95);
-            opacity: 0;
-        }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes scale-out {
+    from {
+      transform: scale(1);
+      opacity: 1;
     }
 
-    @keyframes slide-in-right {
-        0% {
-            transform: translateX(100%);
-        }
-        100% {
-            transform: translateX(0);
-        }
+    to {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+  }
+
+  @keyframes slide-in-right {
+    0% {
+      transform: translateX(100%);
     }
 
-    @keyframes slide-out-right {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(100%);
-        }
+    100% {
+      transform: translateX(0);
     }
+  }
+
+  @keyframes slide-out-right {
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(100%);
+    }
+  }
 }
 
 :root {
@@ -176,7 +193,11 @@ html.lenis body {
   --popover-foreground: 222.2 84% 4.9%;
 
   /* Pan-African inspired palette: deep green primary + golden accent */
-  --primary: 158 64% 32%;
+  /* Green ramp — perceptual space (OKLCH), hue locked at ~163°.
+     Light: exact conversion of the former hsl(158 64% 32%) — the white-
+     background contrast budget leaves ~zero chroma headroom (4.55:1 at
+     C 0.11, floor 4.5), so light keeps its values in the better space. */
+  --primary: oklch(0.552 0.11 163.1);
   --primary-foreground: 210 40% 98%;
 
   --secondary: 210 40% 96.1%;
@@ -185,7 +206,7 @@ html.lenis body {
   --muted: 210 40% 96.1%;
   --muted-foreground: 215 16% 30%;
 
-  --accent: 158 15% 88%;
+  --accent: oklch(0.914 0.011 172.2);
   --accent-foreground: 222.2 47.4% 11.2%;
 
   --destructive: 0 84.2% 60.2%;
@@ -205,7 +226,7 @@ html.lenis body {
   --sidebar-ring: 217.2 91.2% 59.8%;
 
   /* Brand gradient stops */
-  --brand-start: 158 64% 36%;
+  --brand-start: oklch(0.6 0.12 163);
   --brand-end: 42 95% 52%;
 
   /* African earth tone palette */
@@ -215,21 +236,17 @@ html.lenis body {
   --earth-warm-brown: 30 30% 35%;
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, hsl(var(--brand-start)), hsl(var(--brand-end)));
+  --gradient-primary: linear-gradient(135deg, var(--brand-start), hsl(var(--brand-end)));
   --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--background) / 0.9));
-  --gradient-hero: linear-gradient(
-    135deg,
-    hsl(var(--earth-deep-gold) / 0.1),
-    hsl(var(--earth-burnt-orange) / 0.15)
-  );
-  --gradient-african: linear-gradient(
-    45deg,
-    hsl(var(--earth-terracotta) / 0.1),
-    hsl(var(--earth-warm-brown) / 0.1)
-  );
+  --gradient-hero: linear-gradient(135deg,
+      hsl(var(--earth-deep-gold) / 0.1),
+      hsl(var(--earth-burnt-orange) / 0.15));
+  --gradient-african: linear-gradient(45deg,
+      hsl(var(--earth-terracotta) / 0.1),
+      hsl(var(--earth-warm-brown) / 0.1));
 
   /* Shadows */
-  --shadow-elegant: 0 10px 30px -10px hsl(var(--brand-start) / 0.35);
+  --shadow-elegant: 0 10px 30px -10px color-mix(in oklab, var(--brand-start) 35%, transparent);
 }
 
 .dark {
@@ -242,7 +259,11 @@ html.lenis body {
   --popover: 222.2 84% 4.9%;
   --popover-foreground: 210 40% 98%;
 
-  --primary: 158 64% 42%;
+  /* Dark green gets the vividness lift: chroma 0.136 → 0.152 (+12%),
+     lightness 0.673 → 0.70 (the sRGB gamut caps chroma at ~0.145 at the
+     old lightness). Computed onDark contrast 5.16:1 (markdown AA floor
+     4.5:1). Same hue, same family — perceptually alive on near-black. */
+  --primary: oklch(0.7 0.152 162.8);
   --primary-foreground: 222.2 47.4% 11.2%;
 
   --secondary: 217.2 32.6% 17.5%;
@@ -251,7 +272,7 @@ html.lenis body {
   --muted: 217.2 32.6% 17.5%;
   --muted-foreground: 215 18% 72%;
 
-  --accent: 158 40% 20%;
+  --accent: oklch(0.365 0.053 167);
   --accent-foreground: 210 40% 98%;
 
   --destructive: 0 62.8% 30.6%;
@@ -270,10 +291,10 @@ html.lenis body {
   --sidebar-border: 240 3.7% 15.9%;
   --sidebar-ring: 217.2 91.2% 59.8%;
 
-  --brand-start: 158 64% 45%;
+  --brand-start: oklch(0.7085 0.1435 162.7);
   --brand-end: 42 92% 58%;
 
-  --shadow-elegant: 0 10px 30px -10px hsl(var(--brand-start) / 0.45);
+  --shadow-elegant: 0 10px 30px -10px color-mix(in oklab, var(--brand-start) 45%, transparent);
 }
 
 /* ================================================
@@ -294,25 +315,38 @@ html.lenis body {
    Utility Classes
    ================================================ */
 @utility bg-grid {
-    background-image:
-        linear-gradient(to right, hsl(var(--border) / 0.25) 1px, transparent 1px),
-        linear-gradient(to bottom, hsl(var(--border) / 0.25) 1px, transparent 1px);
-    background-size: 48px 48px;
-    background-position: center;
+  background-image:
+    linear-gradient(to right, hsl(var(--border) / 0.25) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--border) / 0.25) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center;
 }
 
 @utility bg-triangles {
-    background:
-        conic-gradient(from 45deg, hsl(var(--primary) / 0.12) 90deg, transparent 0) 0 0 / 28px 28px,
-        conic-gradient(from -45deg, hsl(var(--accent) / 0.1) 90deg, transparent 0) 14px 14px / 28px 28px;
+  background:
+    conic-gradient(from 45deg, color-mix(in oklab, var(--primary) 12%, transparent) 90deg, transparent 0) 0 0 / 28px 28px,
+    conic-gradient(from -45deg, color-mix(in oklab, var(--accent) 10%, transparent) 90deg, transparent 0) 14px 14px / 28px 28px;
 }
 
 @utility hover-scale {
-    @apply transition-transform duration-200 hover:scale-105;
+  @apply transition-transform duration-200 hover:scale-105;
 }
 
 @utility elevated {
-    box-shadow: var(--shadow-elegant);
+  box-shadow: var(--shadow-elegant);
+}
+
+/**
+ * The single page container. Every top-level wrapper (main, navbar pill,
+ * footer, section shells) uses this so content edges always align.
+ */
+@utility container-page {
+  margin-inline: auto;
+  max-width: var(--container-4xl);
+  padding-inline: 1rem;
+  @media (width >= 40rem) {
+    padding-inline: 1.5rem;
+  }
 }
 
 /* ================================================
@@ -322,7 +356,7 @@ html.lenis body {
   --prose-body: hsl(var(--foreground));
   --prose-muted: hsl(var(--muted-foreground));
   --prose-border: hsl(var(--border));
-  --prose-primary: hsl(var(--primary));
+  --prose-primary: var(--primary);
   --prose-code-bg: hsl(var(--muted));
 }
 
@@ -366,9 +400,11 @@ html.lenis body {
 .prose h2 {
   font-size: 1.5rem;
 }
+
 .prose h3 {
   font-size: 1.25rem;
 }
+
 .prose h4 {
   font-size: 1.1rem;
 }
@@ -393,6 +429,7 @@ html.lenis body {
 }
 
 @media (hover: hover) {
+
   .prose h2:hover a::before,
   .prose h3:hover a::before,
   .prose h4:hover a::before {
@@ -456,7 +493,7 @@ html.lenis body {
   align-items: start;
 }
 
-.blog-layout > * {
+.blog-layout>* {
   min-width: 0;
 }
 
@@ -504,8 +541,8 @@ html.lenis body {
 }
 
 .toc-sidebar-link.active {
-  color: hsl(var(--primary));
-  border-left-color: hsl(var(--primary));
+  color: var(--primary);
+  border-left-color: var(--primary);
   font-weight: 500;
 }
 
@@ -513,6 +550,7 @@ html.lenis body {
   .blog-layout {
     grid-template-columns: 1fr;
   }
+
   .blog-sidebar {
     display: none;
   }
@@ -633,7 +671,7 @@ html.lenis body {
   margin-bottom: -0.75em;
 }
 
-.prose .code-badge + pre {
+.prose .code-badge+pre {
   margin-top: 0.5em;
 }
 
@@ -649,7 +687,7 @@ html.lenis body {
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  background: hsl(var(--primary));
+  background: var(--primary);
   color: white;
   border: none;
   cursor: pointer;
@@ -667,7 +705,18 @@ html.lenis body {
 }
 
 .back-to-top:hover {
-  background: hsl(var(--primary) / 0.85);
+  /* Value-shrink rather than transparency: this button floats over page
+     content, so an alpha-mixed fill lets content bleed through and the
+     text contrast becomes uncontrolled. Mixing toward black keeps the
+     fill opaque and darkens for the same affordance. */
+  background: color-mix(in oklab, var(--primary) 90%, black);
+}
+
+.dark .back-to-top {
+  /* White text on dark-green measured ~2.4:1 (sub-AA). Navy from the
+     background token measures the mirror of the green's own 5.16:1
+     against the dark floor — above AA without dimming the green. */
+  color: hsl(var(--background));
 }
 
 /* Reading progress bar */
@@ -677,8 +726,6 @@ html.lenis body {
   left: 0;
   height: 3px;
   z-index: 100;
-  background: hsl(var(--primary));
+  background: var(--primary);
   transition: width 0.1s linear;
 }
-
-

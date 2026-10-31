@@ -63,7 +63,7 @@ d.fillPolygon(
     [rightBarCx, baseY],
     [leftBarCx, baseY],
   ],
-  "hsl(var(--primary))",
+  "var(--primary)",
 )
 
 // Area semi-transparent overlay
@@ -71,7 +71,7 @@ const svgDoc = (d.svg as any).ownerDocument as XMLDocument
 const ns = "http://www.w3.org/2000/svg"
 const areaEl = svgDoc.createElementNS(ns, "polygon")
 areaEl.setAttribute("points", `${leftBarCx},${areaTop} ${rightBarCx},${areaTop} ${rightBarCx},${baseY} ${leftBarCx},${baseY}`)
-areaEl.setAttribute("fill", "hsl(var(--primary))")
+areaEl.setAttribute("fill", "var(--primary)")
 areaEl.setAttribute("opacity", "0.12")
 d.svg.appendChild(areaEl)
 

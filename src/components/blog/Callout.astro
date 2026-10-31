@@ -6,7 +6,7 @@ interface Props {
 const { type = "info" } = Astro.props
 
 const borderColors: Record<string, string> = {
-  info: "border-l-[hsl(var(--primary))]",
+  info: "border-l-[var(--primary)]",
   tip: "border-l-[hsl(158,60%,42%)]",
   warning: "border-l-[hsl(37,75%,45%)]",
   danger: "border-l-[hsl(0,70%,55%)]",

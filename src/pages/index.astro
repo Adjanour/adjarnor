@@ -1,37 +1,41 @@
 ---
-import { getCollection } from "astro:content"
-import ArticleCard from "@/components/blog/ArticleCard.astro"
-import BackgroundFX from "@/components/site/BackgroundFX.astro"
-import Experience from "@/components/site/Experience.astro"
-import Footer from "@/components/site/Footer.astro"
-import Navbar from "@/components/site/Navbar.astro"
-import ProjectGrid from "@/components/site/ProjectGrid.astro"
-import Section from "@/components/site/Section.astro"
-import WritingCard from "@/components/site/WritingCard.astro"
-import { getArticles } from "@/data/articles"
-import BaseLayout from "@/layouts/BaseLayout.astro"
-import { estimateReadTime } from "@/utils/reading-time"
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import ArticleCard from "@/components/blog/ArticleCard.astro";
+import BackgroundFX from "@/components/site/BackgroundFX.astro";
+import Experience from "@/components/site/Experience.astro";
+import Footer from "@/components/site/Footer.astro";
+import Navbar from "@/components/site/Navbar.astro";
+import ProjectGrid from "@/components/site/ProjectGrid.astro";
+import Section from "@/components/site/Section.astro";
+import WritingCard from "@/components/site/WritingCard.astro";
+import { getArticles } from "@/data/articles";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { estimateReadTime } from "@/utils/reading-time";
+import profileHero from "@/assets/profile-hero.webp";
 
-const blogArticles = await getCollection("blog", ({ data }) => !data.draft)
-const sortedBlog = blogArticles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-const recentBlog = sortedBlog.slice(0, 3)
+const blogArticles = await getCollection("blog", ({ data }) => !data.draft);
+const sortedBlog = blogArticles.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const recentBlog = sortedBlog.slice(0, 3);
 
-const allArticles = await getArticles()
-const featuredArticle = allArticles[0]
-const remainingArticles = allArticles.slice(1, 4)
+const allArticles = await getArticles();
+const featuredArticle = allArticles[0];
+const remainingArticles = allArticles.slice(1, 4);
 const formatDate = (value: string) =>
   new Date(value).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
-  })
+  });
 const professionalHighlights = [
   "Tech Lead, Orcta Technologies",
   "Software Engineer",
   "Democratize tech access",
   "Craft scalable systems",
-]
-const personalHighlights = ["Deep work", "Pan-Africanism", "Kindness"]
+];
+const personalHighlights = ["Deep work", "Pan-Africanism", "Kindness"];
 ---
 
 <BaseLayout
@@ -44,7 +48,7 @@ const personalHighlights = ["Deep work", "Pan-Africanism", "Kindness"]
     <BackgroundFX />
     <main
       id="main-content"
-      class="max-w-6xl mx-auto px-4 sm:px-6 py-6 mt-4 font-sans"
+      class="py-6 mt-4 font-sans"
     >
       <Section id="about">
         <div class="flex flex-col md:flex-row gap-8 md:gap-12">
@@ -53,20 +57,18 @@ const personalHighlights = ["Deep work", "Pan-Africanism", "Kindness"]
               Engineer & Pan-Africanist 🇬🇭
             </p>
             <div class="space-y-4 mt-3 leading-relaxed">
-              <div class="float-right ml-4 mb-3 w-24 h-24 sm:w-28 sm:h-28 shrink-0 overflow-hidden rounded-xl md:hidden">
-                <picture>
-                  <source type="image/webp" srcset="/profile-hero-320.webp" />
-                  <img
-                    src="/profile-hero-320.jpg"
-                    width="112"
-                    height="112"
-                    alt="Bernard Katamanso portrait"
-                    loading="eager"
-                    fetchpriority="high"
-                    decoding="async"
-                    class="h-full w-full object-cover"
-                  />
-                </picture>
+              <div
+                class="float-right ml-4 mb-3 w-24 sm:w-28 aspect-[2/3] shrink-0 md:hidden"
+              >
+                <Image
+                  src={profileHero}
+                  widths={[112, 224]}
+                  sizes="112px"
+                  alt="Bernard Katamanso portrait"
+                  loading="eager"
+                  fetchpriority="high"
+                  class="h-full w-full object-contain object-top"
+                />
               </div>
               <p>
                 I build infrastructure and tools that shape how people create
@@ -75,8 +77,8 @@ const personalHighlights = ["Deep work", "Pan-Africanism", "Kindness"]
               </p>
               <p>
                 I write about what I build and what I learn along the way:
-                systems architecture, developer tooling, infrastructure, and
-                the engineering problems that keep me up at night. I build from
+                systems architecture, developer tooling, infrastructure, and the
+                engineering problems that keep me up at night. I build from
                 Ghana because I believe world-class engineering is about depth
                 and craft, not geography.
               </p>
@@ -88,7 +90,7 @@ const personalHighlights = ["Deep work", "Pan-Africanism", "Kindness"]
                 <div class="flex flex-wrap gap-2">
                   {
                     professionalHighlights.map((fact) => (
-                      <span class="inline-flex items-center rounded-md border px-2.5 py-2 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground border-border bg-background hover:bg-accent hover:text-accent-foreground">
+                      <span class="inline-flex items-center rounded-md border px-2.5 py-2 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground border-border bg-background hover:bg-muted hover:border-foreground/25">
                         {fact}
                       </span>
                     ))
@@ -97,7 +99,7 @@ const personalHighlights = ["Deep work", "Pan-Africanism", "Kindness"]
                 <div class="flex flex-wrap gap-2">
                   {
                     personalHighlights.map((fact) => (
-                      <span class="inline-flex items-center rounded-md border px-2.5 py-2 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground border-border bg-background hover:bg-accent hover:text-accent-foreground">
+                      <span class="inline-flex items-center rounded-md border px-2.5 py-2 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground border-border bg-background hover:bg-muted hover:border-foreground/25">
                         {fact}
                       </span>
                     ))
@@ -108,24 +110,15 @@ const personalHighlights = ["Deep work", "Pan-Africanism", "Kindness"]
           </div>
 
           <div class="hidden md:block shrink-0 w-full md:w-80">
-            <picture>
-              <source
-                type="image/webp"
-                srcset="/profile-hero-320.webp 320w, /profile-hero-640.webp 640w"
-                sizes="320px"
-              />
-              <img
-                src="/profile-hero-320.jpg"
-                srcset="/profile-hero-320.jpg 320w, /profile-hero-640.jpg 640w"
-                sizes="320px"
-                width="320"
-                height="480"
-                alt="Bernard Katamanso portrait"
-                loading="lazy"
-                decoding="async"
-                class="h-auto w-full rounded-lg object-cover"
-              />
-            </picture>
+            <Image
+              src={profileHero}
+              widths={[320, 640]}
+              sizes="320px"
+              alt="Bernard Katamanso portrait"
+              loading="eager"
+              fetchpriority="high"
+              class="h-auto w-full object-contain"
+            />
           </div>
         </div>
       </Section>
@@ -145,19 +138,24 @@ const personalHighlights = ["Deep work", "Pan-Africanism", "Kindness"]
           </a>
         </div>
         <div class="space-y-0">
-          {recentBlog.length > 0 ? recentBlog.map((article) => (
-            <ArticleCard
-              title={article.data.title}
-              description={article.data.description}
-              date={article.data.date}
-              slug={article.id}
-              readingTime={estimateReadTime(article.body)}
-            />
-          )) : (
-            <p class="text-sm text-muted-foreground py-4">
-              No articles yet. Coming soon.
-            </p>
-          )}
+          {
+            recentBlog.length > 0 ? (
+              recentBlog.map((article) => (
+                <ArticleCard
+                  title={article.data.title}
+                  description={article.data.description}
+                  date={article.data.date}
+                  slug={article.id}
+                  readingTime={estimateReadTime(article.body)}
+                  image={article.data.image}
+                />
+              ))
+            ) : (
+              <p class="text-sm text-muted-foreground py-4">
+                No articles yet. Coming soon.
+              </p>
+            )
+          }
         </div>
       </Section>
 
@@ -183,11 +181,14 @@ const personalHighlights = ["Deep work", "Pan-Africanism", "Kindness"]
                 <div class="grid gap-4 md:grid-cols-[180px_1fr]">
                   <div class="relative h-32 sm:h-36 md:h-full min-w-0 bg-muted/40 [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
                     {featuredArticle.image && (
-                      <img
+                      <Image
                         src={featuredArticle.image}
                         alt=""
+                        width={360}
+                        height={240}
                         loading="lazy"
                         decoding="async"
+                        sizes="(min-width: 768px) 180px, 100vw"
                         class="h-full w-full object-cover"
                       />
                     )}

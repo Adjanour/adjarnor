@@ -8,7 +8,10 @@ import rehypeKatex from "rehype-katex"
 import remarkMath from "remark-math"
 
 export default defineConfig({
-  site: "https://www.adjarnor.dev",
+  site: "https://www.bernardkatamanso.com",
+  image: {
+    domains: ["substack-post-media.s3.amazonaws.com"],
+  },
   server: {
     host: true,
     port: 8080,
@@ -22,7 +25,10 @@ export default defineConfig({
     },
   },
   integrations: [
-    sitemap(),
+    sitemap({
+      // Internal visual QA tool: useful when deployed, not public content.
+      filter: (page) => !page.endsWith("/og-preview/"),
+    }),
     mdx({
       remarkPlugins: [remarkMath],
       rehypePlugins: [
@@ -49,6 +55,12 @@ export default defineConfig({
       cssVariable: "--font-mono",
       provider: fontProviders.google(),
       weights: [400, 700],
+    },
+    {
+      name: "Caveat",
+      cssVariable: "--font-signature",
+      provider: fontProviders.google(),
+      weights: [400, 500, 600, 700],
     },
   ],
   vite: {

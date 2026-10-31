@@ -13,9 +13,28 @@ const roughMod = _require("roughjs/bundled/rough.cjs.js") as {
 
 const NS = "http://www.w3.org/2000/svg"
 
+/** CSS var() does not resolve inside SVG presentation attributes in
+ *  browsers, but it does inside style attributes. Before serialization,
+ *  move any attribute carrying a var() into an inline style declaration. */
+const VAR_ATTRS = ["fill", "stroke", "font-family", "color"] as const
+
+function attrVarsToStyle(el: any): void {
+  for (const name of VAR_ATTRS) {
+    const v = el.getAttribute?.(name)
+    if (v && v.includes("var(--")) {
+      el.setAttribute("style", `${name}:${v};${el.getAttribute("style") ?? ""}`)
+      el.removeAttribute(name)
+    }
+  }
+  for (const child of Array.from(el.childNodes ?? [])) {
+    if (String(child.nodeName ?? "").startsWith("#")) continue
+    attrVarsToStyle(child)
+  }
+}
+
 export const fg = "hsl(var(--foreground))"
 export const fgMuted = "hsl(var(--muted-foreground))"
-export const primary = "hsl(var(--primary))"
+export const primary = "var(--primary)"
 export const border = "hsl(var(--border))"
 export const muted = "hsl(var(--muted))"
 export const destructive = "hsl(var(--destructive))"
@@ -227,6 +246,7 @@ export function createDiagram(w: number, h: number): DiagramCtx {
     fillPolygon,
     centerTextBoth,
     serialize() {
+      attrVarsToStyle(svg)
       return new XMLSerializer().serializeToString(svg).replaceAll(' xmlns:xml=""', "")
     },
   }

@@ -11,7 +11,7 @@ const hasHeaderContent = Boolean(title || description)
 ---
 
 <section id={id} aria-labelledby={labelledBy} class="scroll-mt-24">
-  <div class="mx-auto max-w-5xl px-4 sm:px-6 py-14 md:py-14">
+  <div class="container-page py-14 md:py-14">
     {hasHeaderContent && (
       <header class="mb-12 text-center">
         {title && (
@@ -29,7 +29,7 @@ const hasHeaderContent = Boolean(title || description)
         )}
       </header>
     )}
-    <div class="font-sans max-w-4xl mx-auto">
+    <div class="font-sans">
       <slot />
     </div>
   </div>

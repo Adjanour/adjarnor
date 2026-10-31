@@ -1,13 +1,19 @@
 ---
+import { Image } from "astro:assets"
+import articleFallback from "@/assets/article-art-fallback.webp"
+
 interface Props {
   title: string
   description: string
   date: Date
   slug: string
   readingTime?: string
+  /** Optional per-post art; falls back to the shared sticker tile. */
+  image?: string
+  loading?: "eager" | "lazy"
 }
 
-const { title, description, date, slug, readingTime } = Astro.props
+const { title, description, date, slug, readingTime, image, loading = "lazy" } = Astro.props
 const formattedDate = date.toLocaleDateString("en-US", {
   month: "short",
   day: "numeric",
@@ -23,6 +29,20 @@ const formattedDate = date.toLocaleDateString("en-US", {
     <div class="shrink-0 sm:w-24 text-xs text-muted-foreground tabular-nums leading-snug flex items-center gap-2 sm:block">
       <time datetime={date.toISOString()}>{formattedDate}</time>
       {readingTime && <span class="text-muted-foreground/60 block mt-0.5">{readingTime}</span>}
+    </div>
+    <!-- Art tile: sticker fallback for imageless posts; per-post `image:`
+         frontmatter overrides. Hidden below sm where the list stays
+         typographic. -->
+    <div class="shrink-0 w-16 h-16 rounded-md overflow-hidden border border-border hidden sm:block">
+      <Image
+        src={image ?? articleFallback}
+        alt=""
+        width="64"
+        height="64"
+        loading={loading}
+        decoding="async"
+        class="h-full w-full object-cover"
+      />
     </div>
     <div class="flex-1 min-w-0">
       <h3 class="text-base font-medium text-foreground group-hover:text-primary transition-colors leading-snug">

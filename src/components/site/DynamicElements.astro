@@ -1,36 +1,5 @@
 ---
-const inspirationalQuotes = [
-  "Measure twice, cut once.",
-  "Software is a craft, not a commodity.",
-  "The most dangerous phrase in engineering is 'it works in my environment.'",
-  "Good engineering is about saying no to complexity.",
-  "The best code is the code you don't have to write.",
-  "Software is never finished, only abandoned.",
-  "If you educate a man, you educate an individual. If you educate a woman, you educate a nation.",
-  "Technology is best when it brings people together.",
-  "Consistency is what transforms average into excellence.",
-  "The best tools feel invisible.",
-  "Debugging is twice as hard as writing code in the first place.",
-  "The illusion of simplicity is the hardest thing to engineer.",
-  "Contrary to popular belief, computers are not complicated. People are.",
-  "Until the lion learns to write, every story will glorify the hunter.",
-  "Make it correct, make it clear, make it concise, make it fast. In that order.",
-  "First solve the problem, then write the code.",
-  "A well-placed abstraction eliminates an entire class of bugs.",
-  "The purpose of abstraction is not to be vague, but to create a new semantic level.",
-  "Freedom is not something one people can bestow on another as a gift. They claim it as their own.",
-  "Tomorrow belongs to the people who prepare for it today.",
-  "Don't repeat yourself. Once is fine, twice is a pattern, three times is refactoring time.",
-  "Engineering is not about perfection. It is about trade-offs, and knowing which ones to make.",
-  "There is no better than adversity. Every defeat, every heartbreak, every loss, contains its own seed.",
-  "Good interfaces hide complexity. Great interfaces make complexity feel like simplicity.",
-  "Every line of code is a liability. Make each one earn its keep.",
-  "We have the right and duty to remake this world.",
-  "Premature optimization is the root of all evil.",
-  "A people without the knowledge of their past history, origin and culture is like a tree without roots.",
-  "Pull requests are conversations, not verdicts.",
-  "I am the master of my fate, I am the captain of my soul.",
-]
+import { quotes } from "@/data/quotes"
 
 const now = new Date()
 const currentTime = new Intl.DateTimeFormat("en-GB", {
@@ -56,37 +25,115 @@ const currentStatus =
         : currentHour < 21
           ? "Evening reset"
           : "Late session"
-const currentQuote = inspirationalQuotes[now.getUTCDate() % inspirationalQuotes.length]
+const currentQuote = quotes[now.getUTCDate() % quotes.length]
+// Tomorrow's entry, for the hover peek. Ghana is UTC+0 year-round, so the
+// UTC date *is* the Accra date — no timezone juggling needed. Rolling the
+// date forward via timestamp handles month boundaries correctly (31st → 1st).
+// This is the SSR floor only — the client script recomputes both slots
+// per visitor, so a stale build never shows a stale quote calendar.
+const nextQuote =
+  quotes[
+    new Date(now.getTime() + 86_400_000).getUTCDate() % quotes.length
+  ]
 ---
 
 <div class="hidden lg:flex items-center justify-center gap-4 text-sm text-muted-foreground flex-1 min-w-0">
-  <div class="flex items-center gap-2 backdrop-blur-sm bg-background/40 px-3 py-2 rounded-md border border-border/30">
-    <span class="h-[0.15rem] w-[0.15rem] rounded-full bg-blue-700 ring-2 ring-blue-400 mr-[0.1rem] dark:bg-green-600 dark:ring-green-400"></span>
-    <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <div class="nav-chip flex shrink-0 items-center gap-2 whitespace-nowrap backdrop-blur-sm bg-background/40 px-3 py-2 rounded-md border border-border/30">
+    <span class="live-dot relative flex h-2.5 w-2.5 mr-1 shrink-0" aria-hidden="true">
+      <span class="live-dot-ping absolute inline-flex h-full w-full rounded-full bg-primary"></span>
+      <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary"></span>
+    </span>
+    <svg viewBox="0 0 24 24" class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <circle cx="12" cy="12" r="10"></circle>
       <polyline points="12 6 12 12 16 14"></polyline>
     </svg>
-    <span class="font-mono">{currentTime}</span>
-    <span class="text-xs opacity-70">Accra, GH</span>
-    <span class="ml-2 inline-flex items-center rounded-full  border-border/50 px-2 py-0.5 text-[11px] text-foreground/80">
+    <span class="shrink-0 font-mono" data-clock-time>{currentTime}</span>
+    <span class="shrink-0 text-xs opacity-70">Accra, GH</span>
+    <span
+      class="ml-2 inline-flex shrink-0 items-center whitespace-nowrap rounded-full border-border/50 px-2 py-0.5 text-[11px] text-foreground/80"
+      data-clock-status
+    >
       Now - {currentStatus}
     </span>
   </div>
-  <div class="flex items-center gap-2 backdrop-blur-sm bg-background/40 px-3 py-2 rounded-md border border-border/30 min-w-0 max-w-sm quote-trigger">
-    <svg viewBox="0 0 24 24" class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M3 21c3 0 7-1 9-5"></path>
-      <path d="M13 5a4 4 0 0 1 4 4c0 3-2 5-4 7"></path>
-      <path d="M7 5a4 4 0 0 1 4 4c0 3-2 5-4 7"></path>
-    </svg>
-    <span class="truncate text-sm">{currentQuote}</span>
+  <div class="nav-chip flex items-center gap-2 backdrop-blur-sm bg-background/40 px-3 py-2 rounded-md border border-border/30 min-w-0 max-w-sm quote-trigger">
+    <span
+      class="quote-glyph shrink-0 font-serif text-2xl leading-none text-foreground/50"
+      aria-hidden="true"
+    >
+      &ldquo;
+    </span>
+    <span class="truncate text-sm" data-quote-today>{currentQuote}</span>
     <div class="quote-tooltip">
-      <p>{currentQuote}</p>
+      <p class="tooltip-label" aria-hidden="true">Tomorrow's quote</p>
+      <p data-quote-next>{nextQuote}</p>
     </div>
   </div>
 
 <style>
+  /*
+   * Nested chrome rule: when the navbar pill forms (data-popped), the
+   * nav itself becomes the surface — the chips drop their own card look
+   * so you never get a card inside a card. Cyan-bordered while seated,
+   * plain text inside the pill when popped.
+   */
+  .nav-chip {
+    transition:
+      background-color 0.35s ease,
+      border-color 0.35s ease;
+  }
+
+  :global(#site-nav[data-popped="true"]) .nav-chip {
+    background: transparent;
+    border-color: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
   .quote-trigger {
     position: relative;
+  }
+
+  /*
+   * Typographic quote mark (editorial pull-quote move) instead of a
+   * stroke SVG icon, which aliased to noise at 12px. The glyph is
+   * optical, not geometric: serif “ marks sit high in their em box, so
+   * the transform nudges it to hang from the text line like print does.
+   * Flex centering alone makes it look like it's diving.
+   */
+  .quote-glyph {
+    transform: translateX(-2px);
+    line-height: 0;
+  }
+
+  /*
+   * Live status dot: solid core + expanding pulse ring. The ring
+   * animates only for users who opt into motion; under
+   * prefers-reduced-motion it holds a faint static halo so the dot
+   * still reads as "present" without breathing.
+   */
+  .live-dot-ping {
+    opacity: 0.6;
+    animation: live-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  @keyframes live-ping {
+    0% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    70%,
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .live-dot-ping {
+      animation: none;
+      opacity: 0.15;
+    }
   }
 
   .quote-tooltip {
@@ -116,9 +163,98 @@ const currentQuote = inspirationalQuotes[now.getUTCDate() % inspirationalQuotes.
     text-wrap: pretty;
   }
 
+  /* Micro-label above the peeked quote, in the site's eyebrow style */
+  .quote-tooltip .tooltip-label {
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: hsl(var(--muted-foreground) / 0.8);
+    margin-bottom: 0.25rem;
+  }
+
   .quote-trigger:hover .quote-tooltip {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
 </style>
+
+<script>
+  import { quotes } from "@/data/quotes";
+
+  /*
+   * Client-side clock: the SSR markup ships the build-time time and
+   * status as initial content (so there's no empty frame), then this
+   * script takes over and ticks in Africa/Accra, reusing the exact
+   * formatters the frontmatter uses so the "live" dot isn't certifying
+   * a frozen clock.
+   *
+   * The ticker is also the heartbeat for the quote archive: quotation
+   * rotation is date-keyed (see src/data/quotes.ts), so the same 1s tick
+   * checks whether the Accra day has turned and rolls both quote slots
+   * (today's chip text + tomorrow's tooltip peek) when it has. One
+   * heartbeat, many limbs — one interval owns all time-driven state.
+   */
+  const ACCRA = "Africa/Accra";
+
+  // Formatter instances are created once — constructing them per tick
+  // is the expensive part (locale data lookup), not the formatting.
+  const timeFmt = new Intl.DateTimeFormat("en-GB", {
+    timeZone: ACCRA,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+  const hourFmt = new Intl.DateTimeFormat("en-US", {
+    timeZone: ACCRA,
+    hour: "numeric",
+    hour12: false,
+  });
+
+  const statusFor = (hour: number) =>
+    hour < 6
+      ? "Deep night"
+      : hour < 12
+        ? "Morning focus"
+        : hour < 17
+          ? "Afternoon flow"
+          : hour < 21
+            ? "Evening reset"
+            : "Late session";
+
+  const timeEl = document.querySelector<HTMLElement>("[data-clock-time]");
+  const statusEl = document.querySelector<HTMLElement>("[data-clock-status]");
+  const quoteTodayEl = document.querySelector<HTMLElement>("[data-quote-today]");
+  const quoteNextEl = document.querySelector<HTMLElement>("[data-quote-next]");
+
+  /*
+   * Quote rotation, memoized on the UTC day index. The tick calls this
+   * every second but the early return makes it free on all but the one
+   * second a day when it matters. -1 as the initial "unstated" marker
+   * forces the first invocation to run even if it's day N again.
+   */
+  let quoteDay = -1;
+  const rollQuotes = (now: Date) => {
+    const index = now.getUTCDate() % quotes.length;
+    if (index === quoteDay) return;
+    quoteDay = index;
+
+    const tomorrowIndex =
+      new Date(now.getTime() + 86_400_000).getUTCDate() % quotes.length;
+    if (quoteTodayEl) quoteTodayEl.textContent = quotes[index];
+    if (quoteNextEl) quoteNextEl.textContent = quotes[tomorrowIndex];
+  };
+
+  if (timeEl && statusEl) {
+    const tick = () => {
+      const now = new Date();
+      timeEl.textContent = timeFmt.format(now);
+      statusEl.textContent = `Now - ${statusFor(Number(hourFmt.format(now)))}`;
+      if (quoteTodayEl && quoteNextEl) rollQuotes(now);
+    };
+
+    tick();
+    setInterval(tick, 1000);
+  }
+</script>
 </div>

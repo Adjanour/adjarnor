@@ -1,4 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
-  <rect width="32" height="32" rx="8" fill="#000000"/>
-  <text x="16" y="20" text-anchor="middle" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="15" letter-spacing="0">A.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Bernard Katamanso monogram">
+  <!-- Adaptive favicon: one SVG answers both browser themes. Browsers
+       resolve prefers-color-scheme inside the SVG document for favicons. -->
+  <style>
+    .bg { fill: #F7F4EB; }
+    .ink { fill: #171717; }
+    .punch { fill: #F7F4EB; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #020817; }
+      .ink { fill: #F7F4EB; }
+      .punch { fill: #020817; }
+    }
+  </style>
+  <rect class="bg" width="128" height="128" rx="30"/>
+  <path class="ink" d="M39.5 20.5C45.4 20.5 48.4 24.1 48.4 29.6V55.1C54.2 49.7 62.1 46.7 71 47.5C88.4 48.7 98.5 62.5 98.5 78.3C98.5 96.2 85.8 108.6 69.2 108.6C60.1 108.6 52.5 104.9 47.4 99.1C46.9 104.9 43.6 108.2 38.4 108.2C32.7 108.2 29.5 104.1 29.5 98.6V29.5C29.5 23.6 33.3 20.5 39.5 20.5Z"/>
+  <path class="punch" d="M69.4 64.6C78.1 64.6 83.7 70.5 83.7 78.6C83.7 87.3 77.7 93.7 69.1 93.7C60.4 93.7 54.7 87.2 54.7 79C54.7 70.8 60.3 64.6 69.4 64.6Z"/>
+  <rect x="86.5" y="25.5" width="15" height="15" rx="3" fill="#DEA04A" transform="rotate(11 94 33)"/>
 </svg>

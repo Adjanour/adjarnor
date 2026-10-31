@@ -27,28 +27,10 @@ const years = Object.keys(articlesByYear)
 >
   <div class="min-h-screen bg-background text-foreground font-sans">
     <Navbar />
-    <main id="main-content" class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+    <!-- Navbar is fixed (~82px including its top inset), so this page must
+         reserve its own top band instead of letting content slide beneath it. -->
+    <main id="main-content" class="max-w-3xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-16">
       <header class="mb-16">
-        <a
-          href="/"
-          class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
-        >
-          <svg
-            class="w-4 h-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="m12 19-7-7 7-7" />
-            <path d="M19 12H5" />
-          </svg>
-          Back home
-        </a>
-
         <div class="flex items-center justify-between gap-4 mb-4">
           <h1 class="text-3xl font-medium tracking-tight">Blog</h1>
           <a
@@ -81,17 +63,19 @@ const years = Object.keys(articlesByYear)
       <div class="space-y-12">
         {years.map((year) => (
           <section>
-            <h2 class="text-sm font-medium text-muted-foreground mb-4 sticky top-16 sm:top-20 z-10 bg-background py-2">
+            <h2 class="text-sm font-medium text-muted-foreground mb-4 sticky top-[5.25rem] z-10 bg-background py-2">
               {year}
             </h2>
             <div class="space-y-0">
-              {articlesByYear[year].map((article) => (
+              {articlesByYear[year].map((article, index) => (
                 <ArticleCard
                   title={article.data.title}
                   description={article.data.description}
                   date={article.data.date}
                   slug={article.id}
                   readingTime={estimateReadTime(article.body)}
+                  image={article.data.image}
+                  loading={index === 0 && year === years[0] ? "eager" : "lazy"}
                 />
               ))}
             </div>

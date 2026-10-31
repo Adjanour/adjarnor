@@ -1,31 +1,18 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro"
 import Navbar from "@/components/site/Navbar.astro"
-
-const education = [
-  {
-    institution: "University of Mines and Technology (UMaT)",
-    location: "Tarkwa, Ghana",
-    dates: "Jan 2023 – Sep 2026",
-    degree: "B.Sc. Computer Science and Engineering",
-    highlights: [
-      "Current CWA: 87+ | Expected First Class Honours",
-      "Coursework: Data Structures & Algorithms, Linear Algebra & Calculus, Cybersecurity, Data Science, HCI",
-      "Research Interests: Systems Design, Automation, Computational Efficiency",
-    ],
-  },
-]
+import BaseLayout from "@/layouts/BaseLayout.astro"
 
 const experience = [
   {
-    title: "Tech Lead",
-    company: "Orcta",
+    title: "Chief Technology Officer",
+    company: "Orcta Technologies",
+    companyUrl: "https://www.orctatech.com",
     location: "Remote / Ghana",
     dates: "Feb 2024 – Present",
     bullets: [
-      "Lead architecture and backend for Orcta Go, a logistics platform serving Ghana",
-      "Manage 4 engineers; established documentation standards that cut onboarding time",
-      "Drive technical decisions balancing reliability, cost, and shipping velocity",
+      "Lead architecture and backend engineering for Orcta Go, a logistics platform serving Ghana.",
+      "Manage a four-person engineering team and maintain the documentation standards used for onboarding and delivery.",
+      "Make technical decisions across reliability, infrastructure cost, and shipping velocity.",
     ],
   },
   {
@@ -34,7 +21,7 @@ const experience = [
     location: "Remote",
     dates: "Nov 2024 – Present",
     bullets: [
-      "Built internal tools for reporting and transparency — roughly 30% efficiency gain on operational workflows",
+      "Build internal reporting and transparency tools for the foundation's operational workflows.",
     ],
   },
   {
@@ -43,66 +30,48 @@ const experience = [
     location: "Tarkwa, Ghana",
     dates: "Jun 2023 – Sep 2023",
     bullets: [
-      "Maintained backend systems and optimized database workflows for student-facing services",
+      "Maintained backend systems and improved database workflows for student-facing services.",
     ],
   },
 ]
 
 const projects = [
   {
-    name: "mNotify TypeScript SDK",
-    role: "Open Source",
-    link: "https://github.com/Adjanour/mnotify-ts-sdk",
-    bullets: [
-      "Published type-safe SDK for mNotify's Bulk Messaging API. Available on npm.",
-    ],
+    name: "Kō Language",
+    link: "https://github.com/Adjanour/ko-language",
+    details:
+      "Functional language compiler built in Zig with ADTs, pattern matching, bidirectional type inference, reference counting, REPL/LSP tooling, and JIT/AOT compilation through LLVM. Backed by 256 passing tests.",
+  },
+  {
+    name: "Library",
+    link: "https://github.com/Adjanour/library",
+    details:
+      "Local-first PDF and EPUB workspace combining a Svelte desktop reader, Go server and TUI, SQLite storage, and signed preview installers. Linux packaging is verified in the v0.1.1 preview.",
   },
   {
     name: "SESS CLI",
-    role: "Open Source",
     link: "https://github.com/Orctatech-Engineering-Team/sess-cli",
-    bullets: [
-      "Session-based Git CLI that turns units of work into explicit sessions with SQLite state tracking.",
-    ],
+    details:
+      "Go and SQLite CLI for resumable, issue-driven development sessions and checkpointed pull-request handoffs. Version 0.6.0 provides 13 commands and binaries for six OS/architecture targets.",
   },
   {
-    name: "React Components Library",
-    role: "Open Source",
-    link: "https://github.com/Adjanour/ReactComponents",
-    bullets: [
-      "Designed and published reusable UI components for scalable application development.",
-    ],
+    name: "mNotify TypeScript SDK",
+    link: "https://github.com/Adjanour/mnotify-ts-sdk",
+    details:
+      "Zero-dependency SDK covering 17 operations across five messaging services, with Result-based errors, rate-limit retries, and support for five JavaScript runtimes.",
   },
+]
+
+const education = [
   {
-    name: "Programming Playground",
-    role: "Systems",
-    link: null,
-    bullets: [
-      "Built HTTP servers and JSON parsers from scratch to deepen understanding of network protocols and language fundamentals.",
-    ],
-  },
-  {
-    name: "Valkey Collab",
-    role: "Open Source",
-    link: "https://github.com/Orctatech-Engineering-Team/valkey-collab-demo",
-    bullets: [
-      "Real-time collaborative whiteboard with FastAPI, Vue.js, and WebSocket-based sync.",
-    ],
-  },
-  {
-    name: "Listen to This Article",
-    role: "Open Source",
-    link: "https://github.com/Adjanour/listen-to-this-article",
-    bullets: [
-      "WordPress plugin adding text-to-speech accessibility to posts.",
-    ],
-  },
-  {
-    name: "Vesper",
-    role: "Personal",
-    link: "https://github.com/Adjanour/vesper",
-    bullets: [
-      "Time blocking application for structuring deep work sessions. In progress.",
+    institution: "University of Mines and Technology (UMaT)",
+    location: "Tarkwa, Ghana",
+    dates: "Jan 2023 – Sep 2026",
+    degree: "B.Sc. Computer Science and Engineering",
+    highlights: [
+      "Current CWA: 86+; First Class Honours.",
+      "Coursework: Data Structures and Algorithms, Linear Algebra and Calculus, Cybersecurity, Data Science, and HCI.",
+      "Research interests: systems design, automation, and computational efficiency.",
     ],
   },
 ]
@@ -110,250 +79,329 @@ const projects = [
 const leadership = [
   {
     activity: "Co-Lead, Google Developer Groups (GDG) UMaT",
-    bullets: [
-      "Organized sessions on cloud infrastructure, AI, and backend systems reaching 100+ students",
-    ],
+    details:
+      "Organize sessions on cloud infrastructure, AI, and backend systems for more than 100 students.",
   },
   {
     activity: "Panel Member, ACSES Vetting Committee",
-    bullets: [
-      "Evaluated executive candidates on communication, reasoning, and technical competence",
-    ],
+    details:
+      "Evaluate executive candidates on communication, reasoning, and technical competence.",
   },
   {
     activity: "Core Member, Salem Aid Foundation",
-    bullets: [
-      "Co-authored governance and transparency frameworks for community education projects",
-    ],
+    details:
+      "Co-author governance and transparency frameworks for community education projects.",
   },
 ]
 
 const skills = [
   {
     label: "Languages",
-    value: "Python, C#, TypeScript, JavaScript, Go, Java, SQL, Bash",
+    value: "TypeScript, Go, Zig, Python, C#, JavaScript, Java, SQL, Bash",
   },
   {
-    label: "Frameworks & Tools",
-    value: ".NET, Node.js, React, PostgreSQL, Supabase, Firebase, Docker, Git, Jupyter Lab",
+    label: "Systems & Data",
+    value: "LLVM, Node.js, Deno, .NET, PostgreSQL, SQLite, Docker, Git",
   },
   {
-    label: "Focus Areas",
-    value: "Systems Design, APIs, Database Architecture, Infrastructure, Developer Tooling",
+    label: "Product & Web",
+    value: "SvelteKit, React, FastAPI, Supabase, Firebase",
+  },
+  {
+    label: "Focus",
+    value: "Language tooling, API design, backend systems, infrastructure, developer tooling",
   },
 ]
+
+const linkClass =
+  "rounded-sm underline decoration-border underline-offset-4 transition-colors hover:text-primary hover:decoration-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
 ---
 
 <BaseLayout
   title="Resume | Bernard Katamanso"
-  description="CV of Bernard Kirk Adjarnor Katamanso — Software Engineer & Tech Lead from Accra, Ghana."
+  description="Resume of Bernard Kirk Adjarnor Katamanso, a software engineer and technical lead in Accra, Ghana."
 >
-  <div class="min-h-screen bg-background text-foreground font-sans">
-    <Navbar />
-    <main id="main-content" class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-      <header class="mb-12">
-        <a
-          href="/"
-          class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
-        >
-          <svg
-            class="w-4 h-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="m12 19-7-7 7-7" />
-            <path d="M19 12H5" />
-          </svg>
-          Back home
-        </a>
+  <div class="resume-page min-h-screen bg-background text-foreground font-sans">
+    <div class="screen-only"><Navbar /></div>
 
-        <div class="flex items-start justify-between gap-4 flex-wrap">
-          <div>
-            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight leading-none mb-2">
-              Bernard Katamanso
-            </h1>
-            <p class="text-muted-foreground text-lg mt-3">
-              Software Engineer & Tech Lead — Accra, Ghana
+    <main id="main-content" class="resume-document mx-auto max-w-4xl px-4 pb-20 pt-28 sm:px-6 sm:pt-32">
+      <header class="border-b border-border pb-8">
+        <div class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+          <div class="min-w-0">
+            <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+              Software Engineer · CTO
             </p>
+            <h1 class="text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl">
+              Bernard Kirk Adjarnor Katamanso
+            </h1>
+            <p class="mt-3 text-sm text-muted-foreground">Accra, Ghana</p>
           </div>
-          <div class="flex gap-3 mt-2">
-            <a
-              href="https://adjarnor.dev"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              adjarnor.dev
-            </a>
-            <span class="text-muted-foreground/40">·</span>
-            <a
-              href="mailto:adjanour@icloud.com"
-              class="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              adjanour@icloud.com
-            </a>
-            <span class="text-muted-foreground/40">·</span>
-            <a
-              href="https://github.com/Adjanour"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              GitHub
-            </a>
-            <span class="text-muted-foreground/40">·</span>
-            <a
-              href="https://linkedin.com/in/kirk-katamanso"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              LinkedIn
-            </a>
-          </div>
+
+          <button
+            type="button"
+            data-print-resume
+            class="screen-only inline-flex min-h-11 shrink-0 items-center justify-center rounded-md border border-border px-4 text-sm font-medium transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            Print / Save PDF
+          </button>
         </div>
+
+        <address class="mt-6 flex flex-wrap gap-x-3 gap-y-2 text-sm not-italic text-muted-foreground">
+          <a class={linkClass} href="mailto:adjanour@icloud.com">adjanour@icloud.com</a>
+          <span aria-hidden="true">·</span>
+          <a class={linkClass} href="https://bernardkatamanso.com">bernardkatamanso.com</a>
+          <span aria-hidden="true">·</span>
+          <a class={linkClass} href="https://github.com/Adjanour">github.com/Adjanour</a>
+          <span aria-hidden="true">·</span>
+          <a class={linkClass} href="https://linkedin.com/in/kirk-katamanso">LinkedIn</a>
+        </address>
+
+        <p class="mt-6 max-w-3xl text-[0.95rem] leading-7 text-muted-foreground">
+          Software engineer and technical lead building developer tools, language infrastructure,
+          APIs, and local-first software. I lead a four-person engineering team while studying
+          Computer Science and Engineering at UMaT.
+        </p>
       </header>
 
-      <div class="space-y-12">
-        <!-- Education -->
-        <section>
-          <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-5">
-            Education
-          </h2>
-          <div class="space-y-6">
-            {education.map((edu) => (
-              <div>
-                <div class="flex items-baseline justify-between gap-4 flex-wrap mb-1">
-                  <h3 class="font-medium text-foreground">{edu.degree}</h3>
-                  <span class="text-sm text-muted-foreground shrink-0">{edu.dates}</span>
-                </div>
-                <p class="text-sm text-muted-foreground mb-2">
-                  {edu.institution} — {edu.location}
-                </p>
-                <ul class="list-disc list-inside space-y-1 text-sm text-muted-foreground/80">
-                  {edu.highlights.map((h) => (
-                    <li>{h}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <!-- Experience -->
-        <section>
-          <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-5">
-            Experience
-          </h2>
+      <div class="resume-sections mt-10 space-y-10">
+        <section aria-labelledby="experience-heading">
+          <h2 id="experience-heading" class="section-heading">Experience</h2>
           <div class="space-y-6">
             {experience.map((job) => (
-              <div>
-                <div class="flex items-baseline justify-between gap-4 flex-wrap mb-1">
-                  <h3 class="font-medium text-foreground">
-                    {job.title} <span class="text-muted-foreground font-normal">at {job.company}</span>
+              <article class="resume-entry">
+                <div class="entry-heading">
+                  <h3 class="font-semibold">
+                    {job.title}{" "}
+                    <span class="font-normal text-muted-foreground">at {job.companyUrl ? <a class={linkClass} href={job.companyUrl}>{job.company}</a> : job.company}</span>
                   </h3>
-                  <span class="text-sm text-muted-foreground shrink-0">{job.dates}</span>
+                  <p class="entry-date">{job.dates}</p>
                 </div>
-                <p class="text-sm text-muted-foreground mb-2">{job.location}</p>
-                <ul class="list-disc list-inside space-y-1 text-sm text-muted-foreground/80">
-                  {job.bullets.map((b) => (
-                    <li>{b}</li>
-                  ))}
+                <p class="mt-1 text-sm text-muted-foreground">{job.location}</p>
+                <ul class="resume-list mt-3">
+                  {job.bullets.map((bullet) => <li>{bullet}</li>)}
                 </ul>
-              </div>
+              </article>
             ))}
           </div>
         </section>
 
-        <!-- Projects -->
-        <section>
-          <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-5">
-            Projects
-          </h2>
-          <div class="space-y-6">
-            {projects.map((proj) => (
-              <div>
-                <h3 class="font-medium text-foreground mb-1">
-                  {proj.link ? (
-                    <a
-                      href={proj.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="underline underline-offset-2 hover:text-muted-foreground transition-colors"
-                    >{proj.name}</a>
-                  ) : proj.name}
-                  <span class="text-muted-foreground font-normal"> — {proj.role}</span>
+        <section aria-labelledby="projects-heading">
+          <h2 id="projects-heading" class="section-heading">Selected Projects</h2>
+          <div class="grid gap-5 md:grid-cols-2">
+            {projects.map((project) => (
+              <article class="resume-entry rounded-lg border border-border/70 p-4">
+                <h3 class="font-semibold">
+                  <a class={linkClass} href={project.link}>{project.name}</a>
                 </h3>
-                <ul class="list-disc list-inside space-y-1 text-sm text-muted-foreground/80">
-                  {proj.bullets.map((b) => (
-                    <li>{b}</li>
-                  ))}
-                </ul>
-              </div>
+                <p class="mt-2 text-sm leading-6 text-muted-foreground">{project.details}</p>
+              </article>
             ))}
           </div>
         </section>
 
-        <!-- Leadership & Community -->
-        <section>
-          <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-5">
-            Leadership & Community
-          </h2>
-          <div class="space-y-6">
-            {leadership.map((item) => (
-              <div>
-                <h3 class="font-medium text-foreground mb-1">{item.activity}</h3>
-                <ul class="list-disc list-inside space-y-1 text-sm text-muted-foreground/80">
-                  {item.bullets.map((b) => (
-                    <li>{b}</li>
-                  ))}
-                </ul>
+        <section aria-labelledby="education-heading">
+          <h2 id="education-heading" class="section-heading">Education</h2>
+          {education.map((item) => (
+            <article class="resume-entry">
+              <div class="entry-heading">
+                <h3 class="font-semibold">{item.degree}</h3>
+                <p class="entry-date">{item.dates}</p>
               </div>
-            ))}
-          </div>
-        </section>
-
-        <!-- Skills -->
-        <section>
-          <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-5">
-            Skills
-          </h2>
-          <div class="space-y-2 text-sm text-muted-foreground/80">
-            {skills.map((s) => (
-              <p>
-                <span class="font-medium text-foreground">{s.label}:</span>{" "}
-                {s.value}
+              <p class="mt-1 text-sm text-muted-foreground">
+                {item.institution} · {item.location}
               </p>
+              <ul class="resume-list mt-3">
+                {item.highlights.map((highlight) => <li>{highlight}</li>)}
+              </ul>
+            </article>
+          ))}
+        </section>
+
+        <section aria-labelledby="leadership-heading">
+          <h2 id="leadership-heading" class="section-heading">Leadership & Community</h2>
+          <div class="space-y-4">
+            {leadership.map((item) => (
+              <article class="resume-entry">
+                <h3 class="font-semibold">{item.activity}</h3>
+                <p class="mt-1 text-sm leading-6 text-muted-foreground">{item.details}</p>
+              </article>
             ))}
           </div>
         </section>
 
-        <!-- Publications -->
-        <section>
-          <h2 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-5">
-            Publications
-          </h2>
-          <div>
-            <h3 class="font-medium text-foreground mb-1">
-              Compilers Griot <span class="text-muted-foreground font-normal">— Writer</span>
-            </h3>
-            <p class="text-sm text-muted-foreground/80">
-              Essays connecting computing, philosophy, and Africa's digital future.
-              Published at <a
-                href="https://adjarnor.dev"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="underline underline-offset-2 hover:text-foreground transition-colors"
-              >adjarnor.dev</a>.
+        <section aria-labelledby="skills-heading">
+          <h2 id="skills-heading" class="section-heading">Skills</h2>
+          <dl class="grid gap-x-8 gap-y-3 text-sm sm:grid-cols-[9rem_1fr]">
+            {skills.map((skill) => (
+              <>
+                <dt class="font-semibold text-foreground">{skill.label}</dt>
+                <dd class="text-muted-foreground">{skill.value}</dd>
+              </>
+            ))}
+          </dl>
+        </section>
+
+        <section aria-labelledby="writing-heading">
+          <h2 id="writing-heading" class="section-heading">Writing</h2>
+          <article class="resume-entry">
+            <h3 class="font-semibold">Compilers Griot</h3>
+            <p class="mt-1 text-sm leading-6 text-muted-foreground">
+              Essays connecting computing, philosophy, and Africa's digital future, published at
+              <a class={linkClass} href="https://bernardkatamanso.com">bernardkatamanso.com</a>.
             </p>
-          </div>
+          </article>
         </section>
       </div>
     </main>
   </div>
+
+  <script>
+    document.querySelector("[data-print-resume]")?.addEventListener("click", () => window.print())
+  </script>
+
+  <style>
+    .section-heading {
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid hsl(var(--border));
+      padding-bottom: 0.55rem;
+      color: hsl(var(--muted-foreground));
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      line-height: 1rem;
+      text-transform: uppercase;
+    }
+
+    .entry-heading {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.25rem 1rem;
+    }
+
+    .entry-date {
+      flex-shrink: 0;
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+    }
+
+    .resume-list {
+      display: grid;
+      gap: 0.35rem;
+      padding-left: 1.15rem;
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+      line-height: 1.5rem;
+      list-style: disc outside;
+    }
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 12mm 14mm;
+      }
+
+      :global(html) {
+        color-scheme: light;
+      }
+
+      :global(body) {
+        background: white !important;
+        color: #17130e !important;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 9pt;
+        line-height: 1.3;
+      }
+
+      .screen-only {
+        display: none !important;
+      }
+
+      .resume-page,
+      .resume-document {
+        min-height: auto;
+        background: white !important;
+        color: #17130e !important;
+      }
+
+      .resume-document {
+        max-width: none;
+        padding: 0;
+      }
+
+      .resume-document header {
+        padding-bottom: 5mm;
+        border-color: #c9c4b8;
+        text-align: center;
+      }
+
+      .resume-document header > div {
+        display: block;
+      }
+
+      .resume-document header > div > div {
+        max-width: none;
+      }
+
+      .resume-document header p {
+        line-height: 1.35;
+      }
+
+      .resume-document header address {
+        justify-content: center;
+        margin-top: 3mm;
+      }
+
+      .resume-document h1 {
+        color: #173b68 !important;
+        font-size: 22pt;
+        letter-spacing: 0;
+      }
+
+      .resume-sections {
+        margin-top: 5mm;
+        display: grid;
+        gap: 4mm;
+      }
+
+      .resume-sections section {
+        break-inside: avoid;
+      }
+
+      .section-heading {
+        margin-bottom: 2mm;
+        padding-bottom: 1.5mm;
+        border-color: #17130e;
+        color: #173b68;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 10pt;
+        letter-spacing: 0.08em;
+      }
+
+      .resume-entry {
+        break-inside: avoid;
+      }
+
+      .resume-entry.rounded-lg {
+        border: 0;
+        padding: 0;
+        margin-bottom: 3mm;
+      }
+
+      .resume-sections .grid {
+        display: block;
+      }
+
+      .resume-document :is(p, li, dd, .entry-date) {
+        color: #4d4941 !important;
+        line-height: 1.35;
+      }
+
+      .resume-document a {
+        color: inherit !important;
+        text-decoration-color: #9b968c !important;
+      }
+    }
+  </style>
 </BaseLayout>
